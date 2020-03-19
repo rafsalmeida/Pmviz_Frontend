@@ -1,0 +1,31 @@
+﻿@model IEnumerable<PmvizFrontend.Models.Log>
+@using Kendo.Mvc.UI
+@{ Layout = "_Layout"; ViewBag.Title = "All Logs";}
+@(Html.Kendo().Grid(Model)
+    .Name("Grid")
+    .Columns(columns =>
+    {
+        columns.Bound(l => l.Id).Title("Id").Width(130);
+        columns.Bound(l => l.Description).Title("Description").Width(130);
+        columns.Bound(l => l.Filename).Title("Filename").Width(130);
+        columns.Bound(l => l.NumberActivities).Title("Number of Activities").Width(130);
+        columns.Bound(l => l.NumberCases).Title("Number of Cases").Width(130);
+        columns.Bound(l => l.StartDate).Title("Start Date").Width(130);
+        columns.Bound(l => l.EndDate).Title("End Date").Width(130);
+    })
+    .Pageable()
+    .Sortable()
+    .Filterable()
+    .DataSource(dataSource => dataSource
+        .Ajax()
+        .PageSize(20)
+        .ServerOperation(false)
+     )
+)
+
+
+)
+
+
+
+
