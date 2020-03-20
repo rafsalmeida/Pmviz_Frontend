@@ -1,0 +1,74 @@
+﻿@model Pmviz_Frontend.Models.User
+
+@{
+    ViewData["Title"] = "Login";
+}
+@addTagHelper *, Kendo.Mvc
+
+<div class="k-content">
+    <h4 id="title">Login</h4>
+    <br />
+    <div id="tickets" >
+        <form id="ticketsForm" kendo-validator="true">
+            <ul id="fieldlist">
+                <li>
+                    <label for="username" class="required">Username</label>
+                    @(Html.Kendo().TextBox()
+                              .Name("username")
+                              .HtmlAttributes(new { placeholder = "Username", required = "required", style = "width:220px" })
+                    )
+                </li>
+                <li>
+
+                    <label for="password" class="required">Password</label>
+                    @(Html.Kendo().TextBox()
+                              .Name("password")
+                              .HtmlAttributes(new { placeholder = "Password", required = "required", type = "password", style = "width:220px" })
+                    )
+                </li>
+                <li class="confirm">
+                    <button class="k-button k-primary" type="submit">Login</button>
+                </li>
+            </ul>
+        </form>
+    </div>
+</div>
+<style>
+     #fieldlist {
+        margin: 0;
+        padding: 0;
+    }
+
+    #fieldlist li {
+        list-style: none;
+        padding-bottom: .7em;
+        text-align: left;
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    #fieldlist label {
+        width: 100%;
+        display: block;
+        padding-bottom: .3em;
+        font-weight: bold;
+        text-transform: uppercase;
+        font-size: 12px;
+        color: #444;
+    }
+
+    #title{
+        width: 100%;
+        display: block;
+        padding-bottom: .3em;
+        font-weight: bold;
+        text-transform: uppercase;
+        font-size: 30px;
+        color: #444;
+    }
+    .confirm {
+        padding-top: 1em;
+    }
+</style>
+
+
