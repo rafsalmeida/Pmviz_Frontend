@@ -66,6 +66,9 @@ namespace Pmviz_Frontend
                 endpoints.MapControllerRoute(
                     name: "allLogs",
                     pattern: "{controller=Log}/{action=Index}/{id?}");
+                endpoints.MapControllerRoute(
+                    name: "login",
+                    pattern: "{controller=Login}/{action=Login}");
             });
         }
     }

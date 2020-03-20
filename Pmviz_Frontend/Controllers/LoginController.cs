@@ -12,5 +12,12 @@ namespace Pmviz_Frontend.Controllers
         {
             return View();
         }
+        
+        [HttpPost]
+        public IActionResult Index(string username, string password)
+        {
+            System.Diagnostics.Debug.WriteLine($"username: {username} - password : {password}");
+            return View();
+        }
     }
 }
