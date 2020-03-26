@@ -36,6 +36,8 @@ namespace Pmviz_Frontend
 
             // Add Kendo UI services to the services container
             services.AddKendo();
+            services.AddDistributedMemoryCache();
+            services.AddSession();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -57,6 +59,9 @@ namespace Pmviz_Frontend
             app.UseRouting();
 
             app.UseAuthorization();
+            
+            //enable session before routing
+            app.UseSession();
 
             app.UseEndpoints(endpoints =>
             {
