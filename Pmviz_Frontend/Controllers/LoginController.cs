@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -33,16 +34,31 @@ namespace Pmviz_Frontend.Controllers
                 using (var response = await httpClient.PostAsync("http://localhost:8080/api/login/token", content))
                 {
                     string apiResponse = await response.Content.ReadAsStringAsync();
-                    System.Diagnostics.Debug.WriteLine(apiResponse);
-                    var obj = JObject.Parse(apiResponse);
-                    var token = (string)obj["token"];
+                    var status = response.IsSuccessStatusCode;
+                    if(status == true)
+                    {
+                        var obj = JObject.Parse(apiResponse);
+                        var token = (string)obj["token"];
+                        System.Diagnostics.Debug.WriteLine("OI MANOS");
 
-                    //store token on session storage
-                    HttpContext.Session.SetString("sessionKey", token);
+                        //store token on session storage
+                        HttpContext.Session.SetString("sessionKey", token);
+                        
+                        return View("Views/Home/Index.cshtml");
+                    }
+                    else
+                    {
+                        if(response.StatusCode == HttpStatusCode.Unauthorized)
+                        {
+                            ViewBag.Error = "Invalid Credentials!";
+                            return View();
+                        }
+                    }
+                    ViewBag.Error = "Something went wrong. Please try again later.";
+                    return View();
 
                 }
             }
-            return View("Views/Home/Index.cshtml");
         }
     }
 }
