@@ -28,19 +28,6 @@
                 <kendo-button name="configure" tag="button" icon="menu" class="k-rpanel-toggle k-primary btn-toggle"></kendo-button>
                 <a asp-controller="Home" asp-action="Index" class="navbar-brand">Your .NET Core Application</a>
             </div>-->
-            <div id="responsive-panel" class="navbar-left">
-                <kendo-responsivepanel name="responsive-panel" auto-close="false" breakpoint="768" orientation="top">
-                    @(Html.Kendo().Menu()
-                                .Name("Menu")
-                                .Items(items =>
-                                {
-                                    items.Add().Text("Home").Action("Index", "Home", new { area = "" });
-                                    items.Add().Text("About").Action("About", "Home", new { area = "" });
-                                    items.Add().Text("Contact").Action("Contact", "Home", new { area = "" });
-                                })
-                    )
-                </kendo-responsivepanel>
-            </div>
         </div>
     </nav>
 

@@ -18,6 +18,10 @@ namespace Pmviz_Frontend.Controllers
     {
         public IActionResult Index()
         {
+            if(HttpContext.Session.GetString("sessionKey") != null)
+            {
+                return RedirectToAction("Index", "home");
+            }
             return View();
         }
         

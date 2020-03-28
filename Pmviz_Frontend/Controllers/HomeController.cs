@@ -5,6 +5,7 @@ using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 
 namespace Pmviz_Frontend.Controllers
 {
@@ -13,15 +14,13 @@ namespace Pmviz_Frontend.Controllers
         public IActionResult Index()
         {
             //return RedirectToAction("Index","login");
-            try
-            {
-                return View();
+            var obj = JObject.Parse(HttpContext.Session.GetString("userDetails"));
+            var role = obj["role"];
+            ViewBag.Role = role;
 
-            }catch(Exception e)
-            {
-                System.Diagnostics.Debug.WriteLine("Apanhei te");
-                return RedirectToAction("Index", "login");
-            }
+            return View();
+
+            
         }
 
         public IActionResult About()

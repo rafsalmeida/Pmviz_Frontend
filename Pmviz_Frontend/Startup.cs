@@ -59,13 +59,15 @@ namespace Pmviz_Frontend
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
+            //enable session before routing
+            app.UseSession();
+
             app.UseRouting();
 
             app.UseAuthentication(); // Must be after UseRouting()
             app.UseAuthorization(); // Must be after UseAuthentication()
 
-            //enable session before routing
-            app.UseSession();
+
 
             app.UseMiddleware<Middleware.Authentication>();
 
