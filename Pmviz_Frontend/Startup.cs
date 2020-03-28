@@ -53,13 +53,16 @@ namespace Pmviz_Frontend
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();
 
-            app.UseAuthorization();
-            
+
+            app.UseAuthentication(); // Must be after UseRouting()
+            app.UseAuthorization(); // Must be after UseAuthentication()
+
             //enable session before routing
             app.UseSession();
 
@@ -67,13 +70,14 @@ namespace Pmviz_Frontend
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Login}/{action=Index}");
+                endpoints.MapControllerRoute(
+                    name: "home",
+                    pattern: "{controller=Home}/{action=Index}");
                 endpoints.MapControllerRoute(
                     name: "allLogs",
                     pattern: "{controller=Log}/{action=Index}/{id?}");
-                endpoints.MapControllerRoute(
-                    name: "login",
-                    pattern: "{controller=Login}/{action=Login}");
+
             });
         }
     }

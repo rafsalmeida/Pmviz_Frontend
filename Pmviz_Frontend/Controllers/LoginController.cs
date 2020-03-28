@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -15,10 +16,12 @@ namespace Pmviz_Frontend.Controllers
 {
     public class LoginController : Controller
     {
+        [Route("Login")]
         public IActionResult Index()
         {
             return View();
         }
+        
         
         [HttpPost]
         public async Task<IActionResult> Index(string username, string password)
@@ -38,13 +41,17 @@ namespace Pmviz_Frontend.Controllers
                     if(status == true)
                     {
                         var obj = JObject.Parse(apiResponse);
+
                         var token = (string)obj["token"];
-                        System.Diagnostics.Debug.WriteLine("OI MANOS");
 
                         //store token on session storage
                         HttpContext.Session.SetString("sessionKey", token);
-                        
-                        return View("Views/Home/Index.cshtml");
+
+                        GetUserDetails();
+
+
+                        Response.Redirect("/");
+                        //return View("Views/Home/Index.cshtml");
                     }
                     else
                     {
@@ -60,5 +67,38 @@ namespace Pmviz_Frontend.Controllers
                 }
             }
         }
+
+        public async void GetUserDetails()
+        {
+            //define the token as a bearer token
+            var client = new HttpClient();
+            client.DefaultRequestHeaders.Authorization =
+                new AuthenticationHeaderValue("Bearer", HttpContext.Session.GetString("sessionKey"));
+
+            using (var response = await client.GetAsync("http://localhost:8080/api/login/claims"))
+            {
+                string apiResponse = await response.Content.ReadAsStringAsync();
+                if (response.IsSuccessStatusCode)
+                {
+                    HttpContext.Session.SetString("userDetails",apiResponse);
+                  
+                    //how to get the role
+                    var obj = JObject.Parse(HttpContext.Session.GetString("userDetails"));
+                    var role = obj["role"];
+
+                    System.Diagnostics.Debug.WriteLine(role);
+
+                }
+                else
+                {
+                    ViewBag.Error = "Something went wrong. Please try again later.";
+
+                }
+            }
+
+        }
+
+
+
     }
 }
