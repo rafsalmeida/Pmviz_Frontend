@@ -16,7 +16,6 @@ namespace Pmviz_Frontend.Controllers
 {
     public class LoginController : Controller
     {
-        [Route("Login")]
         public IActionResult Index()
         {
             return View();
@@ -50,8 +49,7 @@ namespace Pmviz_Frontend.Controllers
                         GetUserDetails();
 
 
-                        Response.Redirect("/");
-                        //return View("Views/Home/Index.cshtml");
+                        return RedirectToAction("Index", "home");
                     }
                     else
                     {

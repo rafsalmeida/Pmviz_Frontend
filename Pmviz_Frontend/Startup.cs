@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -10,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
 namespace Pmviz_Frontend
@@ -59,23 +61,27 @@ namespace Pmviz_Frontend
 
             app.UseRouting();
 
-
             app.UseAuthentication(); // Must be after UseRouting()
             app.UseAuthorization(); // Must be after UseAuthentication()
 
             //enable session before routing
             app.UseSession();
 
+            app.UseMiddleware<Middleware.Authentication>();
+
+ 
+
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
-                    name: "default",
+                    name: "login",
                     pattern: "{controller=Login}/{action=Index}");
                 endpoints.MapControllerRoute(
                     name: "home",
                     pattern: "{controller=Home}/{action=Index}");
                 endpoints.MapControllerRoute(
-                    name: "allLogs",
+                    name: "default",
                     pattern: "{controller=Log}/{action=Index}/{id?}");
 
             });

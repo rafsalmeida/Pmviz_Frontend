@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Pmviz_Frontend.Controllers
@@ -10,7 +12,16 @@ namespace Pmviz_Frontend.Controllers
     {
         public IActionResult Index()
         {
-            return View();
+            //return RedirectToAction("Index","login");
+            try
+            {
+                return View();
+
+            }catch(Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine("Apanhei te");
+                return RedirectToAction("Index", "login");
+            }
         }
 
         public IActionResult About()
