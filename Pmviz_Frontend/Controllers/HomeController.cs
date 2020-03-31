@@ -18,6 +18,9 @@ namespace Pmviz_Frontend.Controllers
             var role = obj["role"];
             ViewBag.Role = role;
 
+            TempData["msg"] = "<script>alert('Change succesfully');</script>";
+            /*@Html.Raw(TempData["msg"]);*/
+
             return View();
 
             

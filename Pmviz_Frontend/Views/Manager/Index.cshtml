@@ -1,0 +1,35 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+    <div class="demo-section k-content">
+        <div><h1>Manager</h1></div>
+
+        @(Html.Kendo().Button()
+                                    .Name("usersButton")
+                                    .HtmlAttributes(new { type = "button", @class = "k-primary" })
+                                    .Content("Users View")
+                                    .Events(e => e.Click("onClick_Users")))
+        @(Html.Kendo().Button()
+                                    .Name("logButton")
+                                    .HtmlAttributes(new { type = "button", @class = "k-primary" })
+                                    .Content("Log View")
+                                    .Events(e => e.Click("onClick_Logs")))
+        @(Html.Kendo().Button()
+                                    .Name("DiagramButton")
+                                    .HtmlAttributes(new { type = "button", @class = "k-primary" })
+                                    .Content("Diagram View")
+                                    .Events(e => e.Click("onClick_Diagram")))
+
+        <script>
+        function onClick_Users() {
+            window.location = '@Url.Action("Users", "Manager")';
+        }
+        function onClick_Logs() {
+            window.location = '@Url.Action("Index", "Log")';
+        }
+        function onClick_Diagram() {
+            window.location = '@Url.Action("Index", "Diagram")';
+        }
+        </script>
+    </div>
+

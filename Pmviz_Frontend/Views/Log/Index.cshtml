@@ -22,9 +22,17 @@
         .ServerOperation(false)
      )
 )
+@(Html.Kendo().Button()
+.Name("backButton")
+.HtmlAttributes(new { type = "button", @class = "k-primary" })
+.Content("Go back")
+.Events(e => e.Click("onClick_GoBack")))
 
-
-)
+<script>
+    function onClick_GoBack() {
+        window.location = '@Url.Action("Back", "Log")';
+    }
+</script>
 
 
 
