@@ -20,7 +20,10 @@ namespace Pmviz_Frontend.Controllers
         {
             if(HttpContext.Session.GetString("sessionKey") != null)
             {
-                return RedirectToAction("Index", "home");
+                var obj = JObject.Parse(HttpContext.Session.GetString("userDetails"));
+                var role = obj["role"];
+
+                return RedirectToAction("Index", role.ToString());
             }
             return View();
         }
@@ -50,10 +53,9 @@ namespace Pmviz_Frontend.Controllers
                         //store token on session storage
                         HttpContext.Session.SetString("sessionKey", token);
 
-                        GetUserDetails();
+                        string role = GetUserDetails().Result;
 
-
-                        return RedirectToAction("Index", "home");
+                        return RedirectToAction("Index", role);
                     }
                     else
                     {
@@ -70,7 +72,7 @@ namespace Pmviz_Frontend.Controllers
             }
         }
 
-        public async void GetUserDetails()
+        public async Task<String> GetUserDetails()
         {
             //define the token as a bearer token
             var client = new HttpClient();
@@ -88,16 +90,23 @@ namespace Pmviz_Frontend.Controllers
                     var obj = JObject.Parse(HttpContext.Session.GetString("userDetails"));
                     var role = obj["role"];
 
-                    System.Diagnostics.Debug.WriteLine(role);
+                    return role.ToString();
 
                 }
                 else
                 {
                     ViewBag.Error = "Something went wrong. Please try again later.";
-
+                    return null;
                 }
             }
 
+        }
+
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Clear();
+
+            return RedirectToAction("Index", "Login");
         }
 
 

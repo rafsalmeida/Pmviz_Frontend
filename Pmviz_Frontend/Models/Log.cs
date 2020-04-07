@@ -23,5 +23,18 @@ namespace PmvizFrontend.Models
         public int NumberCases { get; set; }
         [DataMember]
         public string StartDate { get; set; }
+
+        public List<Log> childs { get; set; }
+
+        public Log(int Id, string Description, string EndDate, string FileName, int NumberActivities, int NumberCases, string StartDate)
+        {
+            this.Id = Id;
+            this.Description = Description;
+            this.EndDate = EndDate;
+            this.Filename = Filename;
+            this.NumberActivities = NumberActivities;
+            this.NumberCases = NumberCases;
+            this.StartDate = StartDate;
+        }
     }
 }

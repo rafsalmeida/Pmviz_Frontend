@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using PmvizFrontend.Models;
 
 namespace PmvizFrontend.Controllers
@@ -25,11 +27,12 @@ namespace PmvizFrontend.Controllers
             return View(logList);
         }
 
-        public IActionResult About()
+        public IActionResult Back()
         {
-            ViewData["Message"] = "Your application description page.";
+            var obj = JObject.Parse(HttpContext.Session.GetString("userDetails"));
+            var role = obj["role"];
 
-            return View();
+            return RedirectToAction("Index", role.ToString());
         }
 
         public IActionResult Contact()
