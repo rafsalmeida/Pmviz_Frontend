@@ -1,0 +1,42 @@
+﻿@{ 
+    var stats = ViewBag.apiResponse;
+}
+
+<div class="demo-section k-content wide">
+    <h1>Log 1</h1>
+    @(Html.Kendo().Chart()
+        .Name("chart")
+        .Title("Time of Log 1 in millis")
+        .Legend(legend => legend
+            .Position(ChartLegendPosition.Top)
+        )
+        .ChartArea(chartArea => chartArea
+            .Background("transparent")
+        )
+        .Series(series => {
+            foreach (var stat in stats)
+            {
+                string activity = stat.activity;
+                series.Column(new double[]{ stat.meanDuration.millis, stat.medianDuration.millis, stat.minDuration.millis, stat.maxDuration.millis }).Name(activity);
+            }
+        })
+        .CategoryAxis(axis => axis
+            .Name("series-axis")
+            .Line(line => line.Visible(false))
+        )
+        .CategoryAxis(axis => axis
+            .Name("label-axis")
+            .Categories("Mean", "Median", "Minimum", "Maximum")
+        )
+        .ValueAxis(axis => axis
+            .Numeric()
+
+                // Move the label-axis all the way down the value axis
+                .AxisCrossingValue(0, int.MinValue)
+        )
+        .Tooltip(tooltip => tooltip
+            .Visible(true)
+            .Template("#= series.name #: #= value #")
+        )
+    )
+</div>

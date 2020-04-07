@@ -24,6 +24,8 @@ namespace PmvizFrontend.Models
         [DataMember]
         public string StartDate { get; set; }
 
+        public List<Log> childs { get; set; }
+
         public Log(int Id, string Description, string EndDate, string FileName, int NumberActivities, int NumberCases, string StartDate)
         {
             this.Id = Id;

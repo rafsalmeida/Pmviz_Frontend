@@ -9,10 +9,18 @@
                                 .HtmlAttributes(new { type = "button", @class = "k-primary" })
                                 .Content("Log View")
                                 .Events(e => e.Click("onClick_Logs")))
+        @(Html.Kendo().Button()
+                                    .Name("LogoutButton")
+                                    .HtmlAttributes(new { type = "button", @class = "k-primary" })
+                                    .Content("Logout")
+                                    .Events(e => e.Click("onClick_Logout")))
 
         <script>
             function onClick_Logs() {
                 window.location = '@Url.Action("Index", "Log")';
             }
+            function onClick_Logout() {
+            window.location = '@Url.Action("Logout", "Login")';
+        }
         </script>
     </div>

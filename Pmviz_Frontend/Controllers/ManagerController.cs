@@ -29,5 +29,32 @@ namespace Pmviz_Frontend.Controllers
             }
             return View(usersList);
         }
+
+        public async Task<IActionResult> Chart()
+        {
+            using (var httpClient = new HttpClient())
+            {
+                using (var response = await httpClient.GetAsync("http://localhost:8080/api/activity-frequency/1"))
+                {
+                    var apiResponse = await response.Content.ReadAsStringAsync();
+                    @ViewBag.apiResponse = JsonConvert.DeserializeObject(apiResponse);
+                }
+            }
+            return View();
+        }
+
+        public async Task<IActionResult> Api()
+        {
+            string apiResponse;
+            using (var httpClient = new HttpClient())
+            {
+                using (var response = await httpClient.GetAsync("http://localhost:8080/api/activity-frequency/1"))
+                {
+                    apiResponse = await response.Content.ReadAsStringAsync();
+                    /*var r = JsonConvert.DeserializeObject<String>(apiResponse);*/
+                }
+            }
+            return Content(apiResponse);
+        }
     }
 }
