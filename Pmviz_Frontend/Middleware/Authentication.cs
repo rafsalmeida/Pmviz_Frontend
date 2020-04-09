@@ -32,11 +32,12 @@ namespace Pmviz_Frontend.Middleware
                 {
                     var obj = JObject.Parse(httpContext.Session.GetString("userDetails"));
                     var role = obj["role"];
+                    return _next(httpContext);
 
-                    if (httpContext.Request.Path == "" || httpContext.Request.Path.ToString().Contains(role.ToString()))
+                    /*if (httpContext.Request.Path == "" || httpContext.Request.Path.ToString().Contains(role.ToString()))
                     {
                         return _next(httpContext);
-                    }
+                    }*/
                 }
             }
             return httpContext.Response.WriteAsync(HttpStatusCode.Unauthorized.ToString());

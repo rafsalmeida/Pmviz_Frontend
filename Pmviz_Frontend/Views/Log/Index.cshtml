@@ -8,14 +8,16 @@
         columns.Bound(l => l.Id).Title("Id").Width(130);
         columns.Bound(l => l.Description).Title("Description").Width(130);
         columns.Bound(l => l.Filename).Title("Filename").Width(130);
-        columns.Bound(l => l.NumberActivities).Title("Number of Activities").Width(130);
-        columns.Bound(l => l.NumberCases).Title("Number of Cases").Width(130);
+        columns.Bound(l => l.NumberOfActivities).Title("Number of Activities").Width(130);
+        columns.Bound(l => l.NumberOfCases).Title("Number of Cases").Width(130);
         columns.Bound(l => l.StartDate).Title("Start Date").Width(130);
         columns.Bound(l => l.EndDate).Title("End Date").Width(130);
+        columns.Command(command => command.Custom("Details").Click("showDetails"));
     })
     .Pageable()
     .Sortable()
     .Filterable()
+    .Scrollable()
     .DataSource(dataSource => dataSource
         .Ajax()
         .PageSize(20)
@@ -28,10 +30,18 @@
 .Content("Go back")
 .Events(e => e.Click("onClick_GoBack")))
 
-<script>
+<script type="text/javascript">
     function onClick_GoBack() {
         window.location = '@Url.Action("Back", "Log")';
     }
+
+
+    function showDetails(e) {
+        e.preventDefault();
+        window.location = '@Url.Action("Index","Activity")'        
+        
+    }
+
 </script>
 
 
