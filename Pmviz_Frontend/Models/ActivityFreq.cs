@@ -29,7 +29,16 @@ namespace Pmviz_Frontend.Models
 
         [DataMember]
         public decimal RelativeFrequency { get; set; }
+        [DataMember]
+        public string MeanActivityFormatted { get; set; }
 
+        [DataMember]
+        public string MedianActivityFormatted { get; set; }
 
+        [DataMember]
+        public string MinActivityFormatted { get; set; }
+
+        [DataMember]
+        public string MaxActivityFormatted { get; set; }
     }
 }

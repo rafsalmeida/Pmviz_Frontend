@@ -6,10 +6,10 @@
     .Columns(columns =>
     {
         columns.Bound(l => l.Frequency).Title("Frequency").Width(130);
-        columns.Bound(l => l.MeanDuration).Title("Mean Duration").Width(130);
-        columns.Bound(l => l.MedianDuration).Title("Median Duration").Width(130);
-        columns.Bound(l => l.MinDuration).Title("Min Duration").Width(130);
-        columns.Bound(l => l.MaxDuration).Title("Max Duration").Width(130);
+        columns.Bound(l => l.MeanActivityFormatted).Title("Mean Duration").Width(130);
+        columns.Bound(l => l.MedianActivityFormatted).Title("Median Duration").Width(130);
+        columns.Bound(l => l.MinActivityFormatted).Title("Min Duration").Width(130);
+        columns.Bound(l => l.MaxActivityFormatted).Title("Max Duration").Width(130);
         columns.Bound(l => l.Activity).Title("Activity").Width(130);
         columns.Bound(l => l.RelativeFrequency).Title("Relative Frequency").Width(130);
     })
@@ -23,4 +23,6 @@
         .ServerOperation(false)
      )
 )
+
+
 

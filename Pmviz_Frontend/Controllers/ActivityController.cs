@@ -23,7 +23,26 @@ namespace Pmviz_Frontend.Controllers
                     var status = response.IsSuccessStatusCode;
                     if (status == true) {
                         var activityList = JsonConvert.DeserializeObject<List<ActivityFreq>>(apiResponse);
+                        foreach(var a in activityList)
+                        {
+                            var meanTime = a.MeanDuration.Days + "d " + a.MeanDuration.Hours + "h "
+                                + a.MeanDuration.Minutes + "m " + a.MeanDuration.Seconds + "s " + a.MeanDuration.Millis + "ms ";
+                            a.MeanActivityFormatted = meanTime;
 
+                            var medianTime = a.MedianDuration.Days + "d " + a.MedianDuration.Hours + "h "
+                                + a.MedianDuration.Minutes + "m " + a.MedianDuration.Seconds + "s " + a.MedianDuration.Millis + "ms ";
+                            a.MedianActivityFormatted = medianTime;
+
+                            var minTime = a.MinDuration.Days + "d " + a.MinDuration.Hours + "h "
+                                 + a.MinDuration.Minutes + "m " + a.MinDuration.Seconds + "s " + a.MinDuration.Millis + "ms ";
+                            a.MinActivityFormatted = minTime;
+
+                            var maxTime = a.MaxDuration.Days + "d " + a.MaxDuration.Hours + "h "
+                               + a.MaxDuration.Minutes + "m " + a.MaxDuration.Seconds + "s " + a.MaxDuration.Millis + "ms ";
+                            a.MaxActivityFormatted = maxTime;
+
+
+                        }
                         return View(activityList);
                     }
                     else
