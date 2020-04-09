@@ -1,11 +1,11 @@
-﻿@model IEnumerable<PmvizFrontend.Models.Log>
+﻿@model IEnumerable<Pmviz_Frontend.Models.Log>
 @using Kendo.Mvc.UI
 @{ Layout = "_Layout"; ViewBag.Title = "All Logs";}
 @(Html.Kendo().Grid(Model)
     .Name("Grid")
     .Columns(columns =>
     {
-        columns.Bound(l => l.Id).Title("Id").Width(130);
+        columns.Bound(l => l.Id).Title("Id").HtmlAttributes(new { @id="id"}).Width(130);
         columns.Bound(l => l.Description).Title("Description").Width(130);
         columns.Bound(l => l.Filename).Title("Filename").Width(130);
         columns.Bound(l => l.NumberOfActivities).Title("Number of Activities").Width(130);
@@ -38,7 +38,8 @@
 
     function showDetails(e) {
         e.preventDefault();
-        window.location = '@Url.Action("Index","Activity")'        
+        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        window.location = '@Url.Action("Index","Activity")?id=' + dataItem.Id
         
     }
 

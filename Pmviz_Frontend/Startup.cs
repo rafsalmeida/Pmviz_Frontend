@@ -91,6 +91,9 @@ namespace Pmviz_Frontend
                 endpoints.MapControllerRoute(
                     name: "logs",
                     pattern: "{controller=Log}/{action=Index}/{id?}");
+                endpoints.MapControllerRoute(
+                    name: "activity",
+                    pattern: "{controller=Activity}/{action=Index}/{id?}");
 
             });
         }

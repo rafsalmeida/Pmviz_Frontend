@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using PmvizFrontend.Models;
+using Pmviz_Frontend.Models;
 
 namespace PmvizFrontend.Controllers
 {
@@ -21,10 +21,18 @@ namespace PmvizFrontend.Controllers
                 using (var response = await httpClient.GetAsync("http://localhost:8080/api/logs"))
                 {
                     string apiResponse = await response.Content.ReadAsStringAsync();
-                    logList = JsonConvert.DeserializeObject<List<Log>>(apiResponse);
+                    var status = response.IsSuccessStatusCode;
+                    if(status == true)
+                    {
+                        logList = JsonConvert.DeserializeObject<List<Log>>(apiResponse);
+                        return View(logList);
+                    } else
+                    {
+                        //handle
+                    }
                 }
             }
-            return View(logList);
+            return View();
         }
 
         public IActionResult Back()
