@@ -12,10 +12,16 @@
         columns.Bound(l => l.NumberOfCases).Title("Number of Cases").Width(130);
         columns.Bound(l => l.StartDate).Title("Start Date").Width(130);
         columns.Bound(l => l.EndDate).Title("End Date").Width(130);
-        columns.Command(command => command.Custom("Details").Click("showDetails"));
+        columns.Command(command => command.Custom("Details").Click("showDetails")).Width(130);
+        columns.Command(command => command.Custom("Activities").Click("showActivities")).Width(130);
+        columns.Command(command => command.Custom("Resources").Click("showResources")).Width(130);
+
+
     })
     .Pageable()
+    .Navigatable()
     .Sortable()
+    .Groupable()
     .Filterable()
     .Scrollable()
     .DataSource(dataSource => dataSource
@@ -40,6 +46,20 @@
         e.preventDefault();
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
         window.location = '@Url.Action("Index","Activity")?id=' + dataItem.Id
+        
+    }
+
+    function showActivities(e) {
+        e.preventDefault();
+        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        window.location = '@Url.Action("Activities","Log")?id=' + dataItem.Id
+        
+    }
+
+    function showResources(e) {
+        e.preventDefault();
+        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        window.location = '@Url.Action("Resources","Log")?id=' + dataItem.Id
         
     }
 

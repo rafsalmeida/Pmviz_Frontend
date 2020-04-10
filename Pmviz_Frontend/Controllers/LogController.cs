@@ -34,6 +34,72 @@ namespace PmvizFrontend.Controllers
             }
         }
 
+        public async Task<IActionResult> Activities([FromQuery(Name = "id")] string logid)
+        {
+           
+            using (var httpClient = new HttpClient())
+            {
+                using (var response = await httpClient.GetAsync("http://localhost:8080/api/logs/"+logid+"/activities"))
+                {
+                    string apiResponse = await response.Content.ReadAsStringAsync();
+                    var status = response.IsSuccessStatusCode;
+                    if (status == true)
+                    {
+                        System.Diagnostics.Debug.WriteLine(apiResponse);
+                        var activities = JsonConvert.DeserializeObject<string[]>(apiResponse);
+                        var activitiesList = new List<Activity>();
+                        foreach (var a in activities)
+                        {
+                            Activity act = new Activity
+                            {
+                                Name = a
+                            };
+                            activitiesList.Add(act);
+
+                        }
+                        return View("Activities",activitiesList);
+                    }
+                    else
+                    {
+                        return RedirectToAction("Index", "Home", new { error = "1" });
+                    }
+                }
+            }
+        }
+
+        public async Task<IActionResult> Resources([FromQuery(Name = "id")] string logid)
+        {
+
+            using (var httpClient = new HttpClient())
+            {
+                using (var response = await httpClient.GetAsync("http://localhost:8080/api/logs/" + logid + "/resources"))
+                {
+                    string apiResponse = await response.Content.ReadAsStringAsync();
+                    var status = response.IsSuccessStatusCode;
+                    if (status == true)
+                    {
+                        System.Diagnostics.Debug.WriteLine(apiResponse);
+                        var resources = JsonConvert.DeserializeObject<string[]>(apiResponse);
+                        var resourcesList = new List<Resource>();
+                        foreach (var r in resources)
+                        {
+                            Resource res = new Resource
+                            {
+                                Name = r
+                            };
+                            resourcesList.Add(res);
+
+                        }
+                        return View("Resources", resourcesList);
+                    }
+                    else
+                    {
+                        return RedirectToAction("Index", "Home", new { error = "1" });
+                    }
+                }
+            }
+        }
+
         public IActionResult Back()
         {
             var obj = JObject.Parse(HttpContext.Session.GetString("userDetails"));
