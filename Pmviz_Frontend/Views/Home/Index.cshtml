@@ -1,23 +1,31 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
-<div class="demo-section k-content">
-    <div>
-        <p>
-            @if (ViewBag.Role == "Operator")
-            {
+    <div class="demo-section k-content">
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger" role="alert">
+                @ViewBag.Error
+            </div>
+        }
+        <div>
+            <p>
+                @if (ViewBag.Role == "Operator")
+                {
 
 
-            @(Html.Kendo().Button()
-                                    .Name("operatorButton")
-                                    .HtmlAttributes(new { type = "button", @class = "k-primary" })
-                                    .Content("Operator View"))
-            } else { 
-            @(Html.Kendo().Button()
-                            .Name("managerButton")
-                            .HtmlAttributes(new { type = "button" })
-                            .Content("Manager View"))
-            }
-        </p>
+                    @(Html.Kendo().Button()
+                                            .Name("operatorButton")
+                                            .HtmlAttributes(new { type = "button", @class = "k-primary" })
+                                            .Content("Operator View"))
+                }
+                else
+                {
+                    @(Html.Kendo().Button()
+                                    .Name("managerButton")
+                                    .HtmlAttributes(new { type = "button" })
+                                    .Content("Manager View"))
+                }
+            </p>
+        </div>
     </div>
-</div>

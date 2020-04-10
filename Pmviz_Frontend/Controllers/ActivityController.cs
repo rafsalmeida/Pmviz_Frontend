@@ -25,20 +25,32 @@ namespace Pmviz_Frontend.Controllers
                         var activityList = JsonConvert.DeserializeObject<List<ActivityFreq>>(apiResponse);
                         foreach(var a in activityList)
                         {
-                            var meanTime = a.MeanDuration.Days + "d " + a.MeanDuration.Hours + "h "
-                                + a.MeanDuration.Minutes + "m " + a.MeanDuration.Seconds + "s " + a.MeanDuration.Millis + "ms ";
+                            var meanTime = a.MeanDuration.Days != 0 ? a.MeanDuration.Days + "d " : "";
+                            meanTime += a.MeanDuration.Hours != 0 ? a.MeanDuration.Hours + "h " : "";
+                            meanTime += a.MeanDuration.Minutes != 0 ? a.MeanDuration.Minutes + "m " : "";
+                            meanTime += a.MeanDuration.Seconds != 0 ? a.MeanDuration.Seconds + "s " : "";
+                            meanTime += a.MeanDuration.Millis != 0 ? a.MeanDuration.Millis + "ms " : " 0ms";
                             a.MeanActivityFormatted = meanTime;
 
-                            var medianTime = a.MedianDuration.Days + "d " + a.MedianDuration.Hours + "h "
-                                + a.MedianDuration.Minutes + "m " + a.MedianDuration.Seconds + "s " + a.MedianDuration.Millis + "ms ";
+                            var medianTime = a.MedianDuration.Days != 0 ? a.MedianDuration.Days + "d " : "";
+                            medianTime += a.MedianDuration.Hours != 0 ? a.MedianDuration.Hours + "h " : "";
+                            medianTime += a.MedianDuration.Minutes != 0 ? a.MedianDuration.Minutes + "m " : "";
+                            medianTime += a.MedianDuration.Seconds != 0 ? a.MedianDuration.Seconds + "s " : "";
+                            medianTime += a.MedianDuration.Millis != 0 ? a.MedianDuration.Millis + "ms " : " 0ms";
                             a.MedianActivityFormatted = medianTime;
 
-                            var minTime = a.MinDuration.Days + "d " + a.MinDuration.Hours + "h "
-                                 + a.MinDuration.Minutes + "m " + a.MinDuration.Seconds + "s " + a.MinDuration.Millis + "ms ";
+                            var minTime = a.MinDuration.Days != 0 ? a.MinDuration.Days + "d " : "";
+                            minTime += a.MinDuration.Hours != 0 ? a.MinDuration.Hours + "h " : "";
+                            minTime += a.MinDuration.Minutes != 0 ? a.MinDuration.Minutes + "m " : "";
+                            minTime += a.MinDuration.Seconds != 0 ? a.MinDuration.Seconds + "s " : "";
+                            minTime += a.MinDuration.Millis != 0 ? a.MinDuration.Millis + "ms " : " 0ms";
                             a.MinActivityFormatted = minTime;
 
-                            var maxTime = a.MaxDuration.Days + "d " + a.MaxDuration.Hours + "h "
-                               + a.MaxDuration.Minutes + "m " + a.MaxDuration.Seconds + "s " + a.MaxDuration.Millis + "ms ";
+                            var maxTime = a.MaxDuration.Days != 0 ? a.MaxDuration.Days + "d " : "";
+                            maxTime += a.MaxDuration.Hours != 0 ? a.MaxDuration.Hours + "h " : "";
+                            maxTime += a.MaxDuration.Minutes != 0 ? a.MaxDuration.Minutes + "m " : "";
+                            maxTime += a.MaxDuration.Seconds != 0 ? a.MaxDuration.Seconds + "s " : "";
+                            maxTime += a.MaxDuration.Millis != 0 ? a.MaxDuration.Millis + "ms " : " 0ms";
                             a.MaxActivityFormatted = maxTime;
 
 
@@ -47,11 +59,11 @@ namespace Pmviz_Frontend.Controllers
                     }
                     else
                     {
-                        //handle
+                        return RedirectToAction("Index", "Home", new { error = "1" });
+
                     }
                 }
             }
-            return View();
         }
     }
 }

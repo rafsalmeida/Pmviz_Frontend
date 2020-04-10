@@ -28,11 +28,10 @@ namespace PmvizFrontend.Controllers
                         return View(logList);
                     } else
                     {
-                        //handle
+                        return RedirectToAction("Index", "Home", new { error = "1"});
                     }
                 }
             }
-            return View();
         }
 
         public IActionResult Back()
