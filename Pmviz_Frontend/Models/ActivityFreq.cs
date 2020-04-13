@@ -40,5 +40,17 @@ namespace Pmviz_Frontend.Models
 
         [DataMember]
         public string MaxActivityFormatted { get; set; }
+
+        [DataMember]
+        public double MeanInMinutes { get; set; }
+
+        [DataMember]
+        public double MedianInMinutes { get; set; }
+
+        [DataMember]
+        public double MinInMinutes { get; set; }
+
+        [DataMember]
+        public double MaxInMinutes { get; set; }
     }
 }
