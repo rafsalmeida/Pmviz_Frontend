@@ -1,12 +1,11 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using Pmviz_Frontend.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using Pmviz_Frontend.Models;
 
 namespace Pmviz_Frontend.Controllers
 {
@@ -32,12 +31,20 @@ namespace Pmviz_Frontend.Controllers
                             meanTime += a.MeanDuration.Millis != 0 ? a.MeanDuration.Millis + "ms " : " 0ms";
                             a.MeanActivityFormatted = meanTime;
 
+                            var tsMean = new TimeSpan(a.MeanDuration.Days, a.MeanDuration.Hours, a.MeanDuration.Minutes, a.MeanDuration.Seconds, a.MeanDuration.Millis);
+
+                            a.MeanInMinutes = tsMean.TotalMinutes;
+
                             var medianTime = a.MedianDuration.Days != 0 ? a.MedianDuration.Days + "d " : "";
                             medianTime += a.MedianDuration.Hours != 0 ? a.MedianDuration.Hours + "h " : "";
                             medianTime += a.MedianDuration.Minutes != 0 ? a.MedianDuration.Minutes + "m " : "";
                             medianTime += a.MedianDuration.Seconds != 0 ? a.MedianDuration.Seconds + "s " : "";
                             medianTime += a.MedianDuration.Millis != 0 ? a.MedianDuration.Millis + "ms " : " 0ms";
                             a.MedianActivityFormatted = medianTime;
+
+                            var tsMedian = new TimeSpan(a.MedianDuration.Days, a.MedianDuration.Hours, a.MedianDuration.Minutes, a.MedianDuration.Seconds, a.MedianDuration.Millis);
+
+                            a.MedianInMinutes = tsMedian.TotalMinutes;
 
                             var minTime = a.MinDuration.Days != 0 ? a.MinDuration.Days + "d " : "";
                             minTime += a.MinDuration.Hours != 0 ? a.MinDuration.Hours + "h " : "";
@@ -55,6 +62,14 @@ namespace Pmviz_Frontend.Controllers
 
 
                         }
+
+                        IEnumerable<ActivityFreq> al = activityList.OrderByDescending(x => x.Frequency).ThenBy(x => x.Activity).ToList();
+                        ViewData["Frequency"] = al;
+                        al = activityList.OrderByDescending(x => x.MeanInMinutes).ThenBy(x => x.Activity).ToList();
+                        ViewData["Mean"] = al;
+                        al = activityList.OrderByDescending(x => x.MedianInMinutes).ThenBy(x => x.Activity).ToList();
+                        ViewData["Median"] = al;
+
                         return View(activityList);
                     }
                     else
