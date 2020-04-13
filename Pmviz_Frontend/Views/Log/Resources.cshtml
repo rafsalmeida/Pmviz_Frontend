@@ -1,0 +1,21 @@
+﻿@model IEnumerable<Pmviz_Frontend.Models.Resource>
+@{ Layout = "_Layout"; ViewBag.Title = "Resources";}
+@(Html.Kendo().Grid(Model)
+    .Name("Grid")
+    .Columns(columns =>
+    {
+
+       columns.Bound(r => r.Name).Title("Name").Width(130);
+
+    })
+    .Pageable()
+    .Sortable()
+    .Filterable()
+    .Scrollable()
+    .DataSource(dataSource => dataSource
+        .Ajax()
+        .PageSize(20)
+        .ServerOperation(false)
+     )
+)
+<!---->
