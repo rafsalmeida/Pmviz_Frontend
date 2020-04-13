@@ -77,7 +77,7 @@ namespace Pmviz_Frontend
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
-                    name: "login",
+                    name: "default",
                     pattern: "{controller=Login}/{action=Index}");
                 endpoints.MapControllerRoute(
                     name: "home",
@@ -89,8 +89,11 @@ namespace Pmviz_Frontend
                     name: "operator",
                     pattern: "{controller=Operator}/{action=Index}");
                 endpoints.MapControllerRoute(
-                    name: "default",
+                    name: "logs",
                     pattern: "{controller=Log}/{action=Index}/{id?}");
+                endpoints.MapControllerRoute(
+                    name: "activity",
+                    pattern: "{controller=Activity}/{action=Index}/{id?}");
 
             });
         }

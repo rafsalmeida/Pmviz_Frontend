@@ -11,9 +11,13 @@ namespace Pmviz_Frontend.Controllers
 {
     public class HomeController : Controller
     {
-        public IActionResult Index()
+        public IActionResult Index([FromQuery(Name = "error")] string error)
         {
-            //return RedirectToAction("Index","login");
+            if(error == "1")
+            {
+                ViewBag.Error = "Something went wrong! Please try again later.";
+            }
+            /*return RedirectToAction("Index","login");
             var obj = JObject.Parse(HttpContext.Session.GetString("userDetails"));
             var role = obj["role"];
             ViewBag.Role = role;

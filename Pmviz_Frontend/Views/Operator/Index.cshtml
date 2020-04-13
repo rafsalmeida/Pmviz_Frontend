@@ -7,11 +7,11 @@
         @(Html.Kendo().Button()
                                 .Name("logButton")
                                 .HtmlAttributes(new { type = "button", @class = "k-primary" })
-                                .Content("Log View")
+                                .Content("All Logs")
                                 .Events(e => e.Click("onClick_Logs")))
         @(Html.Kendo().Button()
                                     .Name("LogoutButton")
-                                    .HtmlAttributes(new { type = "button", @class = "k-primary" })
+                                    .HtmlAttributes(new { type = "button", @class = "k-danger" })
                                     .Content("Logout")
                                     .Events(e => e.Click("onClick_Logout")))
 

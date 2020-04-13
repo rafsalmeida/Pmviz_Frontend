@@ -1,0 +1,28 @@
+﻿@model IEnumerable<Pmviz_Frontend.Models.ActivityFreq>
+@using Kendo.Mvc.UI
+@{ Layout = "_Layout"; ViewBag.Title = "Activity Frequency";}
+@(Html.Kendo().Grid(Model)
+    .Name("Grid")
+    .Columns(columns =>
+    {
+        columns.Bound(l => l.Frequency).Title("Frequency").Width(130);
+        columns.Bound(l => l.MeanActivityFormatted).Title("Mean Duration").Width(130);
+        columns.Bound(l => l.MedianActivityFormatted).Title("Median Duration").Width(130);
+        columns.Bound(l => l.MinActivityFormatted).Title("Min Duration").Width(130);
+        columns.Bound(l => l.MaxActivityFormatted).Title("Max Duration").Width(130);
+        columns.Bound(l => l.Activity).Title("Activity").Width(130);
+        columns.Bound(l => l.RelativeFrequency).Title("Relative Frequency").Width(130);
+    })
+    .Pageable()
+    .Sortable()
+    .Filterable()
+    .Scrollable()
+    .DataSource(dataSource => dataSource
+        .Ajax()
+        .PageSize(20)
+        .ServerOperation(false)
+     )
+)
+
+
+

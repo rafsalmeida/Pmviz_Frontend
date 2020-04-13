@@ -1,0 +1,21 @@
+﻿@model IEnumerable<Pmviz_Frontend.Models.Activity>
+@{ Layout = "_Layout"; ViewBag.Title = "Activities";}
+@(Html.Kendo().Grid(Model)
+    .Name("Grid")
+    .Columns(columns =>
+    {
+     
+       columns.Bound(a => a.Name).Title("Name").Width(130);
+        
+    })
+    .Pageable()
+    .Sortable()
+    .Filterable()
+    .Scrollable()
+    .DataSource(dataSource => dataSource
+        .Ajax()
+        .PageSize(20)
+        .ServerOperation(false)
+     )
+)
+<!---->
