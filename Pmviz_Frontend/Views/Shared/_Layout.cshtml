@@ -22,29 +22,44 @@
 	<script src="https://kendo.cdn.telerik.com/2020.1.219/js/kendo.aspnetmvc.min.js"></script>
 </head>
 <body class="k-content">
-    <nav class="navbar navbar-inverse navbar-fixed-top p-3">
-        <div class="container p-0 p-sm-3">
-            <!--<div class="navbar-header">
-                <kendo-button name="configure" tag="button" icon="menu" class="k-rpanel-toggle k-primary btn-toggle"></kendo-button>
-                <a asp-controller="Home" asp-action="Index" class="navbar-brand">Your .NET Core Application</a>
-            </div>-->
-        </div>
+    <nav>
+        @(Html.Kendo().ToolBar()
+                .Name("ToolBar")
+                .Items(items =>
+                {
+                    items.Add().Type(CommandType.Button).Icon("menu").HtmlAttributes(new { @class = "btn-primary" });
+                })
+        )
     </nav>
-
-    <main>
-        <div class="container">
-            @RenderBody()
+    <div class="row">
+        <div class="collumn col-md-2" id="menu-container">
+            @(Html.Kendo().Menu()
+                  .Name("menu")
+                  .Items(items =>
+                  {
+                      items.Add().Text("Logs").Route("logs");
+                      items.Add().Separator(true);
+                  })
+                  .Orientation(MenuOrientation.Vertical)
+            )
         </div>
-    </main>
-
-    <footer class="footer text-center d-flex align-items-center">
-        <div class="container pb-0">
-            <hr />
-            <p class="text-muted">
-                Copyright © @DateTime.Now.Year Progress Software Corporation and/or its subsidiaries or affiliates. All rights reserved.
-            </p>
+        <div class="collumn">
+            <main>
+                <br />
+                <div class="container">
+                    @RenderBody()
+                </div>
+            </main>
         </div>
-    </footer>
+        <footer class="footer text-center d-flex align-items-center">
+            <div class="container pb-0">
+                <hr />
+                <p class="text-muted">
+                    Copyright © @DateTime.Now.Year Progress Software Corporation and/or its subsidiaries or affiliates. All rights reserved.
+                </p>
+            </div>
+        </footer>
+    </div>
 
     <environment names="Development">
         <script src="~/lib/bootstrap/js/bootstrap.js"></script>
@@ -57,3 +72,16 @@
     @RenderSection("scripts", required: false)
 </body>
 </html>
+<style>
+    html{
+        min-height:100%; /* make sure it is at least as tall as the viewport */
+        position:relative;
+    }
+    body{
+        height:100%; /* force the BODY element to match the height of the HTML element */
+    }
+    #menu-container{
+        height:100vh;
+        background-color:#f8f9fa;
+    }
+</style>
