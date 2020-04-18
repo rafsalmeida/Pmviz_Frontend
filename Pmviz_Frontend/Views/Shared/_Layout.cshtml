@@ -24,26 +24,26 @@
 <body class="k-content">
     <nav>
         @(Html.Kendo().ToolBar()
-                .Name("ToolBar")
-                .Items(items =>
-                {
-                    items.Add().Type(CommandType.Button).Icon("menu").HtmlAttributes(new { @class = "btn-primary" });
-                })
+                            .Name("ToolBar")
+                            .Items(items =>
+                            {
+                                items.Add().Type(CommandType.Button).Icon("menu").HtmlAttributes(new { @class = "btn-primary" });
+                            })
         )
     </nav>
     <div class="row">
-        <div class="collumn col-md-2" id="menu-container">
+        <div class="collumn col-md-2" id="menu-container" style="padding-right:0px">
             @(Html.Kendo().Menu()
                   .Name("menu")
                   .Items(items =>
                   {
-                      items.Add().Text("Logs").Route("logs");
+                      items.Add().Text("Logs").Route("logs").LinkHtmlAttributes(new { @id = "element" });
                       items.Add().Separator(true);
                   })
                   .Orientation(MenuOrientation.Vertical)
             )
         </div>
-        <div class="collumn">
+        <div class="collumn col">
             <main>
                 <br />
                 <div class="container">
@@ -51,14 +51,6 @@
                 </div>
             </main>
         </div>
-        <footer class="footer text-center d-flex align-items-center">
-            <div class="container pb-0">
-                <hr />
-                <p class="text-muted">
-                    Copyright © @DateTime.Now.Year Progress Software Corporation and/or its subsidiaries or affiliates. All rights reserved.
-                </p>
-            </div>
-        </footer>
     </div>
 
     <environment names="Development">
@@ -80,8 +72,13 @@
     body{
         height:100%; /* force the BODY element to match the height of the HTML element */
     }
+    #element{
+        text-align:center;  
+        display:block;
+    }
     #menu-container{
         height:100vh;
         background-color:#f8f9fa;
     }
+
 </style>
