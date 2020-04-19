@@ -28,9 +28,9 @@
                             .Items(items =>
                             {
                                 items.Add().Type(CommandType.Button).Icon("home").HtmlAttributes(new { @class = "btn" });
-                                items.Add().Type(CommandType.Button).Text("Logout")
-                                .HtmlAttributes(new { @style = "position:fixed; right:1vw" }).Url("/login/logout");
-                            })
+                                items.Add().Type(CommandType.Button).Icon("logout").Text("Logout")
+                                .HtmlAttributes(new { @style = "position:absolute; right:1vw" }).Url("/login/logout");
+                            }).HtmlAttributes(new { @style = "width:100vw"})
         )
     </nav>
     <div class="row" id="layout">
@@ -39,10 +39,37 @@
                   .Name("menu")
                   .Items(items =>
                   {
-                      items.Add().Text("Logs").LinkHtmlAttributes(new { @id = "element" , @class = "btn" }).Url("/log");
                       items.Add().Separator(true);
+                      items.Add().Text("All Logs").LinkHtmlAttributes(new { 
+                          @id = "element" ,
+                          type = "button", 
+                          @class = "btn btn-light label-element",
+                          @style = "color:black"
+                      })
+                      .Url("/log");
+                      items.Add().Separator(true);
+                      items.Add().Text("Exemplo 2").LinkHtmlAttributes(new { 
+                          @id = "element" ,
+                          type = "button", 
+                          @class = "btn btn-light label-element",
+                          @style = "color:black"
+                      });
+                      items.Add().Separator(true);
+
+                      items.Add().Text("Exemplo 3").LinkHtmlAttributes(new { 
+                          @id = "element" ,
+                          type = "button", 
+                          @class = "btn btn-light label-element",
+                          @style = "color:black"
+                      });  
+                      items.Add().Separator(true);
+
                   })
                   .Orientation(MenuOrientation.Vertical)
+                  .HtmlAttributes(new
+                  {
+                      @style = "height:100vh"
+                  })
             )
         </div>
         <div class="collumn col">
@@ -81,5 +108,13 @@
         height:100vh;
         background-color:#f8f9fa;
     }
+    .label-element {
+        width: 100%;
+        display: block;
+        padding-bottom: .5em;
+        font-size: 17px;
+        color: #444;
+    }
+
 
 </style>
