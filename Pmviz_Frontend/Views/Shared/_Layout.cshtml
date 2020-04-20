@@ -39,11 +39,10 @@
                   .Name("menu")
                   .Items(items =>
                   {
-                      items.Add().Separator(true);
                       items.Add().Text("All Logs").LinkHtmlAttributes(new { 
                           @id = "element" ,
                           type = "button", 
-                          @class = "btn btn-light label-element",
+                          @class = "btn-xs btn-light label-element",
                           @style = "color:black"
                       })
                       .Url("/log");
@@ -51,7 +50,7 @@
                       items.Add().Text("Exemplo 2").LinkHtmlAttributes(new { 
                           @id = "element" ,
                           type = "button", 
-                          @class = "btn btn-light label-element",
+                          @class = "btn-xs btn-light label-element",
                           @style = "color:black"
                       });
                       items.Add().Separator(true);

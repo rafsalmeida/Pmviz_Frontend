@@ -6,7 +6,7 @@
 
 @model IEnumerable<Pmviz_Frontend.Models.ActivityFreq>
 @using Kendo.Mvc.UI
-@{ Layout = "_Layout"; ViewBag.Title = "Activity Frequency";}
+@{ Layout = "_LayoutBoot"; ViewBag.Title = "Activity Frequency";}
 
 <div id="frequencyChart">
     @(Html.Kendo().Chart(frequency)
