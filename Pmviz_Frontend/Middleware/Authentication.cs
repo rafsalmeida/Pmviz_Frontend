@@ -21,7 +21,7 @@ namespace Pmviz_Frontend.Middleware
 
         public Task Invoke(HttpContext httpContext)
         {
-            if(httpContext.Request.Path == "/" || httpContext.Request.Path == "/login" || httpContext.Request.Path == "/login/logout")
+            if(httpContext.Request.Path == "/" || httpContext.Request.Path == "/login")
             {
                 return _next(httpContext);
             } else
@@ -31,13 +31,18 @@ namespace Pmviz_Frontend.Middleware
                 if (hasToken)
                 {
                     var obj = JObject.Parse(httpContext.Session.GetString("userDetails"));
-                    var role = obj["role"];
-                    return _next(httpContext);
-
-                    /*if (httpContext.Request.Path == "" || httpContext.Request.Path.ToString().Contains(role.ToString()))
+                    var role = obj["role"].ToString();
+                    
+                    if(httpContext.Request.Path == "/log/activities" || httpContext.Request.Path == "/log/resources" || httpContext.Request.Path.StartsWithSegments("/activity"))
                     {
-                        return _next(httpContext);
-                    }*/
+                        var authorized = role == "Manager" ? true : false;
+                        if (authorized)
+                        {
+                            return _next(httpContext);
+                        }
+                        return httpContext.Response.WriteAsync(HttpStatusCode.Unauthorized.ToString());
+                    }
+                    return _next(httpContext);
                 }
             }
             return httpContext.Response.WriteAsync(HttpStatusCode.Unauthorized.ToString());

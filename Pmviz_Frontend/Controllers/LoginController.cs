@@ -55,7 +55,7 @@ namespace Pmviz_Frontend.Controllers
 
                         string role = GetUserDetails().Result;
 
-                        return RedirectToAction("Index", role);
+                        return RedirectToAction("Index", "Home");
                     }
                     else
                     {

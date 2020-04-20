@@ -24,6 +24,12 @@ namespace PmvizFrontend.Controllers
                     var status = response.IsSuccessStatusCode;
                     if(status == true)
                     {
+                        //get the role
+                        var obj = JObject.Parse(HttpContext.Session.GetString("userDetails"));
+                        var role = obj["role"];
+                        ViewBag.Role = role.ToString();
+
+                        // get the list of logs
                         logList = JsonConvert.DeserializeObject<List<Log>>(apiResponse);
                         return View(logList);
                     } else

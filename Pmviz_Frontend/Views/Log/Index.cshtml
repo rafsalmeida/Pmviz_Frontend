@@ -14,15 +14,16 @@
                 columns.Bound(l => l.NumberOfCases).Title("Number of Cases");
                 columns.Bound(l => l.StartDate).Title("Start Date").Width(130);
                 columns.Bound(l => l.EndDate).Title("End Date").Width(130);
-                columns.Command(command => command.Custom("Details").Click("showDetails")).Width(110);
-                columns.Command(command => command.Custom("Activities").Click("showActivities")).Width(110);
-                columns.Command(command => command.Custom("Resources").Click("showResources")).Width(120);
-
-
+                if(ViewBag.Role == "Manager")
+                {
+                    columns.Command(command => command.Custom("Details").Click("showDetails")).Width(110);
+                    columns.Command(command => command.Custom("Activities").Click("showActivities")).Width(110);
+                    columns.Command(command => command.Custom("Resources").Click("showResources")).Width(120);
+                }
             })
             .Pageable()
             .Navigatable()
-            .Sortable() 
+            .Sortable()
             .Groupable()
             .Filterable()
             .Scrollable(s=>s.Height("auto"))

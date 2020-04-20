@@ -36,7 +36,7 @@
         <!-- Sidebar -->
         <nav id="sidebar">
             <div class="sidebar-header">
-                <h3>Pmviz</h3>
+                <h3 id="title">Pmviz</h3>
             </div>
 
             <ul class="list-unstyled components">
@@ -151,8 +151,11 @@ a, a:hover, a:focus {
 }
 
 #sidebar .sidebar-header {
-    padding: 20px;
+    height:10vh;
     background: #6d7fcc;
+    text-align:center;
+    vertical-align: middle;
+
 }
 
 #sidebar ul.components {
@@ -191,11 +194,13 @@ ul ul a {
     width:81vw;
     height:10vh;
 }
-
 #logout{
     position:absolute;
     right:1vw;
 
+}
+#title{
+    padding-top:20px;
 }
 
 @@media (max-width: 768px) {
