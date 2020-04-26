@@ -2,45 +2,46 @@
 @using Kendo.Mvc.UI
 @{ Layout = "_LayoutBoot"; ViewBag.Title = "All Logs";}
 
+<h4 style="text-align:center">All Logs</h4>
 <div class="container k-content" style="height:auto">
-        @(Html.Kendo().Grid(Model)
-            .Name("Grid")
-            .Columns(columns =>
+    @(Html.Kendo().Grid(Model)
+        .Name("Grid")
+        .Columns(columns =>
+        {
+            columns.Bound(l => l.Id).Title("Id").HtmlAttributes(new { @id = "id" });
+            columns.Bound(l => l.Description).Title("Description");
+            columns.Bound(l => l.Filename).Title("Filename");
+            columns.Bound(l => l.NumberOfActivities).Title("Number of Activities");
+            columns.Bound(l => l.NumberOfCases).Title("Number of Cases");
+            columns.Bound(l => l.StartDate).Title("Start Date").Width(130);
+            columns.Bound(l => l.EndDate).Title("End Date").Width(130);
+            if (ViewBag.Role == "Manager")
             {
-                columns.Bound(l => l.Id).Title("Id").HtmlAttributes(new { @id = "id" });
-                columns.Bound(l => l.Description).Title("Description");
-                columns.Bound(l => l.Filename).Title("Filename");
-                columns.Bound(l => l.NumberOfActivities).Title("Number of Activities");
-                columns.Bound(l => l.NumberOfCases).Title("Number of Cases");
-                columns.Bound(l => l.StartDate).Title("Start Date").Width(130);
-                columns.Bound(l => l.EndDate).Title("End Date").Width(130);
-                if(ViewBag.Role == "Manager")
-                {
-                    columns.Command(command => command.Custom("Details").Click("showDetails")).Width(110);
-                    columns.Command(command => command.Custom("Activities").Click("showActivities")).Width(110);
-                    columns.Command(command => command.Custom("Resources").Click("showResources")).Width(120);
-                }
-            })
-            .Pageable()
-            .Navigatable()
-            .Sortable()
-            .Groupable()
-            .Filterable()
-            .Scrollable(s=>s.Height("auto"))
-            .DataSource(dataSource => dataSource
-                .Ajax()
-                .PageSize(20)
-                .ServerOperation(false)
-             )
-            .Resizable(resize => resize.Columns(true))
-            .HtmlAttributes(new { style = "width:1000px" })
+                columns.Command(command => command.Custom("Details").Click("showDetails")).Width(110);
+                columns.Command(command => command.Custom("Activities").Click("showActivities")).Width(110);
+                columns.Command(command => command.Custom("Resources").Click("showResources")).Width(120);
+            }
+        })
+        .Pageable()
+        .Navigatable()
+        .Sortable()
+        .Groupable()
+        .Filterable()
+        .Scrollable(s => s.Height("auto"))
+        .DataSource(dataSource => dataSource
+            .Ajax()
+            .PageSize(20)
+            .ServerOperation(false)
+         )
+        .Resizable(resize => resize.Columns(true))
+        .HtmlAttributes(new { style = "width:1000px" })
 
-        )
-        @(Html.Kendo().Button()
-        .Name("backButton")
-        .HtmlAttributes(new { type = "button", @class = "k-primary" })
-        .Content("Go back")
-        .Events(e => e.Click("onClick_GoBack")))
+    )
+    @(Html.Kendo().Button()
+    .Name("backButton")
+    .HtmlAttributes(new { type = "button", @class = "k-primary" })
+    .Content("Go back")
+    .Events(e => e.Click("onClick_GoBack")))
 </div>
 <script type="text/javascript">
     function onClick_GoBack() {
@@ -52,21 +53,21 @@
         e.preventDefault();
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
         window.location = '@Url.Action("Index","Activity")?id=' + dataItem.Id
-        
+
     }
 
     function showActivities(e) {
         e.preventDefault();
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
         window.location = '@Url.Action("Activities","Log")?id=' + dataItem.Id
-        
+
     }
 
     function showResources(e) {
         e.preventDefault();
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
         window.location = '@Url.Action("Resources","Log")?id=' + dataItem.Id
-        
+
     }
 
 </script>

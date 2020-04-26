@@ -4,8 +4,11 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Security.Claims;
+using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -16,6 +19,7 @@ namespace Pmviz_Frontend.Controllers
 {
     public class LoginController : Controller
     {
+        [AllowAnonymous]
         public IActionResult Index()
         {
             if(HttpContext.Session.GetString("sessionKey") != null)
@@ -85,11 +89,9 @@ namespace Pmviz_Frontend.Controllers
                 if (response.IsSuccessStatusCode)
                 {
                     HttpContext.Session.SetString("userDetails",apiResponse);
-                  
                     //how to get the role
                     var obj = JObject.Parse(HttpContext.Session.GetString("userDetails"));
                     var role = obj["role"];
-
                     return role.ToString();
 
                 }
