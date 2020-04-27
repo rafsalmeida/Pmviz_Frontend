@@ -1,7 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!-- THE ROUTES THE OPERATOR IS NOT ALLOWED TO ENTER-->
+  <path>
+  </path>
+  <path>/log</path>
   <path>/log/activities</path>
   <path>/log/resources</path>
   <path>/activity</path>
+  <path>/authorization</path>
 </root>

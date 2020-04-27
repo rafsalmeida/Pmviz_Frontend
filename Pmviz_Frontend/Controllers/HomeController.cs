@@ -12,11 +12,16 @@ namespace Pmviz_Frontend.Controllers
 {
     public class HomeController : Controller
     {
-        public IActionResult Index([FromQuery(Name = "error")] string error)
+        public IActionResult Index([FromQuery(Name = "error")] string error, [FromQuery(Name = "success")] string success)
         {
             if(error == "1")
             {
                 ViewBag.Error = "Something went wrong! Please try again later.";
+            }
+
+            if(success == "1")
+            {
+                ViewBag.Success = "Changes made succesfully!";
             }
             /*return RedirectToAction("Index","login");
             var obj = JObject.Parse(HttpContext.Session.GetString("userDetails"));

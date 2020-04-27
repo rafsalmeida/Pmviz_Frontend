@@ -1,0 +1,103 @@
+﻿@{
+    IEnumerable<String> roles = ViewData["roles"] as IEnumerable<String>;
+    IEnumerable<String> routesAllowed = ViewData["RoutesAllowed"] as IEnumerable<String>;
+    IEnumerable<String> routesNotAllowed = ViewData["RoutesNotAllowed"] as IEnumerable<String>;
+    string role = ViewData["Role"] as string;
+
+}
+
+@{
+    ViewData["Title"] = "Manage Access";
+}
+
+<div class="container">
+    <form method="post" id="ticketsForm" kendo-validator="true">
+        <label for="role" class="required">Role to allow/restrict access to</label>
+        <br />
+        @(Html.Kendo().ComboBox()
+                    .Name("role")
+                    .Placeholder("Choose a role")
+                    .BindTo(roles)
+                    .HtmlAttributes(new { required = "required", @class = "inputfield" })
+        )
+
+        <button class="k-button k-primary" type="submit">Submit</button>
+    </form>
+</div>
+<br />
+@if (ViewBag.Success != null)
+{
+<div class="alert alert-success" role="alert">
+    @ViewBag.Success
+</div>
+}
+<div id="example" role="application">
+    <div class="demo-section k-content wide">
+        <form action='@Url.Action("Save","Authorization")' method="post">
+            <input type="hidden" name="roleChosen" value="@role" />
+            <label for="allowed" id="employees">Allowed</label>
+            <label for="notAllowed">Not Allowed</label>
+            <br />
+            @(Html.Kendo().ListBox()
+                .Name("allowed")
+                .Toolbar(toolbar =>
+                {
+                    toolbar.Position(ListBoxToolbarPosition.Right);
+                    toolbar.Tools(tools => tools
+                        .TransferTo()
+                        .TransferFrom()
+                        .TransferAllTo()
+                        .TransferAllFrom()
+                    );
+                })
+                .Selectable(ListBoxSelectable.Multiple)
+                .ConnectWith("notAllowed")
+                .BindTo(routesAllowed)
+                .Events(events => events
+                    .Add("onAdd")
+                )
+            )
+
+            @(Html.Kendo().ListBox()
+                .Name("notAllowed")
+                .BindTo(routesNotAllowed)
+                .Selectable(ListBoxSelectable.Multiple)
+                .Events(events => events
+                    .Add("onAdd")
+                )
+            )
+            <button class="k-button k-primary" type="submit">Save</button>
+
+        </form>
+    </div>
+</div>
+<script>
+    function onAdd(e) {
+    }
+</script>
+<style>
+    #employees {
+        width: 270px;
+    }
+
+    .demo-section label {
+        margin-bottom: 5px;
+        font-weight: bold;
+        display: inline-block;
+    }
+
+    #example .demo-section {
+        max-width: none;
+        width: 515px;
+    }
+
+    #example .k-listbox {
+        width: 236px;
+        height: 310px;
+    }
+
+        #example .k-listbox:first-of-type {
+            width: 270px;
+            margin-right: 1px;
+        }
+</style>

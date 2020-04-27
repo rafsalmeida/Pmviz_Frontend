@@ -1,6 +1,16 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
-    <div class="demo-section k-content">
-        <p>Welcome!</p>
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @ViewBag.Error
     </div>
+}
+
+@if (ViewBag.Success != null)
+{
+    <div class="alert alert-success" role="alert">
+        @ViewBag.Success
+    </div>
+}

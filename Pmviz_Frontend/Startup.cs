@@ -105,6 +105,9 @@ namespace Pmviz_Frontend
                 endpoints.MapControllerRoute(
                     name: "register",
                     pattern: "{controller=Register}/{action=Index}/{id?}");
+                endpoints.MapControllerRoute(
+                    name: "authorization",
+                    pattern: "{controller=Authorization}/{action=Index}/{id?}");
 
             });
         }
