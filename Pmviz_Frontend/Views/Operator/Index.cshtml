@@ -3,33 +3,6 @@
 }
 
     <div class="demo-section k-content">
-        <div>
-            <h1>Operator</h1>
-
-            @(Html.Kendo().Button()
-                                    .Name("logButton")
-                                    .HtmlAttributes(new { type = "button", @class = "k-primary" })
-                                    .Content("All Logs")
-                                    .Events(e => e.Click("onClick_Logs")))
-            @(Html.Kendo().Button()
-                                        .Name("LogoutButton")
-                                        .HtmlAttributes(new { type = "button", @class = "k-danger" })
-                                        .Content("Logout")
-                                        .Events(e => e.Click("onClick_Logout")))
-
-        </div>
-        <style>
-            #cy {
-                position: absolute;
-                margin-top: 2%;
-                margin-bottom: 2%;
-                width: 50%;
-                height: 100%;
-                border: 2px solid #186860;
-                border-radius: 10px;
-            }
-        </style>
-
         <div id="cy"></div>
         <script src="@Url.Content("~/vendor/cytoscape/dist/cytoscape.min.js")"></script>
     </div>
@@ -111,15 +84,7 @@
             name: 'circle'
         }).run();
         </script>
-        
-        <script>
-            function onClick_Logs() {
-                window.location = '@Url.Action("Index", "Log")';
-            }
-            function onClick_Logout() {
-            window.location = '@Url.Action("Logout", "Login")';
-            }
-        </script>
+
         
 
 

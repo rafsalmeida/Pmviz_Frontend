@@ -15,16 +15,19 @@ namespace Pmviz_Frontend.Models
         public string Username { get; set; }
 
         [DataMember]
-        public int Id_Role { get; set; }
+        [JsonProperty("role")]
+        public string Role { get; set; }
 
         [DataMember]
         [JsonProperty("password")]
         public string Password { get; set; }
 
         [DataMember]
+        [JsonProperty("name")]
         public string Name { get; set; }
 
         [DataMember]
-        public int Email { get; set; }
+        [JsonProperty("email")]
+        public string Email { get; set; }
     }
 }

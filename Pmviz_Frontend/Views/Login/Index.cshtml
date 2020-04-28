@@ -2,42 +2,52 @@
 
 @{
     ViewData["Title"] = "Login";
+    Layout = "~/Views/Shared/_EmptyLayout.cshtml";
 }
 @addTagHelper *, Kendo.Mvc
 
 
 <div class="container">
-    <h4 id="title">Login</h4>
-    <br />
-    <div id="tickets">
-        @if (ViewBag.Error != null)
-        {
-        <div class="alert alert-danger" role="alert" style="width:220px">
-            @ViewBag.Error
-        </div>
-        }
-        <form method="post" id="ticketsForm" kendo-validator="true">
-            <ul id="fieldlist">
-                <li>
-                    <label for="username" class="required">Username</label>
-                    @(Html.Kendo().TextBox()
-                              .Name("username")
-                              .HtmlAttributes(new { placeholder = "Username", required = "required", style = "width:220px" })
-                    )
-                </li>
-                <li>
+    <div class="k-card">
 
-                    <label for="password" class="required">Password</label>
-                    @(Html.Kendo().TextBox()
-                              .Name("password")
-                              .HtmlAttributes(new { placeholder = "Password", required = "required", type = "password", style = "width:220px" })
-                    )
-                </li>
-                <li>
-                    <button class="k-button k-primary" type="submit">Login</button>
-                </li>
-            </ul>
-        </form>
+        <div class="k-card-header">
+            <h4 class="k-card-title" id="title">Login</h4>
+        </div>
+        <br />
+        <div class="k-class-body" id="tickets">
+            @if (ViewBag.Error != null)
+            {
+                <div class="alert alert-danger" role="alert">
+                    @ViewBag.Error
+                </div>
+            }
+            <form method="post" id="ticketsForm" kendo-validator="true">
+                <ul id="fieldlist">
+                    <li class="divfield">
+                        <label for="username" class="required">Username</label>
+                        @(Html.Kendo().TextBox()
+                                  .Name("username")
+                                  .HtmlAttributes(new { placeholder = "Username", required = "required", @class = "inputfield" })
+                        )
+                        
+                    </li>
+                    <li>
+
+                        <label for="password" class="required">Password</label>
+                        @(Html.Kendo().TextBox()
+                                  .Name("password")
+                                  .HtmlAttributes(new { placeholder = "Password", required = "required", type = "password", @class = "inputfield" })
+                        )
+                    </li>
+                    <li>
+                        <button class="k-button k-primary" type="submit">Login</button>
+                    </li>
+                    <li>
+                        <a href="/register">Don't have an account? Register.</a>
+                    </li>
+                </ul>
+            </form>
+        </div>
     </div>
 </div>
 <style>
@@ -46,23 +56,25 @@
         padding: 0;
     }
 
-        #fieldlist li {
-            list-style: none;
-            padding-bottom: .7em;
-            text-align: left;
-            display: flex;
-            flex-wrap: wrap;
-        }
+    #fieldlist li {
+        list-style: none;
+        padding-bottom: .7em;
+        text-align: left;
+        display: flex;
+        flex-wrap: wrap;
+        text-align:center;
+        justify-content:center;
+    }
 
-        #fieldlist label {
-            width: 100%;
-            display: block;
-            padding-bottom: .3em;
-            font-weight: bold;
-            text-transform: uppercase;
-            font-size: 12px;
-            color: #444;
-        }
+    #fieldlist label {
+        width: 100%;
+        display: block;
+        padding-bottom: .3em;
+        font-weight: bold;
+        text-transform: uppercase;
+        font-size: 12px;
+        color: #444;
+    }
 
     #title {
         width: 100%;
@@ -77,6 +89,29 @@
     .confirm {
         padding-top: 1em;
     }
+
+    .container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .k-card {
+        width: 300px;
+        margin: 5%;
+    }
+    .k-card-header{
+        text-align:center;
+    }
+
+    .inputfield{
+        width:300px;
+    }
+
+    .alert-danger{
+        text-align:center;
+    }
+
 </style>
 
 

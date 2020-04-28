@@ -1,0 +1,7 @@
+﻿<root>
+  <path name="All Logs">/log</path>
+  <path name="Activities of a Log">/log/activities</path>
+  <path name="Resources of a Log">/log/resources</path>
+  <path name="Activity Frequency of a Log">/activity</path>
+  <path name="Manage Access">/authorization</path>
+</root>

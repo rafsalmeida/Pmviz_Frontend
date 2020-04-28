@@ -6,7 +6,17 @@
 
 @model IEnumerable<Pmviz_Frontend.Models.ActivityFreq>
 @using Kendo.Mvc.UI
-@{ Layout = "_Layout"; ViewBag.Title = "Activity Frequency";}
+@{ Layout = "_LayoutBoot"; ViewBag.Title = "Activity Frequency";}
+
+<div class="box">
+    <div class="box-col" style="text-align:center">
+        <h4 >Charts</h4>
+        <button class="k-button" id="frequencyButton" type="button">Frequency</button>
+        <button class="k-button" id="medianButton" type="button">Median</button>
+        <button class="k-button" id="meanButton" type="button">Mean</button>
+    </div>
+</div>
+<br />
 
 <div id="frequencyChart">
     @(Html.Kendo().Chart(frequency)
@@ -76,15 +86,6 @@
     )
 </div>
 
-<div class="box">
-    <div class="box-col">
-        <h4>Charts</h4>
-        <button class="k-button" id="frequencyButton" type="button">Frequency</button>
-        <button class="k-button" id="medianButton" type="button">Median</button>
-        <button class="k-button" id="meanButton" type="button">Mean</button>
-    </div>
-</div>
-<br />
 
 @(Html.Kendo().Grid(Model)
     .Name("Grid")

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -22,21 +22,63 @@
 	<script src="https://kendo.cdn.telerik.com/2020.1.219/js/kendo.aspnetmvc.min.js"></script>
 </head>
 <body class="k-content">
-    <nav class="navbar navbar-inverse navbar-fixed-top p-3">
-        <div class="container p-0 p-sm-3">
-            <!--<div class="navbar-header">
-                <kendo-button name="configure" tag="button" icon="menu" class="k-rpanel-toggle k-primary btn-toggle"></kendo-button>
-                <a asp-controller="Home" asp-action="Index" class="navbar-brand">Your .NET Core Application</a>
-            </div>-->
-        </div>
+    <nav style="width:100vw">
+        @(Html.Kendo().ToolBar()
+                            .Name("ToolBar")
+                            .Items(items =>
+                            {
+                                items.Add().Type(CommandType.Button).Icon("home").HtmlAttributes(new { @class = "btn" });
+                                items.Add().Type(CommandType.Button).Icon("logout").Text("Logout")
+                                .HtmlAttributes(new { @style = "position:absolute; right:1vw" }).Url("/login/logout");
+                            }).HtmlAttributes(new { @style = "width:100vw"})
+        )
     </nav>
+    <div class="row" id="layout">
+        <div class="collumn col-md-2" id="menu-container" style="padding-right:0px">
+            @(Html.Kendo().Menu()
+                  .Name("menu")
+                  .Items(items =>
+                  {
+                      items.Add().Text("All Logs").LinkHtmlAttributes(new { 
+                          @id = "element" ,
+                          type = "button", 
+                          @class = "btn-xs btn-light label-element",
+                          @style = "color:black"
+                      })
+                      .Url("/log");
+                      items.Add().Separator(true);
+                      items.Add().Text("Exemplo 2").LinkHtmlAttributes(new { 
+                          @id = "element" ,
+                          type = "button", 
+                          @class = "btn-xs btn-light label-element",
+                          @style = "color:black"
+                      });
+                      items.Add().Separator(true);
 
-    <main>
-        <div class="container">
-            @RenderBody()
+                      items.Add().Text("Exemplo 3").LinkHtmlAttributes(new { 
+                          @id = "element" ,
+                          type = "button", 
+                          @class = "btn btn-light label-element",
+                          @style = "color:black"
+                      });  
+                      items.Add().Separator(true);
+                  })
+                  .Orientation(MenuOrientation.Vertical)
+                  .HtmlAttributes(new
+                  {
+                      @style = "height:100vh"
+                  })
+            )
         </div>
-    </main>
-
+        <div class="collumn col">
+            <main>
+                <br />
+                <div class="container">
+                    @RenderBody()
+                </div>
+            </main>
+        </div>
+    </div>
     <environment names="Development">
         <script src="~/lib/bootstrap/js/bootstrap.js"></script>
     </environment>
@@ -48,3 +90,28 @@
     @RenderSection("scripts", required: false)
 </body>
 </html>
+<style>
+    html{
+        min-height:100%; /* make sure it is at least as tall as the viewport */
+    }
+    body{
+        height:auto; /* force the BODY element to match the height of the HTML element */
+    }
+    #element{
+        text-align:center;  
+        display:block;
+    }
+    #menu-container{
+        height:100vh;
+        background-color:#f8f9fa;
+    }
+    .label-element {
+        width: 100%;
+        display: block;
+        padding-bottom: .5em;
+        font-size: 17px;
+        color: #444;
+    }
+
+
+</style>
