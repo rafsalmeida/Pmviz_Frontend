@@ -4,4 +4,5 @@
   <path name="Resources of a Log">/log/resources</path>
   <path name="Activity Frequency of a Log">/activity</path>
   <path name="Manage Access">/authorization</path>
+  <path name="Graphs">/manager/graphs</path>
 </root>
