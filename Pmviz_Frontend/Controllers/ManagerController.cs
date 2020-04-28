@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -98,17 +99,77 @@ namespace Pmviz_Frontend.Controllers
             }
         }
 
-        public async Task<IActionResult> Api()
+        public async Task<IActionResult> Graph()
         {
-            string apiResponse;
             using (var httpClient = new HttpClient())
             {
-                using (var response = await httpClient.GetAsync("http://localhost:8080/api/activity-frequency/1"))
+                using (var response = await httpClient.GetAsync("http://localhost:8080/api/workflow-network/alpha-miner/processes/22"))
                 {
-                    apiResponse = await response.Content.ReadAsStringAsync();
-                    /*var r = JsonConvert.DeserializeObject<String>(apiResponse);*/
+                    ViewData["alpha"] = response.Content.ReadAsStringAsync().Result;
+                    var status = response.IsSuccessStatusCode;
+                    if (status == false){
+                        return RedirectToAction("Index", "Home", new { error = "1" });
+
+                    }
                 }
             }
+            using (var httpClient = new HttpClient())
+            {
+                using (var response = await httpClient.GetAsync("http://localhost:8080/api/workflow-network/heuristic-miner/processes/22"))
+                {
+                    ViewData["heuristic"] = response.Content.ReadAsStringAsync().Result;
+                    var status = response.IsSuccessStatusCode;
+                    if (status == false)
+                    {
+                        return RedirectToAction("Index", "Home", new { error = "1" });
+                    }
+                }
+            }
+            using (var httpClient = new HttpClient())
+            {
+                using (var response = await httpClient.GetAsync("http://localhost:8080/api/conformance/performance/alpha-miner/13/with/22"))
+                {
+                    ViewData["conformance"] = response.Content.ReadAsStringAsync().Result;
+                    var status = response.IsSuccessStatusCode;
+                    if (status == false)
+                    {
+                        return RedirectToAction("Index", "Home", new { error = "1" });
+                    }else
+                    {
+                        return View();
+                    }
+                }
+            }
+        }
+
+
+
+        public async Task<IActionResult> Api()
+        {
+            /*string apiResponse;
+            using (var httpClient = new HttpClient())
+            {
+                var payload = "{ \"cases\": null, \"moulds\": null, \"startDate\": null, \"endDate\": null, \"activities\": null, \"resources\": null, \"nodes\": null}";
+
+                HttpContent c = new StringContent(payload, Encoding.UTF8, "application/json");
+
+                using (var response = await httpClient.PostAsync("http://localhost:8080/api/conformance/log/20", c).Result);
+                {
+                    apiResponse = await response.Content.ReadAsStringAsync();
+                    apiResponse = await response.Content.ReadAsStringAsync();
+                    var r = JsonConvert.DeserializeObject<String>(apiResponse);
+                }
+            }
+            return Content(apiResponse);*/
+
+            var httpClient = new HttpClient();
+            var payload = "{ \"cases\": null, \"moulds\": null, \"startDate\": null, \"endDate\": null, \"activities\": null, \"resources\": null, \"nodes\": null}";
+
+            HttpContent c = new StringContent(payload, Encoding.UTF8, "application/json");
+
+            var response = await httpClient.PostAsync("http://localhost:8080/api/conformance/log/20", c);
+            var apiResponse = await response.Content.ReadAsStringAsync();
+
             return Content(apiResponse);
         }
     }

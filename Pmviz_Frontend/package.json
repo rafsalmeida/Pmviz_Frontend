@@ -1,0 +1,9 @@
+{
+  "version": "1.0.0",
+  "name": "pmvizfrontend",
+  "private": true,
+  "devDependencies": {
+    "cytoscape": "3.14.0",
+    "moment": "2.24.0"
+  }
+}
