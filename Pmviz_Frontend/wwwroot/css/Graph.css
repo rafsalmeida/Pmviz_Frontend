@@ -1,0 +1,79 @@
+﻿/******** SELECT ********/
+#selectProcess .select-wrapper {
+    left: 2%;
+    width: 50%;
+}
+
+#range {
+    margin-left: 2%;
+    width: 50%;
+}
+
+
+/******** GRAFO ********/
+#cyProcess1, #cyProcess2, #cy {
+    position: absolute;
+    margin-top: 2%;
+    margin-bottom: 2%;
+    width: 50%;
+    height: 100%;
+    border: 2px solid #186860;
+    border-radius: 10px;
+}
+
+#tip {
+    margin-top: 25%;
+    text-align: center;
+    font-family: "Lucida Console", Times, serif;
+    font-style: oblique;
+    font-size: 30px;
+}
+
+
+/******** LEGENDA ********/
+#legendProcess {
+    grid-area: 3 / 1 / 1 / span 3;
+}
+
+#legendProcessPerf1 {
+    float: left;
+}
+
+#legendProcessPerf2 {
+    float: right;
+}
+
+
+/******** CENTRAR ********/
+#centerGP {
+    position: relative;
+    margin-top: 5%;
+    float: right;
+}
+
+
+
+
+
+/**************************** MOBILE ********************************/
+
+@media screen and (max-width : 992px) {
+    #cyProcess1, #cyProcess2 {
+        width: 60%;
+    }
+
+    #centerGP {
+        margin-right: -3%;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    #cyProcess1, #cyProcess2 {
+        width: 95%;
+    }
+
+    #centerGP {
+        margin-top: 4%;
+        margin-right: 0;
+    }
+}

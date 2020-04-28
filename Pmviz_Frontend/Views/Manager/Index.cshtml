@@ -15,6 +15,11 @@
                                     .Content("Diagram View")
                                     .Events(e => e.Click("onClick_Diagram")))
         @(Html.Kendo().Button()
+                                    .Name("GraphButton")
+                                    .HtmlAttributes(new { type = "button", @class = "k-primary" })
+                                    .Content("Graph")
+                                    .Events(e => e.Click("onClick_Graph")))
+        @(Html.Kendo().Button()
                                     .Name("LogoutButton")
                                     .HtmlAttributes(new { type = "button", @class = "k-primary" })
                                     .Content("Logout")
@@ -31,7 +36,10 @@
             }
             function onClick_Api() {
             window.location = '@Url.Action("Api", "Manager")';
-        }
+            }
+            function onClick_Graph() {
+            window.location = '@Url.Action("Graph", "Manager")';
+            }
         function onClick_Diagram() {
             window.location = '@Url.Action("Index", "Diagram")';
             }

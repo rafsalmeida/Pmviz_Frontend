@@ -1,0 +1,1418 @@
+﻿
+
+<link href="@Url.Content("~/css/Graph.css")" rel="stylesheet" />
+<div>
+    <div class="row">
+        <div class="form-group col-md-4">
+            <div class="btn-group-vertical">
+                <button class="btn" id="frequencyButton" type="button">Frequency Graph</button>
+                <br />
+                <button class="btn" id="performanceButton" type="button">Performance Graph</button>
+                <br />
+                <button class="btn" id="conformanceButton" type="button">Conformance Graph</button>
+            </div>
+        </div>
+        <div class="form-group col-md-4">
+            <p class="h5">Current active log: 22</p>
+            <br />
+            <label for="inputCases">Choose your algorithm</label>
+            <select class="custom-select" id="algorithmSelected">
+                <option value="0" selected>Alpha Miner</option>
+                <option value="1">Heuristic Miner</option>
+            </select>
+        </div>
+    </div>
+    <div id="conformanceStats">
+        <hr />
+        <h4>Conformance Analysis</h4>
+        <form>
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label for="inputAddress">Start date</label>
+                        <input class="form-control" type="date" id="example-date-input">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label for="inputAddress2">End date</label>
+                        <input class="form-control" type="date" id="example-date-input">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-4">
+                    <label for="inputActivities">Subprocesses</label>
+                    <select id="inputActivities" class="custom-select" multiple>
+                        <option selected>Open this select menu</option>
+                        <option value="1">One</option>
+                        <option value="2">Two</option>
+                        <option value="3">Three</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="inputResources">Resources</label>
+                    <select id="inputResources" class="custom-select" multiple>
+                        <option selected>Open this select menu</option>
+                        <option value="1">One</option>
+                        <option value="2">Two</option>
+                        <option value="3">Three</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="inputCases">Case(s) to analyse</label>
+                    <select id="inputCases" class="custom-select" multiple>
+                        <option selected>Open this select menu</option>
+                        <option value="1">One</option>
+                        <option value="2">Two</option>
+                        <option value="3">Three</option>
+                    </select>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Filter</button>
+        </form>
+    </div>
+</div>
+<div>
+    <br />
+    <button class="k-button" id="centerButton" type="button">Center</button>
+    <br />
+    <div id="cyProcess1"></div>
+</div>
+
+<script src="@Url.Content("~/vendor/cytoscape/dist/cytoscape.min.js")"></script>
+<script src="@Url.Content("~/vendor/moment/min/moment.min.js")"></script>
+
+<script>
+    $(function () {
+        var frequencyButton = document.getElementById("frequencyButton");
+        var performanceButton = document.getElementById("performanceButton");
+        var conformanceButton = document.getElementById("conformanceButton");
+        var conformanceStats = document.getElementById("conformanceStats");
+
+        conformanceStats.style.display = "none";
+        var data = {
+            dataAlpha: JSON.parse(@Html.Raw(Json.Serialize(ViewData["alpha"]))),
+            dataHeuristic: JSON.parse(@Html.Raw(Json.Serialize(ViewData["heuristic"]))),
+            dataConformance: JSON.parse(@Html.Raw(Json.Serialize(ViewData["conformance"]))),
+        }
+        var graph = {
+            typeGraph: "performance",
+            typeAlgth: 0,
+            data: data.dataAlpha,
+            caseData: data.dataConformance,
+            maxFrequency: null,
+            nodeTimes: null,
+            relationTimes: null,
+            nodesMaxTime: null,
+            edgesMaxTime: null
+        };
+        var cy = null;
+
+        let nodeTimes = [];
+        for (let i = 0; i < graph.data.statistics.nodes.length; i++) {
+            let meanDuration = graph.data.statistics.nodes[i].meanDuration.days + '.' + graph.data.statistics.nodes[i].meanDuration.hours + ':' +
+                graph.data.statistics.nodes[i].meanDuration.minutes + ':' + graph.data.statistics.nodes[i].meanDuration.seconds + '.' + graph.data.statistics.nodes[i].meanDuration.millis;
+            nodeTimes[i] = moment.duration(meanDuration).asMinutes();
+        }
+
+        let relationTimes = [];
+        for (let i = 0; i < graph.data.statistics.relations.length; i++) {
+            let relationTimesTemp = [];
+            for (let j = 0; j < graph.data.statistics.relations[i].to.length; j++) {
+                let meanDuration = graph.data.statistics.relations[i].to[j].meanDuration.days + '.' + graph.data.statistics.relations[i].to[j].meanDuration.hours + ':' +
+                    graph.data.statistics.relations[i].to[j].meanDuration.minutes + ':' + graph.data.statistics.relations[i].to[j].meanDuration.seconds + '.' + graph.data.statistics.relations[i].to[j].meanDuration.millis;
+                relationTimesTemp[j] = moment.duration(meanDuration).asMinutes();
+            }
+            relationTimes[i] = relationTimesTemp;
+        }
+
+        graph.nodeTimes = nodeTimes;
+        graph.relationTimes = relationTimes;
+
+        console.log(data.dataConformance);
+
+        function renderCytoscapeElementFrequency() {
+        cy = cytoscape(
+            {
+                wheelSensitivity: 0.5,
+                minZoom: 0.1,
+                maxZoom: 1,
+                container: document.getElementById('cyProcess1'),
+                style: [
+                    {
+                        //Nodes styles
+                        selector: 'node[type=0]',
+                        style: {
+                            "shape": 'rectangle',
+                            "background-color": "#FFFFFF",
+                            "label": "data(label)",
+                            'width': '350',
+                            "height": "40",
+                            "border-width": 2,
+                            "border-color": "#484848",
+                            "font-size": "16px",
+                            "text-valign": "center",
+                            "text-halign": "center",
+                            "text-wrap": "wrap",
+                            "text-max-width": "1000px",
+                            "color": "#222222"
+                        }
+                    },
+                    {
+                        selector: 'node[type=1]',
+                        style: {
+                            "shape": 'rectangle',
+                            "background-color": "#acbcff",
+                            "label": "data(label)",
+                            'width': '350',
+                            "height": "40",
+                            "border-width": 2,
+                            "border-color": "#484848",
+                            "font-size": "16px",
+                            "text-valign": "center",
+                            "text-halign": "center",
+                            "color": "#222222"
+                        }
+                    },
+                    {
+                        selector: 'node[type=2]',
+                        style: {
+                            "shape": 'rectangle',
+                            "background-color": "#748fff",
+                            "label": "data(label)",
+                            'width': '350',
+                            "height": "40",
+                            "border-width": 2,
+                            "border-color": "#484848",
+                            "font-size": "16px",
+                            "text-valign": "center",
+                            "text-halign": "center",
+                            "color": "#222222"
+                        }
+                    },
+                    {
+                        selector: 'node[type=3]',
+                        style: {
+                            "shape": 'rectangle',
+                            "background-color": "#365eff",
+                            "label": "data(label)",
+                            'width': '350',
+                            "height": "40",
+                            "border-width": 2,
+                            "border-color": "#484848",
+                            "font-size": "16px",
+                            "text-valign": "center",
+                            "text-halign": "center",
+                            "color": "#222222"
+                        }
+                    },
+                    {
+                        selector: 'node[type=4]',
+                        style: {
+                            "shape": 'rectangle',
+                            "background-color": "#0032ff",
+                            "label": "data(label)",
+                            'width': '350',
+                            "height": "40",
+                            "border-width": 2,
+                            "border-color": "#484848",
+                            "font-size": "16px",
+                            "text-valign": "center",
+                            "text-halign": "center",
+                            "color": "#FFFFFF"
+                        }
+                    },
+                    {
+                        //process start node
+                        selector: 'node[type=20]',
+                        style: {
+                            "shape": 'ellipse',
+                            "background-color": "#3f3f3f",
+                            "border-width": 4,
+                            "border-color": "#131313",
+                            'width': '50',
+                            "height": "50",
+                            "font-size": "16px",
+                            "text-valign": "center",
+                            "text-halign": "center",
+                            "text-wrap": "wrap",
+                            "text-max-width": "1000px",
+                            "color": "#FF2222"
+                        }
+                    },
+
+                    //Edges styles
+                    {
+                        selector: 'edge[type=0]',
+                        style: {
+                            'width': 3,
+                            'curve-style': 'bezier',
+                            "content": "data(name)",
+                            "line-color": "#D1D1D1",
+                            'target-arrow-color': '#D1D1D1',
+                            "font-size": "32px",
+                            "color": "#222222",
+                            "loop-direction": "0deg",
+                            'target-arrow-shape': 'triangle',
+                            "loop-sweep": "45deg",
+                            "text-margin-y": "-15px",
+                            "source-text-offset": "50px"
+                        }
+                    },
+                    {
+                        selector: 'edge[type=1]',
+                        style: {
+                            'width': 5,
+                            'curve-style': 'bezier',
+                            "content": "data(name)",
+                            "line-color": "#acbcff",
+                            'target-arrow-color': '#acbcff',
+                            "font-size": "32px",
+                            "color": "#222222",
+                            "loop-direction": "0deg",
+                            'target-arrow-shape': 'triangle',
+                            "loop-sweep": "45deg",
+                            "text-margin-y": "-15px",
+                            "source-text-offset": "50px"
+                        }
+                    },
+                    {
+                        selector: 'edge[type=2]',
+                        style: {
+                            'width': 7,
+                            'curve-style': 'bezier',
+                            "content": "data(name)",
+                            "line-color": "#748fff",
+                            'target-arrow-color': '#748fff',
+                            "font-size": "32px",
+                            "color": "#222222",
+                            "loop-direction": "0deg",
+                            'target-arrow-shape': 'triangle',
+                            "loop-sweep": "45deg",
+                            "text-margin-y": "-15px",
+                            "source-text-offset": "50px"
+                        }
+                    },
+                    {
+                        selector: 'edge[type=3]',
+                        style: {
+                            'width': 9,
+                            'curve-style': 'bezier',
+                            "content": "data(name)",
+                            "line-color": "#365eff",
+                            'target-arrow-color': '#365eff',
+                            "font-size": "32px",
+                            "color": "#222222",
+                            "loop-direction": "0deg",
+                            'target-arrow-shape': 'triangle',
+                            "loop-sweep": "45deg",
+                            "text-margin-y": "-15px",
+                            "source-text-offset": "50px"
+                        }
+                    },
+                    {
+                        selector: 'edge[type=4]',
+                        style: {
+                            'width': 13,
+                            'curve-style': 'bezier',
+                            "content": "data(name)",
+                            "line-color": "#0032ff",
+                            'target-arrow-color': '#0032ff',
+                            "font-size": "32px",
+                            "color": "#222222",
+                            "loop-direction": "0deg",
+                            'target-arrow-shape': 'triangle',
+                            "loop-sweep": "45deg",
+                            "text-margin-y": "-15px",
+                            "source-text-offset": "50px"
+                        }
+                    },
+                    {
+                        //process start edge
+                        selector: 'edge[type=20]',
+                        style: {
+                            'width': 8,
+                            'curve-style': 'bezier',
+                            'line-color': "#232323",
+                            'target-arrow-color': '#232323',
+                            "font-size": "32px",
+                            "color": "#222222",
+                            "loop-direction": "0deg",
+                            'target-arrow-shape': 'triangle',
+                            "loop-sweep": "45deg",
+                            "text-margin-y": "-15px",
+                            "source-text-offset": "50px",
+                            "text-outline-color": "#222222",
+                            "text-outline-width": "0.3px"
+                        }
+                    },
+                ],
+            });
+        //find max frequency value
+        //nodes max frequency
+        var maxFrequency = 0;
+        for (let i = 0; i < graph.data.nodes.length; i++) {
+            if (graph.data.statistics.nodes[i].frequency > maxFrequency) {
+                maxFrequency = graph.data.statistics.nodes[i].frequency;
+            }
+        }
+
+        //edges max frequency
+        for (let i = 0; i < graph.data.statistics.relations.length; i++) {
+            for (let j = 0; j < graph.data.statistics.relations[i].to.length; j++) {
+                if (graph.data.statistics.relations[i].to[j].frequency > maxFrequency) {
+                    maxFrequency = graph.data.statistics.relations[i].to[j].frequency;
+                }
+            }
+        }
+
+        //Nodes\\
+        for (let i = 0; i < graph.data.nodes.length; i++) {
+            let typeValue = Math.round(graph.data.statistics.nodes[i].frequency * 4 / maxFrequency);
+            cy.add({
+                data: {
+                    id: i,
+                    label: graph.data.nodes[i] + ' (' + graph.data.statistics.nodes[i].frequency + ')',
+                    type: typeValue
+                },
+            }
+            );
+        }
+        graph.maxFrequency = maxFrequency;
+        //this.setParentLegend();
+
+        //Edges\\
+        for (let i = 0; i < graph.data.relations.length; i++) {
+            for (let j = 0; j < graph.data.relations[i].to.length; j++) {
+                let typeValue = Math.round(graph.data.statistics.relations[i].to[j].frequency * 4 / maxFrequency);
+                cy.add({
+                    data: {
+                        id: 'edge' + graph.data.relations[i].from + '-' + graph.data.relations[i].to[j],
+                        source: graph.data.relations[i].from,
+                        target: graph.data.relations[i].to[j],
+                        name: graph.data.statistics.relations[i].to[j].frequency,
+                        type: typeValue
+                    }
+                });
+            }
+        }
+
+        //add process start and end nodes
+        for (let i = 0; i < graph.data.startEvents.length; i++) {
+            cy.add({
+                data: {
+                    id: 'start-' + i,
+                    type: 20
+                },
+            });
+
+            cy.add({
+                data: {
+                    id: 'edge_start-' + i,
+                    source: 'start-' + i,
+                    target: graph.data.startEvents[i].node,
+                    type: 20
+                }
+            });
+        }
+
+        for (let i = 0; i < graph.data.endEvents.length; i++) {
+            cy.add({
+                data: {
+                    id: 'end-' + i,
+                    type: 20
+                },
+            });
+
+            cy.add({
+                data: {
+                    id: 'edge_end-' + i,
+                    source: graph.data.endEvents[i].node,
+                    target: 'end-' + i,
+                    type: 20
+                }
+            });
+        }
+
+        let customBreadthfirst = {
+            name: 'breadthfirst',
+
+            fit: true, // whether to fit the viewport to the graph
+            directed: true, // whether the tree is directed downwards (or edges can point in any direction if false)
+            padding: 10, // padding on fit
+            circle: false, // put depths in concentric circles if true, put depths top down if false
+            grid: false, // whether to create an even grid into which the DAG is placed (circle:false only)
+            spacingFactor: 0.90, // positive spacing factor, larger => more space between nodes (N.B. n/a if causes overlap)
+            boundingBox: undefined, // constrain layout bounds; { x1, y1, x2, y2 } or { x1, y1, w, h }
+            avoidOverlap: true, // prevents node overlap, may overflow boundingBox if not enough space
+            nodeDimensionsIncludeLabels: false, // Excludes the label when calculating node bounding boxes for the layout algorithm
+            roots: undefined, // the roots of the trees
+            maximal: false, // whether to shift nodes down their natural BFS depths in order to avoid upwards edges (DAGS only)
+            animate: false, // whether to transition the node positions
+            animationDuration: 500, // duration of animation in ms if enabled
+            animationEasing: undefined, // easing of animation if enabled,
+            animateFilter: function (node, i) {
+                return true;
+            }, // a function that determines whether the node should be animated.  All nodes animated by default on animate enabled.  Non-animated nodes are positioned immediately when the layout starts
+            ready: undefined, // callback on layoutready
+            stop: undefined, // callback on layoutstop
+            transform: function (node, position) {
+                return position;
+            } // transform a given node position. Useful for changing flow direction in discrete layouts
+        };
+
+        cy.layout(customBreadthfirst).run();
+        };
+
+
+        function renderCytoscapeElementPerformance() {
+            cy = cytoscape(
+                {
+                    wheelSensitivity: 0.5,
+                    minZoom: 0.1,
+                    maxZoom: 1,
+                    container: document.getElementById('cyProcess1'),
+
+                    style: [
+                        {
+                            //Nodes styles
+                            selector: 'node[type=0]',
+                            style: {
+                                "shape": 'rectangle',
+                                "background-color": "#FFFFFF",
+                                "label": "data(label)",
+                                'width': '350',
+                                "height": "40",
+                                "border-width": 2,
+                                "border-color": "#484848",
+                                "font-size": "16px",
+                                "text-valign": "center",
+                                "text-halign": "center",
+                                "color": "#222222"
+                            }
+                        },
+                        {
+                            selector: 'node[type=1]',
+                            style: {
+                                "shape": 'rectangle',
+                                "background-color": "#FFB7B7",
+                                "label": "data(label)",
+                                'width': '350',
+                                "height": "40",
+                                "border-width": 2,
+                                "border-color": "#484848",
+                                "font-size": "16px",
+                                "text-valign": "center",
+                                "text-halign": "center",
+                                "color": "#222222"
+                            }
+                        },
+                        {
+                            selector: 'node[type=2]',
+                            style: {
+                                "shape": 'rectangle',
+                                "background-color": "#FF8A8A",
+                                "label": "data(label)",
+                                'width': '350',
+                                "height": "40",
+                                "border-width": 2,
+                                "border-color": "#484848",
+                                "font-size": "16px",
+                                "text-valign": "center",
+                                "text-halign": "center",
+                                "color": "#222222"
+                            }
+                        },
+                        {
+                            selector: 'node[type=3]',
+                            style: {
+                                "shape": 'rectangle',
+                                "background-color": "#FF5C5C",
+                                "label": "data(label)",
+                                'width': '350',
+                                "height": "40",
+                                "border-width": 2,
+                                "border-color": "#484848",
+                                "font-size": "16px",
+                                "text-valign": "center",
+                                "text-halign": "center",
+                                "color": "#222222"
+                            }
+                        },
+                        {
+                            selector: 'node[type=4]',
+                            style: {
+                                "shape": 'rectangle',
+                                "background-color": "#FF0000",
+                                "label": "data(label)",
+                                'width': '350',
+                                "height": "40",
+                                "border-width": 2,
+                                "border-color": "#484848",
+                                "font-size": "16px",
+                                "text-valign": "center",
+                                "text-halign": "center",
+                                "color": "#FFFFFF"
+                            }
+                        },
+                        {
+                            //process start node
+                            selector: 'node[type=20]',
+                            style: {
+                                "shape": 'ellipse',
+                                "background-color": "#3f3f3f",
+                                "border-width": 4,
+                                "border-color": "#131313",
+                                'width': '50',
+                                "height": "50",
+                                "font-size": "16px",
+                                "text-valign": "center",
+                                "text-halign": "center",
+                                "text-wrap": "wrap",
+                                "text-max-width": "1000px",
+                                "color": "#FF2222"
+                            }
+                        },
+
+                        //Edges styles
+                        {
+                            selector: 'edge[type=0]',
+                            style: {
+                                'width': 3,
+                                'curve-style': 'bezier',
+                                "content": "data(name)",
+                                "line-color": "#D1D1D1",
+                                'target-arrow-color': '#D1D1D1',
+                                "font-size": "32px",
+                                "color": "#222222",
+                                "loop-direction": "0deg",
+                                'target-arrow-shape': 'triangle',
+                                "loop-sweep": "45deg",
+                                "text-margin-y": "-15px",
+                                "source-text-offset": "50px"
+                            }
+                        },
+                        {
+                            selector: 'edge[type=1]',
+                            style: {
+                                'width': 5,
+                                'curve-style': 'bezier',
+                                "content": "data(name)",
+                                "line-color": "#FFB7B7",
+                                'target-arrow-color': '#FFB7B7',
+                                "font-size": "32px",
+                                "color": "#222222",
+                                "loop-direction": "0deg",
+                                'target-arrow-shape': 'triangle',
+                                "loop-sweep": "45deg",
+                                "text-margin-y": "-15px",
+                                "source-text-offset": "50px"
+                            }
+                        },
+                        {
+                            selector: 'edge[type=2]',
+                            style: {
+                                'width': 7,
+                                'curve-style': 'bezier',
+                                "content": "data(name)",
+                                "line-color": "#FF8A8A",
+                                'target-arrow-color': '#FF8A8A',
+                                "font-size": "32px",
+                                "color": "#222222",
+                                "loop-direction": "0deg",
+                                'target-arrow-shape': 'triangle',
+                                "loop-sweep": "45deg",
+                                "text-margin-y": "-15px",
+                                "source-text-offset": "50px"
+                            }
+                        },
+                        {
+                            selector: 'edge[type=3]',
+                            style: {
+                                'width': 9,
+                                'curve-style': 'bezier',
+                                "content": "data(name)",
+                                "line-color": "#FF5C5C",
+                                'target-arrow-color': '#FF5C5C',
+                                "font-size": "32px",
+                                "color": "#222222",
+                                "loop-direction": "0deg",
+                                'target-arrow-shape': 'triangle',
+                                "loop-sweep": "45deg",
+                                "text-margin-y": "-15px",
+                                "source-text-offset": "50px"
+                            }
+                        },
+                        {
+                            selector: 'edge[type=4]',
+                            style: {
+                                'width': 13,
+                                'curve-style': 'bezier',
+                                "content": "data(name)",
+                                "line-color": "#FF0000",
+                                'target-arrow-color': '#FF0000',
+                                "font-size": "32px",
+                                "color": "#222222",
+                                "loop-direction": "0deg",
+                                'target-arrow-shape': 'triangle',
+                                "loop-sweep": "45deg",
+                                "text-margin-y": "-15px",
+                                "source-text-offset": "50px"
+                            }
+                        },
+                        {
+                            //process start edge
+                            selector: 'edge[type=20]',
+                            style: {
+                                'width': 8,
+                                'curve-style': 'bezier',
+                                'line-color': "#232323",
+                                'target-arrow-color': '#232323',
+                                "font-size": "32px",
+                                "color": "#222222",
+                                "loop-direction": "0deg",
+                                'target-arrow-shape': 'triangle',
+                                "loop-sweep": "45deg",
+                                "text-margin-y": "-15px",
+                                "source-text-offset": "50px",
+                                "text-outline-color": "#222222",
+                                "text-outline-width": "0.3px"
+                            }
+                        },
+                    ],
+                });
+
+            //find max time
+            //nodes max time
+            let nodesMaxTime = 0;
+            for (let i = 0; i < graph.nodeTimes.length; i++) {
+                if (graph.nodeTimes[i] > nodesMaxTime) {
+                    nodesMaxTime = graph.nodeTimes[i];
+                }
+            }
+            graph.nodesMaxTime = nodesMaxTime;
+
+            //edges max time
+            let edgesMaxTime = 0;
+            for (let i = 0; i < graph.relationTimes.length; i++) {
+                for (let j = 0; j < graph.relationTimes[i].length; j++) {
+                    if (graph.relationTimes[i][j] > edgesMaxTime) {
+                        edgesMaxTime = graph.relationTimes[i][j];
+                    }
+                }
+            }
+            graph.edgesMaxTime = edgesMaxTime;
+
+            //Nodes\\
+            for (let i = 0; i < graph.data.nodes.length; i++) {
+                let typeValue = Math.floor(graph.nodeTimes[i] * 4 / nodesMaxTime);
+                cy.add({
+                    data: {
+                        id: i,
+                        label: graph.data.nodes[i] + ' (' + Math.round(graph.nodeTimes[i]) + ')',
+                        type: typeValue
+                    },
+                }
+                );
+            }
+
+            //Edges\\
+            for (let i = 0; i < graph.data.relations.length; i++) {
+                for (let j = 0; j < graph.data.relations[i].to.length; j++) {
+                    let typeValue = Math.round(graph.relationTimes[i][j] * 4 / edgesMaxTime);
+                    cy.add({
+                        data: {
+                            id: 'edge' + graph.data.relations[i].from + '-' + graph.data.relations[i].to[j],
+                            source: graph.data.relations[i].from,
+                            target: graph.data.relations[i].to[j],
+                            name: Math.round(graph.relationTimes[i][j]),
+                            type: typeValue
+                        }
+                    });
+                }
+            }
+
+            //add process start and end nodes
+            for (let i = 0; i < graph.data.startEvents.length; i++) {
+                cy.add({
+                    data: {
+                        id: 'start-' + i,
+                        type: 20
+                    },
+                });
+
+                cy.add({
+                    data: {
+                        id: 'edge_start-' + i,
+                        source: 'start-' + i,
+                        target: graph.data.startEvents[i].node,
+                        type: 20
+                    }
+                });
+            }
+
+            for (let i = 0; i < graph.data.endEvents.length; i++) {
+                cy.add({
+                    data: {
+                        id: 'end-' + i,
+                        type: 20
+                    },
+                });
+
+                cy.add({
+                    data: {
+                        id: 'edge_end-' + i,
+                        source: graph.data.endEvents[i].node,
+                        target: 'end-' + i,
+                        type: 20
+                    }
+                });
+            }
+
+            let customBreadthfirst = {
+                name: 'breadthfirst',
+
+                fit: true, // whether to fit the viewport to the graph
+                directed: true, // whether the tree is directed downwards (or edges can point in any direction if false)
+                padding: 10, // padding on fit
+                circle: false, // put depths in concentric circles if true, put depths top down if false
+                grid: false, // whether to create an even grid into which the DAG is placed (circle:false only)
+                spacingFactor: 0.90, // positive spacing factor, larger => more space between nodes (N.B. n/a if causes overlap)
+                boundingBox: undefined, // constrain layout bounds; { x1, y1, x2, y2 } or { x1, y1, w, h }
+                avoidOverlap: true, // prevents node overlap, may overflow boundingBox if not enough space
+                nodeDimensionsIncludeLabels: false, // Excludes the label when calculating node bounding boxes for the layout algorithm
+                roots: undefined, // the roots of the trees
+                maximal: false, // whether to shift nodes down their natural BFS depths in order to avoid upwards edges (DAGS only)
+                animate: false, // whether to transition the node positions
+                animationDuration: 500, // duration of animation in ms if enabled
+                animationEasing: undefined, // easing of animation if enabled,
+                animateFilter: function (node, i) {
+                    return true;
+                }, // a function that determines whether the node should be animated.  All nodes animated by default on animate enabled.  Non-animated nodes are positioned immediately when the layout starts
+                ready: undefined, // callback on layoutready
+                stop: undefined, // callback on layoutstop
+                transform: function (node, position) {
+                    return position;
+                } // transform a given node position. Useful for changing flow direction in discrete layouts
+            };
+
+            cy.layout(customBreadthfirst).run();
+        }
+
+
+        function renderCytoscapeElementConformance() {
+            cy = cytoscape(
+                {
+                    wheelSensitivity: 0.5,
+                    minZoom: 0.1,
+                    maxZoom: 1,
+                    container: document.getElementById('cyProcess1'),
+                    style: [
+                        //Nodes styles
+                        {
+                            //white
+                            selector: 'node[type=0]',
+                            style: {
+                                "shape": 'rectangle',
+                                "background-color": "#FFFFFF",
+                                "label": "data(label)",
+                                'width': '350',
+                                "height": "40",
+                                "border-width": 4,
+                                "border-color": "#484848",
+                                "font-size": "16px",
+                                "text-valign": "center",
+                                "text-halign": "center",
+                                "text-wrap": "wrap",
+                                "text-max-width": "1000px",
+                                "color": "#222222"
+                            }
+                        },
+                        {
+                            //green with green text
+                            selector: 'node[type=1]',
+                            style: {
+                                "shape": 'rectangle',
+                                "background-color": "#FFFFFF",
+                                "label": "data(label)",
+                                'width': '350',
+                                "height": "40",
+                                "border-width": 4,
+                                "border-color": "#82EB71",
+                                "font-size": "16px",
+                                "text-valign": "center",
+                                "text-halign": "center",
+                                "text-wrap": "wrap",
+                                "text-max-width": "1000px",
+                                "color": "#82EB71",
+                                "text-outline-color": "#222222",
+                                "text-outline-width": "0.15px"
+                            }
+                        },
+                        {
+                            //red with green text
+                            selector: 'node[type=2]',
+                            style: {
+                                "shape": 'rectangle',
+                                "background-color": "#FFFFFF",
+                                "label": "data(label)",
+                                'width': '350',
+                                "height": "40",
+                                "border-width": 4,
+                                "border-color": "#FF4E4E",
+                                "font-size": "16px",
+                                "text-valign": "center",
+                                "text-halign": "center",
+                                "color": "#82EB71"
+                            }
+                        },
+                        {
+                            //green with red text
+                            selector: 'node[type=3]',
+                            style: {
+                                "shape": 'rectangle',
+                                "background-color": "#FFFFFF",
+                                "label": "data(label)",
+                                'width': '350',
+                                "height": "40",
+                                "border-width": 4,
+                                "border-color": "#82EB71",
+                                "font-size": "16px",
+                                "text-valign": "center",
+                                "text-halign": "center",
+                                "text-wrap": "wrap",
+                                "text-max-width": "1000px",
+                                "color": "#FF4E4E"
+                            }
+                        },
+                        {
+                            //red with red text
+                            selector: 'node[type=4]',
+                            style: {
+                                "shape": 'rectangle',
+                                "background-color": "#FFFFFF",
+                                "label": "data(label)",
+                                'width': '350',
+                                "height": "40",
+                                "border-width": 4,
+                                "border-color": "#FF4E4E",
+                                "font-size": "16px",
+                                "text-valign": "center",
+                                "text-halign": "center",
+                                "text-wrap": "wrap",
+                                "text-max-width": "1000px",
+                                "color": "#FF4E4E"
+                            }
+                        },
+                        {
+                            //process start node
+                            selector: 'node[type=20]',
+                            style: {
+                                "shape": 'ellipse',
+                                "background-color": "#3f3f3f",
+                                "border-width": 4,
+                                "border-color": "#131313",
+                                'width': '50',
+                                "height": "50",
+                                "font-size": "16px",
+                                "text-valign": "center",
+                                "text-halign": "center",
+                                "text-wrap": "wrap",
+                                "text-max-width": "1000px",
+                                "color": "#FF2222"
+                            }
+                        },
+
+                        //Edges styles
+                        {
+                            //grey
+                            selector: 'edge[type=0]',
+                            style: {
+                                'width': 5,
+                                'curve-style': 'bezier',
+                                "line-color": "#989898",
+                                'target-arrow-color': '#989898',
+                                "font-size": "32px",
+                                "color": "#222222",
+                                "loop-direction": "0deg",
+                                'target-arrow-shape': 'triangle',
+                                "loop-sweep": "45deg",
+                                "text-margin-y": "-15px",
+                                "source-text-offset": "50px",
+                                "text-outline-color": "#222222",
+                                "text-outline-width": "0.3px"
+                            }
+                        },
+                        {
+                            //green with green text
+                            selector: 'edge[type=1]',
+                            style: {
+                                'width': 5,
+                                'curve-style': 'bezier',
+                                "line-color": "#82EB71",
+                                'target-arrow-color': '#82EB71',
+                                "label": "data(label)",
+                                "font-size": "32px",
+                                "color": "#82EB71",
+                                "loop-direction": "0deg",
+                                'target-arrow-shape': 'triangle',
+                                "loop-sweep": "45deg",
+                                "text-outline-color": "#222222",
+                                "text-outline-width": "0.3px",
+                                "text-rotation": "0deg",
+                                "text-margin-y": "-20px"
+                            }
+                        },
+                        {
+                            //red with green text
+                            selector: 'edge[type=2]',
+                            style: {
+                                'width': 5,
+                                'curve-style': 'bezier',
+                                "line-color": "#FF4E4E",
+                                'target-arrow-color': '#FF4E4E',
+                                "content": "data(label)",
+                                "font-size": "32px",
+                                "color": "#82EB71",
+                                "loop-direction": "0deg",
+                                'target-arrow-shape': 'triangle',
+                                "loop-sweep": "45deg",
+                                "text-margin-y": "-15px",
+                                "source-text-offset": "50px",
+                                "text-outline-color": "#222222",
+                                "text-outline-width": "0.3px",
+                                "text-rotation": "0deg"
+                            }
+                        },
+                        {
+                            //red with red text
+                            selector: 'edge[type=4]',
+                            style: {
+                                'width': 5,
+                                'curve-style': 'bezier',
+                                "line-color": "#FF4E4E",
+                                'target-arrow-color': '#FF4E4E',
+                                "content": "data(label)",
+                                "font-size": "32px",
+                                "color": "#FF4E4E",
+                                "loop-direction": "0deg",
+                                'target-arrow-shape': 'triangle',
+                                "loop-sweep": "45deg",
+                                "text-margin-y": "-15px",
+                                "source-text-offset": "50px",
+                                "text-outline-color": "#222222",
+                                "text-outline-width": "0.3px",
+                                "text-rotation": "0deg"
+                            }
+                        },
+                        {
+                            //green with red text
+                            selector: 'edge[type=5]',
+                            style: {
+                                'width': 5,
+                                'curve-style': 'bezier',
+                                "line-color": "#82EB71",
+                                'target-arrow-color': '#82EB71',
+                                "content": "data(label)",
+                                "font-size": "32px",
+                                "color": "#FF4E4E",
+                                "loop-direction": "0deg",
+                                'target-arrow-shape': 'triangle',
+                                "loop-sweep": "45deg",
+                                "text-margin-y": "-15px",
+                                "source-text-offset": "50px",
+                                "text-outline-color": "#222222",
+                                "text-outline-width": "0.3px",
+                                "text-rotation": "0deg"
+                            }
+                        },
+
+                        {
+                            //green with green text
+                            selector: 'edge[type=6]',
+                            style: {
+                                'width': 5,
+                                'curve-style': 'bezier',
+                                "line-color": "#82EB71",
+                                'target-arrow-color': '#82EB71',
+                                "label": "data(label)",
+                                "font-size": "32px",
+                                "color": "#82EB71",
+                                "loop-direction": "0deg",
+                                'target-arrow-shape': 'triangle',
+                                "loop-sweep": "45deg",
+                                "text-outline-color": "#222222",
+                                "text-outline-width": "0.3px",
+                                "text-margin-y": "20px"
+                            }
+                        },
+
+
+                        //temporary type to flag node as having non conform time, and to later be changed to type 5 if it is associated to the case (if not stays grey)
+                        {
+                            selector: 'edge[type=10]',
+                            style: {
+                                'width': 5,
+                                'curve-style': 'bezier',
+                                "line-color": "#989898",
+                                'target-arrow-color': '#989898',
+                                "font-size": "32px",
+                                "color": "#222222",
+                                "loop-direction": "0deg",
+                                'target-arrow-shape': 'triangle',
+                                "loop-sweep": "45deg",
+                                "text-margin-y": "-15px",
+                                "source-text-offset": "50px",
+                                "text-outline-color": "#222222",
+                                "text-outline-width": "0.3px",
+                                "text-rotation": "0deg"
+                            }
+                        },
+                        {
+                            //process start edge
+                            selector: 'edge[type=20]',
+                            style: {
+                                'width': 8,
+                                'curve-style': 'bezier',
+                                'line-color': "#232323",
+                                'target-arrow-color': '#232323',
+                                "font-size": "32px",
+                                "color": "#222222",
+                                "loop-direction": "0deg",
+                                'target-arrow-shape': 'triangle',
+                                "loop-sweep": "45deg",
+                                "text-margin-y": "-15px",
+                                "source-text-offset": "50px",
+                                "text-outline-color": "#222222",
+                                "text-outline-width": "0.3px"
+                            }
+                        },
+                    ],
+                });
+
+            //Nodes\\
+            for (let i = 0; i < graph.data.nodes.length; i++) {
+                //determinar cor do nó
+                let typeValue = 0;
+
+                //verificar se faz parte da Path do case escolhido -> verde
+                for (let k = 0; k < graph.caseData.nodes.length; k++) {
+                    if (graph.caseData.nodes[k].node === i) {
+                        typeValue = 1;
+                    }
+                }
+
+                //verificar se tempo execução é não conforme -> texto vermelho
+                //procurar a ocorrência do nó em questão com maior duração (pior caso)
+                let maxDuration = {};
+                maxDuration.days = 0;
+                maxDuration.hours = 0;
+                maxDuration.minutes = 0;
+                maxDuration.seconds = 0;
+
+                for (let k = 0; k < graph.caseData.nodes.length; k++) {
+                    if (graph.caseData.nodes[k].node === i && convertToSeconds(graph.caseData.nodes[k].duration) > convertToSeconds(maxDuration)) {
+                        maxDuration = graph.caseData.nodes[k].duration;
+                    }
+                }
+
+                if (convertToSeconds(maxDuration) > convertToSeconds(graph.data.taskDurations[i].duration)) {
+                    typeValue = 3;
+                }
+
+                //format label acording to time value
+                let prevLabel;
+                if (graph.data.taskDurations[i].duration.days !== 0) {
+                    prevLabel = "\n Prev: " + graph.data.taskDurations[i].duration.days + "D " + graph.data.taskDurations[i].duration.hours + "H " + graph.data.taskDurations[i].duration.minutes + "M " + graph.data.taskDurations[i].duration.seconds + "S";
+                } else if (graph.data.taskDurations[i].duration.hours !== 0) {
+                    prevLabel = "\n Prev: " + graph.data.taskDurations[i].duration.hours + "H " + graph.data.taskDurations[i].duration.minutes + "M " + graph.data.taskDurations[i].duration.seconds + "S";
+                } else if (graph.data.taskDurations[i].duration.minutes !== 0) {
+                    prevLabel = "\n Prev: " + graph.data.taskDurations[i].duration.minutes + "M " + graph.data.taskDurations[i].duration.seconds + "S";
+                } else {
+                    prevLabel = "\n Prev: " + graph.data.taskDurations[i].duration.seconds + "S";
+                }
+
+                let realLabel;
+                if (graph.data.taskDurations[i].duration.days !== 0) {
+                    realLabel = " / Real: " + maxDuration.days + "D " + maxDuration.hours + "H " + maxDuration.minutes + "M " + maxDuration.seconds + "S";
+                } else if (graph.data.taskDurations[i].duration.hours !== 0) {
+                    realLabel = " / Real: " + maxDuration.hours + "H " + maxDuration.minutes + "M " + maxDuration.seconds + "S";
+                } else if (graph.data.taskDurations[i].duration.minutes !== 0) {
+                    realLabel = " / Real: " + maxDuration.minutes + "M " + maxDuration.seconds + "S";
+                } else {
+                    realLabel = " / Real: " + maxDuration.seconds + "S";
+                }
+
+                //se typevalue for 0 (não faz parte do caso em análise) formata texto de forma diferente
+                if (typeValue === 0) {
+                    cy.add({
+                        data: {
+                            id: i,
+                            label: graph.data.nodes[i] + prevLabel,
+                            type: typeValue
+                        },
+                    }
+                    );
+                } else {
+                    cy.add({
+                        data: {
+                            id: i,
+                            label: graph.data.nodes[i] + prevLabel + realLabel,
+                            type: typeValue
+                        },
+                    }
+                    );
+                }
+
+            }
+
+            //Edges\\
+            for (let i = 0; i < graph.data.relations.length; i++) {
+                for (let j = 0; j < graph.data.relations[i].to.length; j++) {
+
+                    //search for max duration for this relation, if it occurs more then once
+                    let maxDuration = {};
+                    maxDuration.days = 0;
+                    maxDuration.hours = 0;
+                    maxDuration.minutes = 0;
+                    maxDuration.seconds = 0;
+                    let edgeTypeValue = 0;
+                    for (let k = 0; k < graph.caseData.relations.length; k++) {
+                        if (graph.caseData.relations[k].from === graph.data.relations[i].from) {
+                            for (let l = 0; l < graph.caseData.relations[k].to.length; l++) {
+                                if (graph.caseData.relations[k].to[l].node === graph.data.relations[i].to[j].node) {
+                                    if (convertToSeconds(graph.caseData.relations[k].to[l].duration) > convertToSeconds(maxDuration)) {
+                                        maxDuration = graph.caseData.relations[k].to[l].duration;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    //mark edge as having nonconform time
+                    if (convertToSeconds(maxDuration) > convertToSeconds(graph.data.relations[i].to[j].duration)) {
+                        edgeTypeValue = 10;
+                    }
+
+                    let prevLabel = 0;
+                    if (graph.data.relations[i].to[j].duration.days !== 0) {
+                        prevLabel = "\n Prev: " + graph.data.relations[i].to[j].duration.days + "D " + graph.data.relations[i].to[j].duration.hours + "H " + graph.data.relations[i].to[j].duration.minutes + "M ";
+                    } else if (graph.data.relations[i].to[j].duration.hours !== 0) {
+                        prevLabel = "\n Prev: " + graph.data.relations[i].to[j].duration.hours + "H " + graph.data.relations[i].to[j].duration.minutes + "M ";
+                    } else if (graph.data.relations[i].to[j].duration.minutes !== 0) {
+                        prevLabel = "\n Prev: " + graph.data.relations[i].to[j].duration.minutes + "M " + graph.data.relations[i].to[j].duration.seconds + "S";
+                    } else {
+                        prevLabel = "\n Prev: " + graph.data.relations[i].to[j].duration.seconds + "S";
+                    }
+
+                    let realLabel = 0;
+                    if (maxDuration.days !== 0) {
+                        realLabel = "Real: " + maxDuration.days + "D " + maxDuration.hours + "H " + maxDuration.minutes + "M ";
+                    } else if (maxDuration.hours !== 0) {
+                        realLabel = "Real: " + maxDuration.hours + "H " + maxDuration.minutes + "M ";
+                    } else if (maxDuration.minutes !== 0) {
+                        realLabel = "Real: " + maxDuration.minutes + "M " + maxDuration.seconds + "S";
+                    } else {
+                        realLabel = "Real: " + maxDuration.seconds + "S";
+                    }
+
+                    cy.add({
+                        data: {
+                            id: 'edge' + graph.data.relations[i].from + '-' + graph.data.relations[i].to[j].node,
+                            source: graph.data.relations[i].from,
+                            target: graph.data.relations[i].to[j].node,
+                            label: prevLabel + " / " + realLabel,
+                            type: edgeTypeValue
+                        }
+                    });
+                }
+            }
+
+            let edges = [];
+            //identify realtions which are part of the case(s) selected
+            for (let i = 0; i < graph.caseData.relations.length; i++) {
+                for (let j = 0; j < graph.caseData.relations[i].to.length; j++) {
+
+                    //check if already exists connection between the two nodes, in order to shift the text slightly so it doesn't overlap
+                    let control = 0;
+                    let edge = graph.caseData.relations[i].from + "-" + graph.caseData.relations[i].to[j].node;
+                    for (let k = 0; k < edges.length; k++) {
+                        if (edges[k] === graph.caseData.relations[i].to[j].node + "-" + graph.caseData.relations[i].from) {
+                            control = 1;
+                        }
+                    }
+                    edges.push(edge);
+
+
+                    if (cy.getElementById("edge" + graph.caseData.relations[i].from + "-" + graph.caseData.relations[i].to[j].node).data('type') === 10) {
+                        cy.getElementById("edge" + graph.caseData.relations[i].from + "-" + graph.caseData.relations[i].to[j].node).data('type', 5);
+                    } else {
+                        if (control === 0) {
+                            cy.getElementById("edge" + graph.caseData.relations[i].from + "-" + graph.caseData.relations[i].to[j].node).data('type', 1);
+                        } else {
+                            cy.getElementById("edge" + graph.caseData.relations[i].from + "-" + graph.caseData.relations[i].to[j].node).data('type', 6);
+                        }
+
+                    }
+                }
+            }
+
+            //change nodes which are outliers to red with green or red text
+            for (let i = 0; i < graph.data.deviations.nodes.length; i++) {
+                if (cy.getElementById(graph.data.deviations.nodes[i].toString()).data('type') === 3) {
+                    cy.getElementById(graph.data.deviations.nodes[i].toString()).data('type', 4);
+                } else if (cy.getElementById(graph.data.deviations.nodes[i].toString()).data('type') === 1) {
+                    cy.getElementById(graph.data.deviations.nodes[i].toString()).data('type', 2);
+                } else {
+                    //cy.remove(cy.getElementById("edge" + graph.data.deviations.nodes[i].from + "-" + graph.data.deviations.nodes[i].to))
+                }
+            }
+
+            //change edges which are outliers to red with green or red text
+            for (let i = 0; i < graph.data.deviations.relations.length; i++) {
+                if (cy.getElementById("edge" + graph.data.deviations.relations[i].from + "-" + graph.data.deviations.relations[i].to).data('type') === 5) {
+                    cy.getElementById("edge" + graph.data.deviations.relations[i].from + "-" + graph.data.deviations.relations[i].to).data('type', 4);
+                } else if (cy.getElementById("edge" + graph.data.deviations.relations[i].from + "-" + graph.data.deviations.relations[i].to).data('type') === 1) {
+                    cy.getElementById("edge" + graph.data.deviations.relations[i].from + "-" + graph.data.deviations.relations[i].to).data('type', 2);
+                } else {
+                    //cy.remove(cy.getElementById("edge" + graph.data.deviations.relations[i].from + "-" + graph.data.deviations.relations[i].to))
+                }
+            }
+
+            /*cy.getElementById("edge6-18_conformance").data('name', "8")*/
+
+            //add process start and end nodes
+            for (let i = 0; i < graph.caseData.startEvents.length; i++) {
+                cy.add({
+                    data: {
+                        id: 'start-' + i,
+                        type: 20
+                    },
+                });
+
+                cy.add({
+                    data: {
+                        id: 'edge_start-' + i,
+                        source: 'start-' + i,
+                        target: graph.caseData.startEvents[i].node,
+                        type: 20
+                    }
+                });
+            }
+
+            for (let i = 0; i < graph.caseData.endEvents.length; i++) {
+                cy.add({
+                    data: {
+                        id: 'end-' + i,
+                        type: 20
+                    },
+                });
+
+                cy.add({
+                    data: {
+                        id: 'edge_end-' + i,
+                        source: graph.caseData.endEvents[i].node,
+                        target: 'end-' + i,
+                        type: 20
+                    }
+                });
+            }
+
+
+            let customBreadthfirst = {
+                name: 'breadthfirst',
+
+                fit: true, // whether to fit the viewport to the graph
+                directed: true, // whether the tree is directed downwards (or edges can point in any direction if false)
+                padding: 10, // padding on fit
+                circle: false, // put depths in concentric circles if true, put depths top down if false
+                grid: false, // whether to create an even grid into which the DAG is placed (circle:false only)
+                spacingFactor: 0.90, // positive spacing factor, larger => more space between nodes (N.B. n/a if causes overlap)
+                boundingBox: undefined, // constrain layout bounds; { x1, y1, x2, y2 } or { x1, y1, w, h }
+                avoidOverlap: true, // prevents node overlap, may overflow boundingBox if not enough space
+                nodeDimensionsIncludeLabels: false, // Excludes the label when calculating node bounding boxes for the layout algorithm
+                roots: undefined, // the roots of the trees
+                maximal: false, // whether to shift nodes down their natural BFS depths in order to avoid upwards edges (DAGS only)
+                animate: false, // whether to transition the node positions
+                animationDuration: 500, // duration of animation in ms if enabled
+                animationEasing: undefined, // easing of animation if enabled,
+                animateFilter: function (node, i) {
+                    return true;
+                }, // a function that determines whether the node should be animated.  All nodes animated by default on animate enabled.  Non-animated nodes are positioned immediately when the layout starts
+                ready: undefined, // callback on layoutready
+                stop: undefined, // callback on layoutstop
+                transform: function (node, position) {
+                    return position;
+                } // transform a given node position. Useful for changing flow direction in discrete layouts
+            };
+            cy.layout(customBreadthfirst).run();
+        }
+        /*
+        axios.post('conformance/log/' + this.state.activeLog, {
+            cases: this.props.activeCases,
+            startDate: this.props.dateStart,
+            endDate: this.props.dateEnd,
+            activities: this.props.activitiesSelect,
+            resources: this.props.resourcesSelect,
+            nodes: res.data.nodes
+        })*/
+
+        function convertToSeconds(duration) {
+            return duration.days * 86400 + duration.hours * 3600 + duration.minutes * 60 + duration.seconds;
+        }
+
+        $("#centerButton").click(function () {
+            if (typeof cy !== "undefined") {
+                cy.fit();
+            }
+        });
+        $("#frequencyButton").click(function () {
+            graph.typeGraph = "Frequency";
+            frequencyButton.disabled = true;
+            conformanceButton.disabled = false;
+            performanceButton.disabled = false;
+            conformanceStats.style.display = "none";
+            renderCytoscapeElementFrequency();
+        });
+        $("#performanceButton").click(function () {
+            graph.typeGraph = "Performance";
+            frequencyButton.disabled = false;
+            conformanceButton.disabled = false;
+            performanceButton.disabled = true;
+            conformanceStats.style.display = "none";
+            renderCytoscapeElementPerformance();
+        });
+        $("#conformanceButton").click(function () {
+            graph.data = data.dataConformance;
+            graph.typeGraph = "Conformance";
+            frequencyButton.disabled = false;
+            performanceButton.disabled = false;
+            conformanceButton.disabled = true;
+            if (conformanceStats.style.display === "none") {
+                conformanceStats.style.display = "block";
+            }
+            //renderCytoscapeElementConformance();
+        });
+        $("#algorithmSelected").change(function () {
+            if ($("#algorithmSelected").val() != graph.typeAlgth) {
+                if ($("#algorithmSelected").val() == 0) {
+                    graph.data = data.dataAlpha;
+                    graph.typeAlgth = 0;
+                }else {
+                    graph.data = data.dataHeuristic;
+                    graph.typeAlgth = 1;
+                }
+
+                if (graph.typeGraph == "Frequency") {
+                    renderCytoscapeElementFrequency();
+                } else if (graph.typeGraph == "Performance") {
+                    renderCytoscapeElementPerformance();
+                } else {
+                    //renderCytoscapeElementConformance();
+                }
+            }
+        });
+    });
+</script>
+<script src="@Url.Content("~/js/AlphaMiner.js")"></script>
