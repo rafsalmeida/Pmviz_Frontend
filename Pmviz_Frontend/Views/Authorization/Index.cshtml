@@ -35,7 +35,7 @@
     <div class="demo-section k-content wide">
         <form action='@Url.Action("Save","Authorization")' method="post">
             <input type="hidden" name="roleChosen" value="@role" />
-            <label for="allowed" id="employees">Allowed</label>
+            <label for="allowed" id="authorization">Allowed</label>
             <label for="notAllowed">Not Allowed</label>
             <br />
             @(Html.Kendo().ListBox()
@@ -76,7 +76,7 @@
     }
 </script>
 <style>
-    #employees {
+    #authorization {
         width: 270px;
     }
 

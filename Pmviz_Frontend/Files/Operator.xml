@@ -2,7 +2,6 @@
 <root>
   <path>
   </path>
-  <path>/log</path>
   <path>/log/activities</path>
   <path>/log/resources</path>
   <path>/activity</path>
