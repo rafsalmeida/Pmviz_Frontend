@@ -44,6 +44,7 @@ namespace Pmviz_Frontend
                 // https://github.com/aspnet/Announcements/issues/194
                 .AddNewtonsoftJson(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver());
 
+
             // Add Kendo UI services to the services container
             services.AddKendo();
             services.AddDistributedMemoryCache();
@@ -116,6 +117,9 @@ namespace Pmviz_Frontend
                 endpoints.MapControllerRoute(
                     name: "authorization",
                     pattern: "{controller=Authorization}/{action=Index}/{id?}");
+                endpoints.MapControllerRoute(
+                    name: "tag",
+                    pattern: "{controller=Tag}/{action=Index}/{id?}");
 
             });
         }

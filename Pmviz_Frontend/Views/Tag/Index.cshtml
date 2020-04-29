@@ -1,0 +1,81 @@
+﻿@{
+    IEnumerable<Pmviz_Frontend.Models.Mould> moulds = ViewData["moulds"] as IEnumerable<Pmviz_Frontend.Models.Mould>;
+    IEnumerable<Pmviz_Frontend.Models.Part> parts = ViewData["parts"] as IEnumerable<Pmviz_Frontend.Models.Part>;
+
+}
+@{
+    ViewData["Title"] = "Tag";
+}
+
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @ViewBag.Error
+    </div>
+}
+
+<div class="container">
+    <form method="post" id="ticketsForm" kendo-validator="true">
+        <label for="role" class="required">Choose the mould of the parts you want to tag</label>
+        <br />
+        <select name="mouldSelected" class="inputfield" required>
+            @if (moulds != null)
+            {
+                @foreach (var mould in moulds)
+                {
+                    <option value="@mould.CodePart">@mould.Description</option>
+                }
+
+            }
+
+        </select>
+        <button class="k-button k-primary" type="submit">Submit</button>
+    </form>
+</div>
+<br />
+@if (parts != null)
+{
+<div>
+
+    @if (parts.Count() > 0)
+    {
+        @(Html.Kendo().Grid(parts)
+        .Name("Grid")
+        .Columns(columns =>
+        {
+            columns.Bound(p => p.Code).Title("Code");
+            columns.Bound(p => p.Description).Title("Description");
+            columns.Command(command => command.Custom("Tag").Click("tag")).Width(110);
+
+        })
+        .Pageable()
+        .Navigatable()
+        .Sortable()
+        .Groupable()
+        .Filterable()
+        .Resizable(resize => resize.Columns(true))
+        .Scrollable(s => s.Height("auto"))
+        .DataSource(dataSource => dataSource
+            .Ajax()
+            .PageSize(20)
+            .ServerOperation(false)
+         )
+        )
+
+    }
+    else
+    {
+        <div class="alert alert-danger" role="alert">
+            This mould has no parts associated!
+        </div>
+
+    }
+
+</div>
+}
+
+<script type="text/javascript">
+    function tag() {
+    }
+</script>
+
