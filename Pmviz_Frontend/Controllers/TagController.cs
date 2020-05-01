@@ -36,39 +36,40 @@ namespace Pmviz_Frontend.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Index(int mouldSelected, List<Mould> moulds)
+        public async Task<IActionResult> Index(int mouldSelected)
         {
             using (var httpClient = new HttpClient())
             {
                 // GET ALL MOULDS
-                /*using (var response = await httpClient.GetAsync("http://localhost:8080/api/moulds"))
+                using (var response = await httpClient.GetAsync("http://localhost:8080/api/moulds"))
                 {
+                    var moulds = new List<Mould>();
                     string apiResponse = await response.Content.ReadAsStringAsync();
                     var status = response.IsSuccessStatusCode;
                     if (status == true)
                     {
-                        var moulds = JsonConvert.DeserializeObject<List<Mould>>(apiResponse);
+                        moulds = JsonConvert.DeserializeObject<List<Mould>>(apiResponse);
                         ViewData["moulds"] = moulds;
-                        return View();
+                    } else
+                    {
+                        ViewBag.Error = "Moulds not available. Please try again later.";
                     }
-                }*/
+                }
                 // GET ALL PARTS FROM THAT MOULD
                 using (var response = await httpClient.GetAsync("http://localhost:8080/api/moulds/" + mouldSelected + "/parts"))
                 {
                     string apiResponse = await response.Content.ReadAsStringAsync();
-                    System.Diagnostics.Debug.WriteLine(moulds.Count());
 
                     var status = response.IsSuccessStatusCode;
                     if (status == true)
                     {
                         var parts = JsonConvert.DeserializeObject<List<Part>>(apiResponse);
                         ViewData["parts"] = parts;
-                        ViewData["moulds"] = moulds;
                         return View();
                     }
                     else
                     {
-                        ViewBag.Error = "Parts not available. Please try again later.";
+                        ViewBag.ErrorPart = "Parts not available. Please try again later.";
                         return View();
                     }
                 }

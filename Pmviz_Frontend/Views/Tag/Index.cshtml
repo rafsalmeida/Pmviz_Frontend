@@ -33,45 +33,52 @@
     </form>
 </div>
 <br />
+
+@if (ViewBag.ErrorPart != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @ViewBag.ErrorPart
+    </div>
+}
 @if (parts != null)
 {
-<div>
+    <div>
 
-    @if (parts.Count() > 0)
-    {
-        @(Html.Kendo().Grid(parts)
-        .Name("Grid")
-        .Columns(columns =>
+        @if (parts.Count() > 0)
         {
-            columns.Bound(p => p.Code).Title("Code");
-            columns.Bound(p => p.Description).Title("Description");
-            columns.Command(command => command.Custom("Tag").Click("tag")).Width(110);
+            @(Html.Kendo().Grid(parts)
+            .Name("Grid")
+            .Columns(columns =>
+            {
+                columns.Bound(p => p.Code).Title("Code");
+                columns.Bound(p => p.Description).Title("Description");
+                columns.Command(command => command.Custom("Tag").Click("tag")).Width(110);
 
-        })
-        .Pageable()
-        .Navigatable()
-        .Sortable()
-        .Groupable()
-        .Filterable()
-        .Resizable(resize => resize.Columns(true))
-        .Scrollable(s => s.Height("auto"))
-        .DataSource(dataSource => dataSource
-            .Ajax()
-            .PageSize(20)
-            .ServerOperation(false)
-         )
-        )
+            })
+            .Pageable()
+            .Navigatable()
+            .Sortable()
+            .Groupable()
+            .Filterable()
+            .Resizable(resize => resize.Columns(true))
+            .Scrollable(s => s.Height("auto"))
+            .DataSource(dataSource => dataSource
+                .Ajax()
+                .PageSize(20)
+                .ServerOperation(false)
+             )
+            )
 
-    }
-    else
-    {
-        <div class="alert alert-danger" role="alert">
-            This mould has no parts associated!
-        </div>
+        }
+        else
+        {
+            <div class="alert alert-danger" role="alert">
+                This mould has no parts associated!
+            </div>
 
-    }
+        }
 
-</div>
+    </div>
 }
 
 <script type="text/javascript">
