@@ -114,7 +114,7 @@ namespace Pmviz_Frontend.Controllers
                 var obj = JObject.Parse(rfidJson);
                 var rfid = obj["rfid"];
 
-                //SubmitRFID(codePart, rfid.ToString());
+                SubmitRFID(codePart, rfid.ToString());
 
 
             }
@@ -122,13 +122,9 @@ namespace Pmviz_Frontend.Controllers
 
         public async void SubmitRFID(string partCode, string rfid)
         {
-            /*Part part = new Part()
-            {
-                Code = partCode,
-                Rfid = rfid
-            };*/
+            string payload = JsonConvert.SerializeObject("");
 
-            var content = new StringContent("");
+            var content = new StringContent(payload, Encoding.UTF8, "application/json");
 
             using (var httpClient = new HttpClient())
             {
@@ -140,12 +136,10 @@ namespace Pmviz_Frontend.Controllers
                     if (status == true)
                     {
                         System.Diagnostics.Debug.WriteLine(apiResponse);
-                        
                     }
                     else
                     {
-                        System.Diagnostics.Debug.WriteLine(apiResponse);
-                        ViewBag.Error = "Moulds not available. Please try again later.";;
+                        ViewBag.Error = "Error saving the RFID. Please try again later!";;
                     }
                 }
             }
@@ -181,7 +175,7 @@ namespace Pmviz_Frontend.Controllers
         {
             string msg = Encoding.UTF8.GetString(e.Message);
 
-            // FALTA VALIDAÇÃO PARA NÂO REBENTAR
+            // FALTA VALIDAÇÃO PARA NÂO REBENTAR E DAR UNSUBSCRIBE E DISCONNECT
 
 
             rfidJson = msg;
