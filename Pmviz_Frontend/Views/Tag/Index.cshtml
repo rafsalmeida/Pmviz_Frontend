@@ -52,6 +52,7 @@
             {
                 columns.Bound(p => p.Code).Title("Code");
                 columns.Bound(p => p.Description).Title("Description");
+                columns.Bound(p => p.Rfid).Title("RFID");
                 columns.Command(command => command.Custom("Tag").Click("tag")).Width(110);
 
             })
@@ -82,7 +83,11 @@
 }
 
 <script type="text/javascript">
-    function tag() {
+    function tag(e) {
+        e.preventDefault();
+        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        console.log(dataItem.Code)
+        window.location = '@Url.Action("Tag","Tag")?id=' + dataItem.Code
     }
 </script>
 

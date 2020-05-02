@@ -17,5 +17,8 @@ namespace Pmviz_Frontend.Models
         [DataMember]
         //[JsonProperty("description")]
         public string Description { get; set; }
+
+        [DataMember]
+        public string Rfid { get; set; }
     }
 }
