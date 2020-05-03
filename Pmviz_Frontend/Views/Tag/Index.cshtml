@@ -7,6 +7,7 @@
     ViewData["Title"] = "Tag";
 }
 
+
 @if (ViewBag.Error != null)
 {
     <div class="alert alert-danger" role="alert">
@@ -33,6 +34,33 @@
     </form>
 </div>
 <br />
+@if (TempData["ErrorConn"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @TempData["ErrorConn"]
+    </div>
+}
+
+@if (TempData["RFID"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @TempData["RFID"]
+    </div>
+}
+
+@if (TempData["SuccessRFID"] != null)
+{
+    <div class="alert alert-success" role="alert">
+        @TempData["SuccessRFID"]
+    </div>
+}
+
+@if (TempData["Cancel"] != null)
+{
+    <div class="alert alert-success" role="alert">
+        @TempData["Cancel"]
+    </div>
+}
 
 @if (ViewBag.ErrorPart != null)
 {
@@ -86,8 +114,13 @@
     function tag(e) {
         e.preventDefault();
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
-        console.log(dataItem.Code)
         window.location = '@Url.Action("Tag","Tag")?id=' + dataItem.Code
+        var r = confirm("Please wait while the part is being tagged! The page will reload when the part is correctly tagged. If you want to cancel, please click on the Cancel button. If not, click OK.");
+        if (!r) {
+            window.location = '@Url.Action("Cancel","Tag")?id=' + dataItem.Code
+        }
     }
 </script>
+
+
 

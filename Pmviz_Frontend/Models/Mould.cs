@@ -12,7 +12,7 @@ namespace Pmviz_Frontend.Models
     {
         [DataMember]
         [JsonProperty("codePart")]
-        public int CodePart { get; set; }
+        public string CodePart { get; set; }
 
         [DataMember]
         [JsonProperty("description")]
