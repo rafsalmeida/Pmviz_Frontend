@@ -185,9 +185,10 @@ namespace Pmviz_Frontend.Controllers
                 return RedirectToAction("Index", "Tag");
             } else
             {
-                string topic = "CancelTagPart";
+                string topic = "cancelTagPart";
+
                 mClient.Publish(topic, Encoding.UTF8.GetBytes(codePart), MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE, true);
-                mClient.Disconnect();
+                //mClient.Disconnect();
 
                 TempData["Cancel"] = "Cancelation of tagging part "+codePart +" successfull.";
 
@@ -208,19 +209,29 @@ namespace Pmviz_Frontend.Controllers
 
         public void Subscribe(MqttClient mClient, string codePart)
         {
-            string topic = "part" + codePart;
-
-            byte[] qosLevels = { MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE };
-            mClient.Subscribe(new string[] { topic }, qosLevels);
-
-            do
+            try
             {
-                mClient.MqttMsgPublishReceived += MClient_MqttMsgPublishedReceived;
+                string topic = "part" + codePart;
 
-            } while (rfidJson == "");
+                byte[] qosLevels = { MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE };
+                mClient.Subscribe(new string[] { topic }, qosLevels);
+
+                do
+                {
+                    mClient.MqttMsgPublishReceived += MClient_MqttMsgPublishedReceived;
+
+                } while (rfidJson == "");
+                return;
 
 
-            return;
+            }
+            catch (System.OutOfMemoryException e)
+            {
+                return;
+            }
+
+
+
         }
 
         private void MClient_MqttMsgPublishedReceived(object sender, MqttMsgPublishEventArgs e)
