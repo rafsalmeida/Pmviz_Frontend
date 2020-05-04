@@ -18,17 +18,12 @@ namespace PmvizFrontend.Controllers
             List<Log> logList = new List<Log>();
             using (var httpClient = new HttpClient())
             {
-                using (var response = await httpClient.GetAsync("http://localhost:8080/api/logs"))
+                using (var response = await httpClient.GetAsync("http://localhost:8080/api/processes"))
                 {
                     string apiResponse = await response.Content.ReadAsStringAsync();
                     var status = response.IsSuccessStatusCode;
                     if(status == true)
                     {
-                        //get the role
-                        var obj = JObject.Parse(HttpContext.Session.GetString("userDetails"));
-                        var role = obj["role"];
-                        ViewBag.Role = role.ToString();
-
                         // get the list of logs
                         logList = JsonConvert.DeserializeObject<List<Log>>(apiResponse);
                         return View(logList);

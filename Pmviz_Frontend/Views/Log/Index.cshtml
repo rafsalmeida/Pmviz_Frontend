@@ -1,8 +1,8 @@
 ﻿@model IEnumerable<Pmviz_Frontend.Models.Log>
 @using Kendo.Mvc.UI
-@{ Layout = "_LayoutBoot"; ViewBag.Title = "All Logs";}
+@{ Layout = "_LayoutBoot"; ViewBag.Title = "All Processes";}
 
-<h4 style="text-align:center">All Logs</h4>
+<h4 style="text-align:center">All Processes</h4>
 <div class="container k-content" style="height:auto">
     @(Html.Kendo().Grid(Model)
         .Name("Grid")
@@ -15,12 +15,10 @@
             columns.Bound(l => l.NumberOfCases).Title("Number of Cases");
             columns.Bound(l => l.StartDate).Title("Start Date").Width(130);
             columns.Bound(l => l.EndDate).Title("End Date").Width(130);
-            if (ViewBag.Role == "Manager")
-            {
-                columns.Command(command => command.Custom("Details").Click("showDetails")).Width(110);
-                columns.Command(command => command.Custom("Activities").Click("showActivities")).Width(110);
-                columns.Command(command => command.Custom("Resources").Click("showResources")).Width(120);
-            }
+            columns.Command(command => command.Custom("Details").Click("showDetails")).Width(110);
+            columns.Command(command => command.Custom("Activities").Click("showActivities")).Width(110);
+            columns.Command(command => command.Custom("Resources").Click("showResources")).Width(120);
+            
         })
         .Pageable()
         .Navigatable()

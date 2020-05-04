@@ -1,0 +1,16 @@
+﻿@{
+    IEnumerable<Pmviz_Frontend.Models.Activity> activities = ViewData["activities"] as IEnumerable<Pmviz_Frontend.Models.Activity>;
+    string processId = ViewData["processId"] as string;
+}
+@{
+    ViewData["Title"] = "My Statistics";
+}
+
+<h4 style="text-align:center">My Statistics</h4>
+@if (ViewBag.ErrorActivity != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @ViewBag.ErrorActivity
+    </div>
+}
+
