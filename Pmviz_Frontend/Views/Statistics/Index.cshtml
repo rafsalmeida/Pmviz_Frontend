@@ -18,10 +18,9 @@
             .Name("Grid")
             .Columns(columns =>
             {
-                columns.Bound(l => l.Id).Title("Id");
                 columns.Bound(l => l.Name).Title("Name");
                 columns.Bound(l => l.Description).Title("Description");
-                columns.Command(command => command.Custom("My Statistics").Click("showStats")).Width(110);
+                columns.Command(command => command.Custom("My Statistics").Click("showStats"));
 
             })
             .Pageable()
@@ -39,10 +38,6 @@
             .HtmlAttributes(new { style = "width:1000px" })
 
         )
-        @(Html.Kendo().Button()
-        .Name("backButton")
-        .HtmlAttributes(new { type = "button", @class = "k-primary" })
-        ))
     </div>
 
 

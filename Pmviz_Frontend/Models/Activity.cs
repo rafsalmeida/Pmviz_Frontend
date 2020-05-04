@@ -9,6 +9,10 @@ namespace Pmviz_Frontend.Models
     [DataContract]
     public class Activity
     {
+
+        [DataMember]
+        public int Id { get; set; }
+
         [DataMember]
         public string Name { get; set; }
     }

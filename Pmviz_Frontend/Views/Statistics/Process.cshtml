@@ -14,3 +14,22 @@
     </div>
 }
 
+<div class="container">
+    <form method="post" id="ticketsForm" kendo-validator="true">
+        <label for="role" class="required">Choose an activity to see your statistics:</label>
+        <br />
+        <select name="activity" class="inputfield" required>
+            @if (activities != null)
+            {
+                @foreach (var act in activities)
+                {
+                    <option value="@act.Id">@act.Name</option>
+                }
+
+            }
+
+        </select>
+        <button class="k-button k-primary" type="submit">Submit</button>
+    </form>
+</div>
+
