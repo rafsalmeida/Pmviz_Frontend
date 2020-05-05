@@ -97,7 +97,6 @@ namespace Pmviz_Frontend.Controllers
                         var activityList = JsonConvert.DeserializeObject<List<Activity>>(apiResponse);
                         ViewData["activities"] = activityList;
                         ViewData["processId"] = processId;
-                        return View("Process", "Statistics");
                     }
                     else
                     {
@@ -110,13 +109,42 @@ namespace Pmviz_Frontend.Controllers
                     }
                 }
 
-                using (var response = await httpClient.GetAsync("http://localhost:8080/api/resources/processes" + processId + "/resource/" + username + "?activity=" + activity))
+                using (var response = await httpClient.GetAsync("http://localhost:8080/api/resources/processes/" + processId + "/resource/" + username + "?activity=" + activity))
                 {
                     string apiResponse = await response.Content.ReadAsStringAsync();
                     var status = response.IsSuccessStatusCode;
                     if (status == true)
                     {
-                        //TOUUUUUUUUUUUUUUUUUUUUUUU
+                        var data = JObject.Parse(apiResponse);
+
+                        ViewData["activity"] = activity;
+                        ViewData["parts"] = data["parts"];
+
+                        var moulds = JArray.Parse(data["moulds"].ToString());
+                        if(moulds.Count == 0)
+                        {
+                            ViewData["moulds"] = "";
+                        } else
+                        {
+                            ViewData["moulds"] = moulds;
+                        }
+
+                        var resource = JArray.Parse(data["resources"].ToString());
+                        if(resource.Count == 0)
+                        {
+                            ViewBag.ErrorActivity = "There are no records of your mean times in this activity.";
+                            return View("Process", "Statistics");
+                        }
+
+                        var objj = resource[0];
+                        var millisUser = objj["meanMillis"];
+
+                        var timeSpan = TimeSpan.FromMilliseconds(Double.Parse(data["meanMillis"].ToString()));
+                        ViewData["meanMillis"] = timeSpan.TotalMinutes;
+
+
+                        var timeSpanUser = TimeSpan.FromMilliseconds(Double.Parse(millisUser.ToString()));
+                        ViewData["meanMillisUser"] = timeSpanUser.TotalMinutes;
 
 
                         return View("Process", "Statistics");
