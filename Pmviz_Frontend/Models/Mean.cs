@@ -7,13 +7,9 @@ using System.Threading.Tasks;
 namespace Pmviz_Frontend.Models
 {
     [DataContract]
-    public class Activity
+    public class Mean
     {
-
         [DataMember]
-        public int Id { get; set; }
-
-        [DataMember]
-        public string Name { get; set; }
+        public double MeanMinutes{ get; set; }
     }
 }

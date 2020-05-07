@@ -14,6 +14,8 @@ namespace Pmviz_Frontend.Models
         [DataMember]
         public string Description { get; set; }
         [DataMember]
+        public string Name { get; set; }
+        [DataMember]
         public string EndDate { get; set; }
         [DataMember]
         public string Filename { get; set; }
