@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -7,13 +8,14 @@ using System.Threading.Tasks;
 namespace Pmviz_Frontend.Models
 {
     [DataContract]
-    public class Activity
+    public class Mould
     {
+        [DataMember]
+        [JsonProperty("codePart")]
+        public string CodePart { get; set; }
 
         [DataMember]
-        public int Id { get; set; }
-
-        [DataMember]
-        public string Name { get; set; }
+        [JsonProperty("description")]
+        public string Description { get; set; }
     }
 }
