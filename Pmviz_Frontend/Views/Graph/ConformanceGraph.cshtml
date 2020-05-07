@@ -1,0 +1,693 @@
+﻿<link href="@Url.Content("~/css/GraphConformance.css")" rel="stylesheet" />
+<div>
+    <h1>
+        Conformance graph
+    </h1>
+    <h5>
+        Base process: @ViewData["baseProcess"]
+        <br />
+        Case process: @ViewData["caseProcess"]
+    </h5>
+</div>
+<div id="conformanceStats">
+    <h4>Conformance Graph Filter</h4>
+    <div class="row">
+        <div class="col">
+            <div class="form-group">
+                <label for="inputStartDate">Start date</label>
+                <input class="form-control" type="date" id="inputStartDate">
+            </div>
+        </div>
+        <div class="col">
+            <div class="form-group">
+                <label for="inputEndDate">End date</label>
+                <input class="form-control" type="date" id="inputEndDate">
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group col-md-6">
+            <label for="inputActivities">Activities</label>
+            <select id="inputActivities" class="custom-select" multiple>
+            </select>
+        </div>
+        <div class="form-group col-md-6">
+            <label for="inputMoulds">Moulds</label>
+            <select id="inputMoulds" class="custom-select" multiple>
+            </select>
+        </div>
+        <!--<div class="form-group col-md-4">
+            <label for="inputParts">Parts</label>
+            <select id="inputParts" class="custom-select" multiple>
+            </select>
+        </div>-->
+    </div>
+    <button type="submit" id="filterButton" class="btn btn-primary btn-block">Filter</button>
+    <hr />
+</div>
+<br />
+<button class="k-button" id="centerButton" type="button">Center</button>
+<br />
+<div id="cyCompare"></div>
+<script src="@Url.Content("~/vendor/cytoscape/dist/cytoscape.min.js")"></script>
+<script src="@Url.Content("~/vendor/moment/min/moment.min.js")"></script>
+<script>
+    var data = {
+        dataConformance: JSON.parse(@Html.Raw(Json.Serialize(ViewData["conformance"]))),
+        dataCase: JSON.parse(@Html.Raw(Json.Serialize(ViewData["compare"])))
+    }
+
+    if (data.dataConformance.nodes !== null && data.dataConformance.nodes.length != 0) {
+        for (var i = 0; i < data.dataConformance.nodes.length; i++) {
+            var option = document.createElement("option");
+            option.setAttribute("value", data.dataConformance.nodes[i]);
+            option.text = data.dataConformance.nodes[i];
+            inputActivities.appendChild(option);
+        }
+    }
+
+    if (data.dataConformance.moulds !== null && data.dataConformance.moulds.length != 0) {
+        for (var i = 0; i < data.dataConformance.moulds.length; i++) {
+            var option = document.createElement("option");
+            option.setAttribute("value", data.dataConformance.moulds[i]);
+            option.text = data.dataConformance.moulds[i];
+            inputMoulds.appendChild(option);
+        }
+    }
+    var cy = null;
+
+    function renderCytoscapeElementConformance() {
+        cy = cytoscape(
+            {
+                wheelSensitivity: 0.5,
+                minZoom: 0.1,
+                maxZoom: 1,
+                container: document.getElementById('cyCompare'),
+                style: [
+                    //Nodes styles
+                    {
+                        //white
+                        selector: 'node[type=0]',
+                        style: {
+                            "shape": 'rectangle',
+                            "background-color": "#FFFFFF",
+                            "label": "data(label)",
+                            'width': '350',
+                            "height": "40",
+                            "border-width": 4,
+                            "border-color": "#484848",
+                            "font-size": "16px",
+                            "text-valign": "center",
+                            "text-halign": "center",
+                            "text-wrap": "wrap",
+                            "text-max-width": "1000px",
+                            "color": "#222222"
+                        }
+                    },
+                    {
+                        //green with green text
+                        selector: 'node[type=1]',
+                        style: {
+                            "shape": 'rectangle',
+                            "background-color": "#FFFFFF",
+                            "label": "data(label)",
+                            'width': '350',
+                            "height": "40",
+                            "border-width": 4,
+                            "border-color": "#82EB71",
+                            "font-size": "16px",
+                            "text-valign": "center",
+                            "text-halign": "center",
+                            "text-wrap": "wrap",
+                            "text-max-width": "1000px",
+                            "color": "#82EB71",
+                            "text-outline-color": "#222222",
+                            "text-outline-width": "0.15px"
+                        }
+                    },
+                    {
+                        //red with green text
+                        selector: 'node[type=2]',
+                        style: {
+                            "shape": 'rectangle',
+                            "background-color": "#FFFFFF",
+                            "label": "data(label)",
+                            'width': '350',
+                            "height": "40",
+                            "border-width": 4,
+                            "border-color": "#FF4E4E",
+                            "font-size": "16px",
+                            "text-valign": "center",
+                            "text-halign": "center",
+                            "color": "#82EB71"
+                        }
+                    },
+                    {
+                        //green with red text
+                        selector: 'node[type=3]',
+                        style: {
+                            "shape": 'rectangle',
+                            "background-color": "#FFFFFF",
+                            "label": "data(label)",
+                            'width': '350',
+                            "height": "40",
+                            "border-width": 4,
+                            "border-color": "#82EB71",
+                            "font-size": "16px",
+                            "text-valign": "center",
+                            "text-halign": "center",
+                            "text-wrap": "wrap",
+                            "text-max-width": "1000px",
+                            "color": "#FF4E4E"
+                        }
+                    },
+                    {
+                        //red with red text
+                        selector: 'node[type=4]',
+                        style: {
+                            "shape": 'rectangle',
+                            "background-color": "#FFFFFF",
+                            "label": "data(label)",
+                            'width': '350',
+                            "height": "40",
+                            "border-width": 4,
+                            "border-color": "#FF4E4E",
+                            "font-size": "16px",
+                            "text-valign": "center",
+                            "text-halign": "center",
+                            "text-wrap": "wrap",
+                            "text-max-width": "1000px",
+                            "color": "#FF4E4E"
+                        }
+                    },
+                    {
+                        //process start node
+                        selector: 'node[type=20]',
+                        style: {
+                            "shape": 'ellipse',
+                            "background-color": "#3f3f3f",
+                            "border-width": 4,
+                            "border-color": "#131313",
+                            'width': '50',
+                            "height": "50",
+                            "font-size": "16px",
+                            "text-valign": "center",
+                            "text-halign": "center",
+                            "text-wrap": "wrap",
+                            "text-max-width": "1000px",
+                            "color": "#FF2222"
+                        }
+                    },
+
+                    //Edges styles
+                    {
+                        //grey
+                        selector: 'edge[type=0]',
+                        style: {
+                            'width': 5,
+                            'curve-style': 'bezier',
+                            "line-color": "#989898",
+                            'target-arrow-color': '#989898',
+                            "font-size": "32px",
+                            "color": "#222222",
+                            "loop-direction": "0deg",
+                            'target-arrow-shape': 'triangle',
+                            "loop-sweep": "45deg",
+                            "text-margin-y": "-15px",
+                            "source-text-offset": "50px",
+                            "text-outline-color": "#222222",
+                            "text-outline-width": "0.3px"
+                        }
+                    },
+                    {
+                        //green with green text
+                        selector: 'edge[type=1]',
+                        style: {
+                            'width': 5,
+                            'curve-style': 'bezier',
+                            "line-color": "#82EB71",
+                            'target-arrow-color': '#82EB71',
+                            "label": "data(label)",
+                            "font-size": "32px",
+                            "color": "#82EB71",
+                            "loop-direction": "0deg",
+                            'target-arrow-shape': 'triangle',
+                            "loop-sweep": "45deg",
+                            "text-outline-color": "#222222",
+                            "text-outline-width": "0.3px",
+                            "text-rotation": "0deg",
+                            "text-margin-y": "-20px"
+                        }
+                    },
+                    {
+                        //red with green text
+                        selector: 'edge[type=2]',
+                        style: {
+                            'width': 5,
+                            'curve-style': 'bezier',
+                            "line-color": "#FF4E4E",
+                            'target-arrow-color': '#FF4E4E',
+                            "content": "data(label)",
+                            "font-size": "32px",
+                            "color": "#82EB71",
+                            "loop-direction": "0deg",
+                            'target-arrow-shape': 'triangle',
+                            "loop-sweep": "45deg",
+                            "text-margin-y": "-15px",
+                            "source-text-offset": "50px",
+                            "text-outline-color": "#222222",
+                            "text-outline-width": "0.3px",
+                            "text-rotation": "0deg"
+                        }
+                    },
+                    {
+                        //red with red text
+                        selector: 'edge[type=4]',
+                        style: {
+                            'width': 5,
+                            'curve-style': 'bezier',
+                            "line-color": "#FF4E4E",
+                            'target-arrow-color': '#FF4E4E',
+                            "content": "data(label)",
+                            "font-size": "32px",
+                            "color": "#FF4E4E",
+                            "loop-direction": "0deg",
+                            'target-arrow-shape': 'triangle',
+                            "loop-sweep": "45deg",
+                            "text-margin-y": "-15px",
+                            "source-text-offset": "50px",
+                            "text-outline-color": "#222222",
+                            "text-outline-width": "0.3px",
+                            "text-rotation": "0deg"
+                        }
+                    },
+                    {
+                        //green with red text
+                        selector: 'edge[type=5]',
+                        style: {
+                            'width': 5,
+                            'curve-style': 'bezier',
+                            "line-color": "#82EB71",
+                            'target-arrow-color': '#82EB71',
+                            "content": "data(label)",
+                            "font-size": "32px",
+                            "color": "#FF4E4E",
+                            "loop-direction": "0deg",
+                            'target-arrow-shape': 'triangle',
+                            "loop-sweep": "45deg",
+                            "text-margin-y": "-15px",
+                            "source-text-offset": "50px",
+                            "text-outline-color": "#222222",
+                            "text-outline-width": "0.3px",
+                            "text-rotation": "0deg"
+                        }
+                    },
+
+                    {
+                        //green with green text
+                        selector: 'edge[type=6]',
+                        style: {
+                            'width': 5,
+                            'curve-style': 'bezier',
+                            "line-color": "#82EB71",
+                            'target-arrow-color': '#82EB71',
+                            "label": "data(label)",
+                            "font-size": "32px",
+                            "color": "#82EB71",
+                            "loop-direction": "0deg",
+                            'target-arrow-shape': 'triangle',
+                            "loop-sweep": "45deg",
+                            "text-outline-color": "#222222",
+                            "text-outline-width": "0.3px",
+                            "text-margin-y": "20px"
+                        }
+                    },
+
+
+                    //temporary type to flag node as having non conform time, and to later be changed to type 5 if it is associated to the case (if not stays grey)
+                    {
+                        selector: 'edge[type=10]',
+                        style: {
+                            'width': 5,
+                            'curve-style': 'bezier',
+                            "line-color": "#989898",
+                            'target-arrow-color': '#989898',
+                            "font-size": "32px",
+                            "color": "#222222",
+                            "loop-direction": "0deg",
+                            'target-arrow-shape': 'triangle',
+                            "loop-sweep": "45deg",
+                            "text-margin-y": "-15px",
+                            "source-text-offset": "50px",
+                            "text-outline-color": "#222222",
+                            "text-outline-width": "0.3px",
+                            "text-rotation": "0deg"
+                        }
+                    },
+                    {
+                        //process start edge
+                        selector: 'edge[type=20]',
+                        style: {
+                            'width': 8,
+                            'curve-style': 'bezier',
+                            'line-color': "#232323",
+                            'target-arrow-color': '#232323',
+                            "font-size": "32px",
+                            "color": "#222222",
+                            "loop-direction": "0deg",
+                            'target-arrow-shape': 'triangle',
+                            "loop-sweep": "45deg",
+                            "text-margin-y": "-15px",
+                            "source-text-offset": "50px",
+                            "text-outline-color": "#222222",
+                            "text-outline-width": "0.3px"
+                        }
+                    },
+                ],
+            });
+
+        //Nodes\\
+        for (let i = 0; i < data.dataConformance.nodes.length; i++) {
+            //determinar cor do nó
+            let typeValue = 0;
+
+            //verificar se faz parte da Path do case escolhido -> verde
+            for (let k = 0; k < data.dataCase.nodes.length; k++) {
+                if (data.dataCase.nodes[k].node === i) {
+                    typeValue = 1;
+                }
+            }
+
+            //verificar se tempo execução é não conforme -> texto vermelho
+            //procurar a ocorrência do nó em questão com maior duração (pior caso)
+            let maxDuration = {};
+            maxDuration.days = 0;
+            maxDuration.hours = 0;
+            maxDuration.minutes = 0;
+            maxDuration.seconds = 0;
+
+            for (let k = 0; k < data.dataCase.nodes.length; k++) {
+                if (data.dataCase.nodes[k].node === i && convertToSeconds(data.dataCase.nodes[k].duration) > convertToSeconds(maxDuration)) {
+                    maxDuration = data.dataCase.nodes[k].duration;
+                }
+            }
+
+            if (convertToSeconds(maxDuration) > convertToSeconds(data.dataConformance.taskDurations[i].duration)) {
+                typeValue = 3;
+            }
+
+            //format label acording to time value
+            let prevLabel;
+            if (data.dataConformance.taskDurations[i].duration.days !== 0) {
+                prevLabel = "\n Prev: " + data.dataConformance.taskDurations[i].duration.days + "D " + data.dataConformance.taskDurations[i].duration.hours + "H " + data.dataConformance.taskDurations[i].duration.minutes + "M " + data.dataConformance.taskDurations[i].duration.seconds + "S";
+            } else if (data.dataConformance.taskDurations[i].duration.hours !== 0) {
+                prevLabel = "\n Prev: " + data.dataConformance.taskDurations[i].duration.hours + "H " + data.dataConformance.taskDurations[i].duration.minutes + "M " + data.dataConformance.taskDurations[i].duration.seconds + "S";
+            } else if (data.dataConformance.taskDurations[i].duration.minutes !== 0) {
+                prevLabel = "\n Prev: " + data.dataConformance.taskDurations[i].duration.minutes + "M " + data.dataConformance.taskDurations[i].duration.seconds + "S";
+            } else {
+                prevLabel = "\n Prev: " + data.dataConformance.taskDurations[i].duration.seconds + "S";
+            }
+
+            let realLabel;
+            if (data.dataConformance.taskDurations[i].duration.days !== 0) {
+                realLabel = " / Real: " + maxDuration.days + "D " + maxDuration.hours + "H " + maxDuration.minutes + "M " + maxDuration.seconds + "S";
+            } else if (data.dataConformance.taskDurations[i].duration.hours !== 0) {
+                realLabel = " / Real: " + maxDuration.hours + "H " + maxDuration.minutes + "M " + maxDuration.seconds + "S";
+            } else if (data.dataConformance.taskDurations[i].duration.minutes !== 0) {
+                realLabel = " / Real: " + maxDuration.minutes + "M " + maxDuration.seconds + "S";
+            } else {
+                realLabel = " / Real: " + maxDuration.seconds + "S";
+            }
+
+            //se typevalue for 0 (não faz parte do caso em análise) formata texto de forma diferente
+            if (typeValue === 0) {
+                cy.add({
+                    data: {
+                        id: i,
+                        label: data.dataConformance.nodes[i] + prevLabel,
+                        type: typeValue
+                    },
+                }
+                );
+            } else {
+                cy.add({
+                    data: {
+                        id: i,
+                        label: data.dataConformance.nodes[i] + prevLabel + realLabel,
+                        type: typeValue
+                    },
+                }
+                );
+            }
+
+        }
+
+        //Edges\\
+        for (let i = 0; i < data.dataConformance.relations.length; i++) {
+            for (let j = 0; j < data.dataConformance.relations[i].to.length; j++) {
+
+                //search for max duration for this relation, if it occurs more then once
+                let maxDuration = {};
+                maxDuration.days = 0;
+                maxDuration.hours = 0;
+                maxDuration.minutes = 0;
+                maxDuration.seconds = 0;
+                let edgeTypeValue = 0;
+                for (let k = 0; k < data.dataCase.relations.length; k++) {
+                    if (data.dataCase.relations[k].from === data.dataConformance.relations[i].from) {
+                        for (let l = 0; l < data.dataCase.relations[k].to.length; l++) {
+                            if (data.dataCase.relations[k].to[l].node === data.dataConformance.relations[i].to[j].node) {
+                                if (convertToSeconds(data.dataCase.relations[k].to[l].duration) > convertToSeconds(maxDuration)) {
+                                    maxDuration = data.dataCase.relations[k].to[l].duration;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                //mark edge as having nonconform time
+                if (convertToSeconds(maxDuration) > convertToSeconds(data.dataConformance.relations[i].to[j].duration)) {
+                    edgeTypeValue = 10;
+                }
+
+                let prevLabel = 0;
+                if (data.dataConformance.relations[i].to[j].duration.days !== 0) {
+                    prevLabel = "\n Prev: " + data.dataConformance.relations[i].to[j].duration.days + "D " + data.dataConformance.relations[i].to[j].duration.hours + "H " + data.dataConformance.relations[i].to[j].duration.minutes + "M ";
+                } else if (data.dataConformance.relations[i].to[j].duration.hours !== 0) {
+                    prevLabel = "\n Prev: " + data.dataConformance.relations[i].to[j].duration.hours + "H " + data.dataConformance.relations[i].to[j].duration.minutes + "M ";
+                } else if (data.dataConformance.relations[i].to[j].duration.minutes !== 0) {
+                    prevLabel = "\n Prev: " + data.dataConformance.relations[i].to[j].duration.minutes + "M " + data.dataConformance.relations[i].to[j].duration.seconds + "S";
+                } else {
+                    prevLabel = "\n Prev: " + data.dataConformance.relations[i].to[j].duration.seconds + "S";
+                }
+
+                let realLabel = 0;
+                if (maxDuration.days !== 0) {
+                    realLabel = "Real: " + maxDuration.days + "D " + maxDuration.hours + "H " + maxDuration.minutes + "M ";
+                } else if (maxDuration.hours !== 0) {
+                    realLabel = "Real: " + maxDuration.hours + "H " + maxDuration.minutes + "M ";
+                } else if (maxDuration.minutes !== 0) {
+                    realLabel = "Real: " + maxDuration.minutes + "M " + maxDuration.seconds + "S";
+                } else {
+                    realLabel = "Real: " + maxDuration.seconds + "S";
+                }
+
+                cy.add({
+                    data: {
+                        id: 'edge' + data.dataConformance.relations[i].from + '-' + data.dataConformance.relations[i].to[j].node,
+                        source: data.dataConformance.relations[i].from,
+                        target: data.dataConformance.relations[i].to[j].node,
+                        label: prevLabel + " / " + realLabel,
+                        type: edgeTypeValue
+                    }
+                });
+            }
+        }
+
+        let edges = [];
+        //identify realtions which are part of the case(s) selected
+        for (let i = 0; i < data.dataCase.relations.length; i++) {
+            for (let j = 0; j < data.dataCase.relations[i].to.length; j++) {
+
+                //check if already exists connection between the two nodes, in order to shift the text slightly so it doesn't overlap
+                let control = 0;
+                let edge = data.dataCase.relations[i].from + "-" + data.dataCase.relations[i].to[j].node;
+                for (let k = 0; k < edges.length; k++) {
+                    if (edges[k] === data.dataCase.relations[i].to[j].node + "-" + data.dataCase.relations[i].from) {
+                        control = 1;
+                    }
+                }
+                edges.push(edge);
+
+
+                if (cy.getElementById("edge" + data.dataCase.relations[i].from + "-" + data.dataCase.relations[i].to[j].node).data('type') === 10) {
+                    cy.getElementById("edge" + data.dataCase.relations[i].from + "-" + data.dataCase.relations[i].to[j].node).data('type', 5);
+                } else {
+                    if (control === 0) {
+                        cy.getElementById("edge" + data.dataCase.relations[i].from + "-" + data.dataCase.relations[i].to[j].node).data('type', 1);
+                    } else {
+                        cy.getElementById("edge" + data.dataCase.relations[i].from + "-" + data.dataCase.relations[i].to[j].node).data('type', 6);
+                    }
+
+                }
+            }
+        }
+
+        //change nodes which are outliers to red with green or red text
+        for (let i = 0; i < data.dataConformance.deviations.nodes.length; i++) {
+            if (cy.getElementById(data.dataConformance.deviations.nodes[i].toString()).data('type') === 3) {
+                cy.getElementById(data.dataConformance.deviations.nodes[i].toString()).data('type', 4);
+            } else if (cy.getElementById(data.dataConformance.deviations.nodes[i].toString()).data('type') === 1) {
+                cy.getElementById(data.dataConformance.deviations.nodes[i].toString()).data('type', 2);
+            } else {
+                //cy.remove(cy.getElementById("edge" + data.dataConformance.deviations.nodes[i].from + "-" + data.dataConformance.deviations.nodes[i].to))
+            }
+        }
+
+        //change edges which are outliers to red with green or red text
+        for (let i = 0; i < data.dataConformance.deviations.relations.length; i++) {
+            if (cy.getElementById("edge" + data.dataConformance.deviations.relations[i].from + "-" + data.dataConformance.deviations.relations[i].to).data('type') === 5) {
+                cy.getElementById("edge" + data.dataConformance.deviations.relations[i].from + "-" + data.dataConformance.deviations.relations[i].to).data('type', 4);
+            } else if (cy.getElementById("edge" + data.dataConformance.deviations.relations[i].from + "-" + data.dataConformance.deviations.relations[i].to).data('type') === 1) {
+                cy.getElementById("edge" + data.dataConformance.deviations.relations[i].from + "-" + data.dataConformance.deviations.relations[i].to).data('type', 2);
+            } else {
+                //cy.remove(cy.getElementById("edge" + data.dataConformance.deviations.relations[i].from + "-" + data.dataConformance.deviations.relations[i].to))
+            }
+        }
+
+        /*cy.getElementById("edge6-18_conformance").data('name', "8")*/
+
+        //add process start and end nodes
+        for (let i = 0; i < data.dataCase.startEvents.length; i++) {
+            cy.add({
+                data: {
+                    id: 'start-' + i,
+                    type: 20
+                },
+            });
+
+            cy.add({
+                data: {
+                    id: 'edge_start-' + i,
+                    source: 'start-' + i,
+                    target: data.dataCase.startEvents[i].node,
+                    type: 20
+                }
+            });
+        }
+
+        for (let i = 0; i < data.dataCase.endEvents.length; i++) {
+            cy.add({
+                data: {
+                    id: 'end-' + i,
+                    type: 20
+                },
+            });
+            console.log(data.dataCase.endEvents[i]);
+            cy.add({
+                data: {
+                    id: 'edge_end-' + i,
+                    source: data.dataCase.endEvents[i].node,
+                    target: 'end-' + i,
+                    type: 20
+                }
+            });
+        }
+
+
+        let customBreadthfirst = {
+            name: 'breadthfirst',
+
+            fit: true, // whether to fit the viewport to the graph
+            directed: true, // whether the tree is directed downwards (or edges can point in any direction if false)
+            padding: 10, // padding on fit
+            circle: false, // put depths in concentric circles if true, put depths top down if false
+            grid: false, // whether to create an even grid into which the DAG is placed (circle:false only)
+            spacingFactor: 0.90, // positive spacing factor, larger => more space between nodes (N.B. n/a if causes overlap)
+            boundingBox: undefined, // constrain layout bounds; { x1, y1, x2, y2 } or { x1, y1, w, h }
+            avoidOverlap: true, // prevents node overlap, may overflow boundingBox if not enough space
+            nodeDimensionsIncludeLabels: false, // Excludes the label when calculating node bounding boxes for the layout algorithm
+            roots: undefined, // the roots of the trees
+            maximal: false, // whether to shift nodes down their natural BFS depths in order to avoid upwards edges (DAGS only)
+            animate: false, // whether to transition the node positions
+            animationDuration: 500, // duration of animation in ms if enabled
+            animationEasing: undefined, // easing of animation if enabled,
+            animateFilter: function (node, i) {
+                return true;
+            }, // a function that determines whether the node should be animated.  All nodes animated by default on animate enabled.  Non-animated nodes are positioned immediately when the layout starts
+            ready: undefined, // callback on layoutready
+            stop: undefined, // callback on layoutstop
+            transform: function (node, position) {
+                return position;
+            } // transform a given node position. Useful for changing flow direction in discrete layouts
+        };
+        cy.layout(customBreadthfirst).run();
+    }
+
+
+    function convertToSeconds(duration) {
+        return duration.days * 86400 + duration.hours * 3600 + duration.minutes * 60 + duration.seconds;
+    }
+    renderCytoscapeElementConformance();
+    $("#centerButton").click(function () {
+        if (typeof cy !== "undefined") {
+            cy.fit();
+        }
+    });
+    $("#filterButton").click(function () {
+        var dataFields = {};
+        if ($('#inputActivities').get(0).selectedIndex != -1) {
+            let inputActivities = document.getElementById('inputActivities');
+            var selectedInputActivities = Array.from(inputActivities.selectedOptions).map(option => option.value);
+            dataFields.activities = selectedInputActivities;
+        }
+
+        if ($('#inputMoulds').get(0).selectedIndex != -1) {
+            let inputMoulds = document.getElementById('inputMoulds');
+            var selectedInputMoulds = Array.from(inputMoulds.selectedOptions).map(option => option.value);
+            dataFields.moulds = selectedInputMoulds;
+        }
+
+        if (document.getElementById('inputStartDate').value) {
+            dataFields.startDate = document.getElementById('inputStartDate').value;
+        }
+        if (document.getElementById('inputEndDate').value) {
+            dataFields.endDate = document.getElementById('inputEndDate').value;
+        }
+
+        if (Object.keys(dataFields).length === 0) {
+            alert("you have to choose something");
+        } else {
+            dataFields.process = @Html.Raw(ViewData["baseProcess"]);
+            if (document.getElementById('inputStartDate').value && document.getElementById('inputEndDate').value) {
+                let current_datetime = new Date(dataFields.startDate);
+                dataFields.startDate = current_datetime.getDate() + "-" + (current_datetime.getMonth() + 1) + "-" + current_datetime.getFullYear();
+                current_datetime = new Date(dataFields.endDate);
+                dataFields.endDate = current_datetime.getDate() + "-" + (current_datetime.getMonth() + 1) + "-" + current_datetime.getFullYear();
+            }
+            if (!dataFields.activities || dataFields.activities.length == 0) {
+                dataFields.activities = data.dataConformance.nodes;
+            }
+
+            $.ajax({
+                type: "POST",
+                data: dataFields,
+                url: "/Graph/GetModel",
+                dataType: 'json',
+                success: function (response) {
+                    if (response.success) {
+                        data.dataCase = JSON.parse(response.request.Result);
+                        renderCytoscapeElementConformance();
+                    } else {
+                        // DoSomethingElse()
+                        alert(response.responseText);
+                    }
+                },
+                error: function (response) {
+                    alert("error!");  //
+                }
+
+            });
+        }
+    });
+</script>

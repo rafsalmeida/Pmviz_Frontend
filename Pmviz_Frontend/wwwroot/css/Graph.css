@@ -11,7 +11,7 @@
 
 
 /******** GRAFO ********/
-#cyProcess1, #cyProcess2, #cy {
+#cyProcess1, #cyProcess2, #cy, #cyProcess {
     position: absolute;
     margin-top: 2%;
     margin-bottom: 2%;
@@ -58,7 +58,7 @@
 /**************************** MOBILE ********************************/
 
 @media screen and (max-width : 992px) {
-    #cyProcess1, #cyProcess2 {
+    #cyProcess1, #cyProcess2, #cyProcess {
         width: 60%;
     }
 
@@ -68,7 +68,7 @@
 }
 
 @media screen and (max-width: 600px) {
-    #cyProcess1, #cyProcess2 {
+    #cyProcess1, #cyProcess2, #cyProcess {
         width: 95%;
     }
 

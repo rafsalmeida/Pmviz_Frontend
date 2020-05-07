@@ -120,7 +120,6 @@ namespace Pmviz_Frontend
                 endpoints.MapControllerRoute(
                     name: "tag",
                     pattern: "{controller=Tag}/{action=Index}/{id?}");
-
             });
         }
     }

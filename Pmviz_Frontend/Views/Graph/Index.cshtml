@@ -1,0 +1,99 @@
+﻿<div id="conformanceStats">
+    <h4>Choose two processes or two moulds too compare</h4>
+    <!--<div class="row">
+           <div class="col">
+               <div class="form-group">
+                   <label for="inputAddress">Start date</label>
+                   <input class="form-control" type="date" id="example-date-input">
+               </div>
+           </div>
+           <div class="col">
+               <div class="form-group">
+                   <label for="inputAddress2">End date</label>
+                   <input class="form-control" type="date" id="example-date-input">
+               </div>
+           </div>
+       </div>-->
+    <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" name="miner" id="alphaRadio" value="alpha-miner" onclick="handleMiner(this);" checked>
+        <label class="form-check-label" for="alphaRadio">Alpha Miner</label>
+    </div>
+    <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" name="miner" id="heuristicRadio" onclick="handleMiner(this);" value="heuristic-miner">
+        <label class="form-check-label" for="heuristicRadio">Heuristic Miner</label>
+    </div>
+    <hr />
+    <div class="row">
+        <div class="form-group col-md-6">
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="process" id="processRadio" onclick="handleProcesses(this);" value="process" checked><label class="form-check-label" for="processRadio">Processes</label>
+            </div>
+                <select id="inputProcesses" name="processes" class="custom-select" size="6" multiple>
+                </select>
+            </div>
+            <div class="form-group col-md-6">
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="process" id="mouldsRadio" onclick="handleProcesses(this);" value="mould"><label class="form-check-label" for="mouldsRadio">Moulds</label>
+                </div>
+                    <select id="inputMoulds" name="moulds" class="custom-select" size="6" multiple>
+                    </select>
+                </div>
+            </div>
+    <button class="btn" id="Button" type="button">Submit</button>
+</div>
+<script>
+    var data = {
+        dataProcesses: JSON.parse(@Html.Raw(Json.Serialize(ViewData["processes"]))),
+        dataMoudls: JSON.parse(@Html.Raw(Json.Serialize(ViewData["moulds"])))
+    }
+    var miner = 'alpha-miner';
+    var process = 'process';
+    var inputSelected = document.getElementById('inputProcesses');
+    document.getElementById("inputMoulds").disabled = true;
+
+    if (data.dataProcesses.length != 0) {
+        for (var i = 0; i < data.dataProcesses.length; i++) {
+            var option = document.createElement("option");
+            option.setAttribute("value", data.dataProcesses[i].id);
+            option.text = data.dataProcesses[i].name;
+            inputProcesses.appendChild(option);
+        }
+    }
+    if (data.dataMoudls.length != 0) {
+        for (var i = 0; i < data.dataMoudls.length; i++) {
+            var option = document.createElement("option");
+            option.setAttribute("value", data.dataMoudls[i].codePart);
+            option.text = data.dataMoudls[i].codePart;
+            inputMoulds.appendChild(option);
+        }
+    }
+
+    $("#Button").click(function () {
+        var selectedInput = Array.from(inputSelected.selectedOptions).map(option => option.value);
+        if (selectedInput.length != 2) {
+            alert("You have to choose two");
+        } else {
+            window.location = '@Url.Action("ConformanceGraph", "Graph")?processes=' + JSON.stringify(selectedInput) + '&miner=' + miner;
+        }
+    });
+
+    function handleMiner(myRadio) {
+        if (myRadio.value == 'alpha-miner') {
+            miner = 'alpha-miner';
+        } else {
+            miner = 'heuristic-miner';
+        }
+        console.log(miner);
+    }
+    function handleProcesses(myRadio) {
+        if (myRadio.value == 'process') {
+            inputSelected = document.getElementById('inputProcesses');
+            document.getElementById("inputProcesses").disabled = false;
+            document.getElementById("inputMoulds").disabled = true;
+        } else {
+            inputSelected = document.getElementById('inputMoulds');
+            document.getElementById("inputProcesses").disabled = true;
+            document.getElementById("inputMoulds").disabled = false;
+        }
+    }
+</script>
