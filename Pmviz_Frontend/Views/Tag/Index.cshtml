@@ -68,6 +68,13 @@
         @ViewBag.ErrorPart
     </div>
 }
+
+@if (TempData["ErrorRFID"]  != null)
+{
+<div class="alert alert-danger" role="alert">
+    @TempData["ErrorRFID"]
+</div>
+}
 @if (parts != null)
 {
     <div>
@@ -80,7 +87,7 @@
             {
                 columns.Bound(p => p.Code).Title("Code");
                 columns.Bound(p => p.Description).Title("Description");
-                columns.Bound(p => p.Rfid).Title("RFID");
+                columns.Bound(p => p.TagRfid).Title("RFID");
                 columns.Command(command => command.Custom("Tag").Click("tag")).Width(110);
 
             })

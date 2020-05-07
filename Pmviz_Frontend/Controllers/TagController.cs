@@ -155,6 +155,12 @@ namespace Pmviz_Frontend.Controllers
                             mClient.Unsubscribe(new string[] { topic });
                             mClient.Disconnect();
 
+                            if(response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                            {
+                                TempData["ErrorRFID"] = "Tag not found. Use an available RFID.";
+                                return RedirectToAction("Index", "Tag");
+                            }
+
                             TempData["ErrorRFID"] = "Error saving the RFID. Please try again later!";
                             return RedirectToAction("Index", "Tag");
 

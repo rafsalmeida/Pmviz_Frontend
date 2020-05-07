@@ -19,6 +19,6 @@ namespace Pmviz_Frontend.Models
         public string Description { get; set; }
 
         [DataMember]
-        public string Rfid { get; set; }
+        public string TagRfid { get; set; }
     }
 }

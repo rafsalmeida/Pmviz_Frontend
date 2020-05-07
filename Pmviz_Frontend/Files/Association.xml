@@ -5,4 +5,5 @@
   <path name="Activity Frequency of a Log">/activity</path>
   <path name="Manage Access">/authorization</path>
   <path name="Graphs">/manager/graph</path>
+  <path name="Tag Parts">/tag</path>
 </root>
