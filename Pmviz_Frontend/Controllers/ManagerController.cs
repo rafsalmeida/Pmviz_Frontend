@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Pmviz_Frontend.Models;
 
 namespace Pmviz_Frontend.Controllers
@@ -35,7 +36,7 @@ namespace Pmviz_Frontend.Controllers
         {
             using (var httpClient = new HttpClient())
             {
-                using (var response = await httpClient.GetAsync("http://localhost:8080/api/activity-frequency/20"))
+                using (var response = await httpClient.GetAsync("http://localhost:8080/api/activity-frequency/22"))
                 {
                     string apiResponse = await response.Content.ReadAsStringAsync();
                     var status = response.IsSuccessStatusCode;
@@ -103,11 +104,11 @@ namespace Pmviz_Frontend.Controllers
         {
             using (var httpClient = new HttpClient())
             {
-                using (var response = await httpClient.GetAsync("http://localhost:8080/api/workflow-network/alpha-miner/processes/22"))
+                using (var response = await httpClient.GetAsync("http://localhost:8080/api/workflow-network/alpha-miner/processes/25"))
                 {
                     ViewData["alpha"] = response.Content.ReadAsStringAsync().Result;
                     var status = response.IsSuccessStatusCode;
-                    if (status == false){
+                    if (status == false) {
                         return RedirectToAction("Index", "Home", new { error = "1" });
 
                     }
@@ -115,7 +116,7 @@ namespace Pmviz_Frontend.Controllers
             }
             using (var httpClient = new HttpClient())
             {
-                using (var response = await httpClient.GetAsync("http://localhost:8080/api/workflow-network/heuristic-miner/processes/22"))
+                using (var response = await httpClient.GetAsync("http://localhost:8080/api/workflow-network/heuristic-miner/processes/25"))
                 {
                     ViewData["heuristic"] = response.Content.ReadAsStringAsync().Result;
                     var status = response.IsSuccessStatusCode;
@@ -123,24 +124,37 @@ namespace Pmviz_Frontend.Controllers
                     {
                         return RedirectToAction("Index", "Home", new { error = "1" });
                     }
+                    else
+                    {
+                        return View();
+                    }
                 }
             }
             using (var httpClient = new HttpClient())
             {
-                using (var response = await httpClient.GetAsync("http://localhost:8080/api/conformance/performance/alpha-miner/13/with/22"))
+                using (var response = await httpClient.GetAsync("http://localhost:8080/api/conformance/performance/alpha-miner/23/with/14"))
                 {
                     ViewData["conformance"] = response.Content.ReadAsStringAsync().Result;
                     var status = response.IsSuccessStatusCode;
                     if (status == false)
                     {
                         return RedirectToAction("Index", "Home", new { error = "1" });
-                    }else
+                    }
+                    else
                     {
+                        var payload = "{ \"startDate\": \"01-01-2020\", \"endDate\": \"31-12-2020\", \"activities\": [ ], \"resources\": [ ], \"nodes\": [ \"Tagging\", \"Fresagem\", \"Erosão\" ]}";
+
+                        HttpContent c = new StringContent(payload, Encoding.UTF8, "application/json");
+
+
+                        var asd = await httpClient.PostAsync("http://localhost:8080/api/conformance/process/23", c);
+                        ViewData["compare"] = await asd.Content.ReadAsStringAsync();
+
                         return View();
                     }
                 }
             }
-        }
+            }
 
 
 
@@ -163,12 +177,12 @@ namespace Pmviz_Frontend.Controllers
             return Content(apiResponse);*/
 
             var httpClient = new HttpClient();
-            var payload = "{ \"cases\": null, \"moulds\": null, \"startDate\": null, \"endDate\": null, \"activities\": null, \"resources\": null, \"nodes\": null}";
-
+            var payload = "{ \"startDate\": \"01-01-2020\", \"endDate\": \"31-12-2020\", \"activities\": [ ], \"resources\": [ ], \"nodes\": [ \"Tagging\", \"Fresagem\", \"Erosão\" ]}";
             HttpContent c = new StringContent(payload, Encoding.UTF8, "application/json");
 
-            var response = await httpClient.PostAsync("http://localhost:8080/api/conformance/log/20", c);
-            var apiResponse = await response.Content.ReadAsStringAsync();
+
+            var response = await httpClient.PostAsync("http://localhost:8080/api/conformance/process/23", c);
+            string apiResponse = await response.Content.ReadAsStringAsync();
 
             return Content(apiResponse);
         }

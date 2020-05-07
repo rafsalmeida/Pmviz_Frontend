@@ -42,30 +42,18 @@
             </div>
             <div class="row">
                 <div class="form-group col-md-4">
-                    <label for="inputActivities">Subprocesses</label>
-                    <select id="inputActivities" class="custom-select" multiple>
-                        <option selected>Open this select menu</option>
-                        <option value="1">One</option>
-                        <option value="2">Two</option>
-                        <option value="3">Three</option>
+                    <label for="inputSubprocesses">Subprocesses</label>
+                    <select id="inputSubprocesses" class="custom-select" multiple>
                     </select>
                 </div>
                 <div class="form-group col-md-4">
-                    <label for="inputResources">Resources</label>
-                    <select id="inputResources" class="custom-select" multiple>
-                        <option selected>Open this select menu</option>
-                        <option value="1">One</option>
-                        <option value="2">Two</option>
-                        <option value="3">Three</option>
+                    <label for="inputMoulds">Moulds</label>
+                    <select id="inputMoulds" class="custom-select" multiple>
                     </select>
                 </div>
                 <div class="form-group col-md-4">
-                    <label for="inputCases">Case(s) to analyse</label>
-                    <select id="inputCases" class="custom-select" multiple>
-                        <option selected>Open this select menu</option>
-                        <option value="1">One</option>
-                        <option value="2">Two</option>
-                        <option value="3">Three</option>
+                    <label for="inputParts">Parts</label>
+                    <select id="inputParts" class="custom-select" multiple>
                     </select>
                 </div>
             </div>
@@ -90,17 +78,25 @@
         var conformanceButton = document.getElementById("conformanceButton");
         var conformanceStats = document.getElementById("conformanceStats");
 
+        conformanceButton.style.display = "none";
+
+        var inputSubprocesses = document.getElementById("inputSubprocesses");
+        var inputMoulds = document.getElementById("inputMoulds");
+        var inputParts = document.getElementById("inputParts");
+
         conformanceStats.style.display = "none";
         var data = {
             dataAlpha: JSON.parse(@Html.Raw(Json.Serialize(ViewData["alpha"]))),
             dataHeuristic: JSON.parse(@Html.Raw(Json.Serialize(ViewData["heuristic"]))),
             dataConformance: JSON.parse(@Html.Raw(Json.Serialize(ViewData["conformance"]))),
+            dataCompare: JSON.parse(@Html.Raw(Json.Serialize(ViewData["compare"])))
         }
+        console.log(data.dataCompare);
         var graph = {
-            typeGraph: "performance",
+            typeGraph: "Frequency",
             typeAlgth: 0,
             data: data.dataAlpha,
-            caseData: data.dataConformance,
+            caseData: data.dataCompare,
             maxFrequency: null,
             nodeTimes: null,
             relationTimes: null,
@@ -108,7 +104,34 @@
             edgesMaxTime: null
         };
         var cy = null;
+        /*
+        if (data.dataConformance.nodes !== null && data.dataConformance.nodes.length != 0) {
+            for (var i = 0; i < data.dataConformance.nodes.length; i++) {
+                var option = document.createElement("option");
+                option.setAttribute("value", data.dataConformance.nodes[i]);
+                option.text = data.dataConformance.nodes[i];
+                inputSubprocesses.appendChild(option);
+            }
+        }
 
+        if (data.dataConformance.moulds !== null && data.dataConformance.moulds.length != 0) {
+            for (var i = 0; i < data.dataConformance.moulds.length; i++) {
+                var option = document.createElement("option");
+                option.setAttribute("value", data.dataConformance.moulds[i]);
+                option.text = data.dataConformance.moulds[i];
+                inputMoulds.appendChild(option);
+            }
+        }
+
+        if (data.dataConformance.parts !== null && data.dataConformance.parts.length != 0) {
+            for (var i = 0; i < data.dataConformance.parts.length; i++) {
+                var option = document.createElement("option");
+                option.setAttribute("value", data.dataConformance.parts[i]);
+                option.text = data.dataConformance.parts[i];
+                inputParts.appendChild(option);
+            }
+        }
+        */
         let nodeTimes = [];
         for (let i = 0; i < graph.data.statistics.nodes.length; i++) {
             let meanDuration = graph.data.statistics.nodes[i].meanDuration.days + '.' + graph.data.statistics.nodes[i].meanDuration.hours + ':' +
@@ -129,8 +152,6 @@
 
         graph.nodeTimes = nodeTimes;
         graph.relationTimes = relationTimes;
-
-        console.log(data.dataConformance);
 
         function renderCytoscapeElementFrequency() {
         cy = cytoscape(
@@ -1348,15 +1369,7 @@
             };
             cy.layout(customBreadthfirst).run();
         }
-        /*
-        axios.post('conformance/log/' + this.state.activeLog, {
-            cases: this.props.activeCases,
-            startDate: this.props.dateStart,
-            endDate: this.props.dateEnd,
-            activities: this.props.activitiesSelect,
-            resources: this.props.resourcesSelect,
-            nodes: res.data.nodes
-        })*/
+
 
         function convertToSeconds(duration) {
             return duration.days * 86400 + duration.hours * 3600 + duration.minutes * 60 + duration.seconds;
@@ -1392,7 +1405,8 @@
             if (conformanceStats.style.display === "none") {
                 conformanceStats.style.display = "block";
             }
-            //renderCytoscapeElementConformance();
+            console.log(graph);
+            renderCytoscapeElementConformance();
         });
         $("#algorithmSelected").change(function () {
             if ($("#algorithmSelected").val() != graph.typeAlgth) {
@@ -1409,7 +1423,7 @@
                 } else if (graph.typeGraph == "Performance") {
                     renderCytoscapeElementPerformance();
                 } else {
-                    //renderCytoscapeElementConformance();
+                    renderCytoscapeElementConformance();
                 }
             }
         });
