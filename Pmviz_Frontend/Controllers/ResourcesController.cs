@@ -106,16 +106,48 @@ namespace Pmviz_Frontend.Controllers
                         var data = JObject.Parse(apiResponse);
 
                         ViewData["activity"] = activity;
-                        ViewData["parts"] = data["parts"];
 
-                        var moulds = JArray.Parse(data["moulds"].ToString());
-                        if (moulds.Count == 0)
+                        //Parse moulds
+
+                        if(data["moulds"].ToString() == "" || data["moulds"] == null)
                         {
-                            ViewData["moulds"] = "";
+                            ViewData["moulds"] = null;
                         }
                         else
                         {
-                            ViewData["moulds"] = moulds;
+                            var moulds = JArray.Parse(data["moulds"].ToString());
+                            if (moulds.Count == 0)
+                            {
+                                ViewData["moulds"] = null;
+                            }
+                            else
+                            {
+                                var allMoulds = moulds.ToObject<List<string>>();
+                                ViewData["moulds"] = allMoulds;
+
+                            }
+
+                        }
+
+                       
+                        // Parse parts
+                        if(data["parts"].ToString() == "")
+                        {
+                            ViewData["parts"] = null;
+                        }
+                        else
+                        {
+                            var parts = JArray.Parse(data["parts"].ToString());
+                            if (parts.Count == 0)
+                            {
+                                ViewData["parts"] = null;
+                            }
+                            else
+                            {
+                                var allParts = parts.ToObject<List<string>>();
+                                ViewData["parts"] = allParts;
+
+                            }
                         }
 
                         var resources = JArray.Parse(data["resources"].ToString());

@@ -2,8 +2,8 @@
     IEnumerable<Pmviz_Frontend.Models.Activity> activities = ViewData["activities"] as IEnumerable<Pmviz_Frontend.Models.Activity>;
     string processId = ViewData["processId"] as string;
     string activityChosen = ViewData["activity"] as string;
-    string[] moulds = ViewData["moulds"] as string[];
-    string[] parts = ViewData["parts"] as string[];
+    var moulds = ViewData["moulds"] as List<String>;
+    var parts = ViewData["parts"] as List<String>;
     var meanMinutesAll = ViewData["meanMillis"];
     var allResources = ViewData["allResources"] as IEnumerable<Pmviz_Frontend.Models.ResourceStat>;
 
@@ -37,28 +37,72 @@
         <button class="k-button k-primary" type="submit">Submit</button>
     </form>
 </div>
-
+<br />
 @if (meanMinutesAll != null)
 {
-    <div class="row">
-        <div class="col">
-            <div class="container">
-                <div class="k-card" style="width:300px">
-                    <div class="k-card-header">
-                        <h6 class="k-card-subtitle">Information</h6>
-                    </div>
-                    <div class="k-card-body">
-                        <h6>
-                            General mean time: @meanMinutesAll minutes
-                        </h6>
-                        <h6>
-                            Activity Chosen: @activityChosen
-                        </h6>
-                    </div>
+<div class="row">
+    <div class="col">
+        <div class="container">
+            <div class="k-card">
+                <div class="k-card-header">
+                    <h6 class="k-card-subtitle">Information</h6>
+                </div>
+                <div class="k-card-body">
+                    <h6>
+                        General mean time: @meanMinutesAll minutes
+                    </h6>
+                    <h6>
+                        Activity Chosen: @activityChosen
+                    </h6>
                 </div>
             </div>
         </div>
     </div>
+    <div class="col">
+        <div class="container">
+            <div class="k-card">
+                <div class="k-card-header">
+                    <h6 class="k-card-subtitle">Parts</h6>
+                </div>
+                <div class="k-card-body">
+                    @if (parts == null)
+                    {
+                        <h6>No parts were involved.</h6>
+                    }
+                    else
+                    {
+                        foreach (var p in parts)
+                        {
+                            <h6>@p</h6>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="container">
+            <div class="k-card">
+                <div class="k-card-header">
+                    <h6 class="k-card-subtitle">Moulds</h6>
+                </div>
+                <div class="k-card-body">
+                    @if (moulds == null)
+                    {
+                        <h6>No moulds were involved.</h6>
+                    }
+                    else
+                    {
+                        foreach (var m in moulds)
+                        {
+                            <h6>@m</h6>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 
     <div class="demo-section k-content wide">
@@ -91,5 +135,6 @@
     </div>
 
 }
+
 
 
