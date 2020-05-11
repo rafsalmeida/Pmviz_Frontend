@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -11,34 +10,25 @@ using Pmviz_Frontend.Models;
 
 namespace Pmviz_Frontend.Controllers
 {
-    public class StatisticsController : Controller
+    public class ResourcesController : Controller
     {
         public async Task<IActionResult> Index()
         {
-            var obj = JObject.Parse(HttpContext.Session.GetString("userDetails"));
-            var username = obj["sub"];
-
             using (var httpClient = new HttpClient())
             {
-                using (var response = await httpClient.GetAsync("http://localhost:8080/api/users/"+username+"/processes"))
+                using (var response = await httpClient.GetAsync("http://localhost:8080/api/processes"))
                 {
                     string apiResponse = await response.Content.ReadAsStringAsync();
                     var status = response.IsSuccessStatusCode;
                     if (status == true)
                     {
-                        // get the list of logs
+                        // get the list of processes
                         var logList = JsonConvert.DeserializeObject<List<Log>>(apiResponse);
                         ViewData["processes"] = logList;
                         return View();
                     }
                     else
                     {
-                        if(response.StatusCode == System.Net.HttpStatusCode.NotFound)
-                        {
-                            ViewBag.ErrorProcess = "You haven't done any activity in any process.";
-                            return View();
-
-                        }
                         ViewBag.ErrorProcess = "Error retrieving processes. Please try again later";
                         return View();
                     }
@@ -46,7 +36,7 @@ namespace Pmviz_Frontend.Controllers
             }
         }
 
-        public async Task<IActionResult> Process([FromQuery(Name ="id")] string processId)
+        public async Task<IActionResult> Process([FromQuery(Name = "id")] string processId)
         {
             using (var httpClient = new HttpClient())
             {
@@ -60,18 +50,18 @@ namespace Pmviz_Frontend.Controllers
                         var activityList = JsonConvert.DeserializeObject<List<Activity>>(apiResponse);
                         ViewData["activities"] = activityList;
                         ViewData["processId"] = processId;
-                        return View("Process", "Statistics");
+                        return View("Process", "Resources");
                     }
                     else
                     {
                         if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
                         {
-                            ViewBag.ErrorActivity = "You haven't done this specific activity in any process.";
-                            return View("Process", "Statistics");
+                            ViewBag.ErrorActivity = "There are no statistics in this specific activity.";
+                            return View("Process", "Resources");
 
                         }
                         ViewBag.ErrorActivity = "Error retrieving activities. Please try again later";
-                        return View("Process", "Statistics");
+                        return View("Process", "Resources");
                     }
                 }
             }
@@ -82,8 +72,6 @@ namespace Pmviz_Frontend.Controllers
         [HttpPost]
         public async Task<IActionResult> Process([FromQuery(Name = "id")] string processId, string activity)
         {
-            var obj = JObject.Parse(HttpContext.Session.GetString("userDetails"));
-            var username = obj["sub"];
 
             using (var httpClient = new HttpClient())
             {
@@ -102,14 +90,14 @@ namespace Pmviz_Frontend.Controllers
                     {
                         if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
                         {
-                            ViewBag.ErrorActivity = "You haven't done this specific activity in any process.";
+                            ViewBag.ErrorActivity = "There are no statistics in this specific activity.";
 
                         }
                         ViewBag.ErrorActivity = "Error retrieving activities. Please try again later";
                     }
                 }
 
-                using (var response = await httpClient.GetAsync("http://localhost:8080/api/resources/processes/" + processId + "/resource/" + username + "?activity=" + activity+"&threshold=0"))
+                using (var response = await httpClient.GetAsync("http://localhost:8080/api/resources/processes/" + processId +"?activity=" + activity + "&threshold=0"))
                 {
                     string apiResponse = await response.Content.ReadAsStringAsync();
                     var status = response.IsSuccessStatusCode;
@@ -121,41 +109,47 @@ namespace Pmviz_Frontend.Controllers
                         ViewData["parts"] = data["parts"];
 
                         var moulds = JArray.Parse(data["moulds"].ToString());
-                        if(moulds.Count == 0)
+                        if (moulds.Count == 0)
                         {
                             ViewData["moulds"] = "";
-                        } else
+                        }
+                        else
                         {
                             ViewData["moulds"] = moulds;
                         }
 
-                        var resource = JArray.Parse(data["resources"].ToString());
-                        if(resource.Count == 0)
+                        var resources = JArray.Parse(data["resources"].ToString());
+                        if (resources.Count == 0)
                         {
-                            ViewBag.ErrorActivity = "There are no records of your mean times in this activity.";
-                            return View("Process", "Statistics");
+                            ViewBag.ErrorActivity = "There are no records of any work in this activity.";
+                            return View("Process", "Resources");
                         }
 
-                        var objj = resource[0];
-                        var millisUser = objj["meanMillis"];
 
                         var timeSpan = TimeSpan.FromMilliseconds(Double.Parse(data["meanMillis"].ToString()));
-                        ViewData["meanMillis"] = timeSpan.TotalMinutes.ToString("N2");
-                       
+                        ViewData["meanMillis"] = timeSpan.TotalMinutes;
+
+                        var allResources = JsonConvert.DeserializeObject<List<ResourceStat>>(data["resources"].ToString());
+                        foreach (var r in allResources)
+                        {
+                            var timeSpanR = TimeSpan.FromMilliseconds(r.MeanMillis);
+
+                            r.MeanMillis = timeSpanR.TotalMinutes;
+                        }
+
+                        allResources = allResources.OrderByDescending(x => x.MeanMillis).ThenBy(x => x.Resource).ToList();
+
+                        ViewData["allResources"] = allResources;
 
 
 
-                        var timeSpanUser = TimeSpan.FromMilliseconds(Double.Parse(millisUser.ToString()));
-                        ViewData["meanMillisUser"] = timeSpanUser.TotalMinutes.ToString("N2");
-
-
-                        return View("Process", "Statistics");
+                        return View("Process", "Resources");
                     }
                     else
                     {
                         if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
                         {
-                            ViewBag.ErrorActivity = "You haven't done this specific activity in any process.";
+                            ViewBag.ErrorActivity = "There are no records of any work in this activity.";
                             return View("Process", "Statistics");
 
                         }
