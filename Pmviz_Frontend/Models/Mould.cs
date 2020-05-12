@@ -11,8 +11,8 @@ namespace Pmviz_Frontend.Models
     public class Mould
     {
         [DataMember]
-        [JsonProperty("codePart")]
-        public string CodePart { get; set; }
+        [JsonProperty("code")]
+        public string Code { get; set; }
 
         [DataMember]
         [JsonProperty("description")]

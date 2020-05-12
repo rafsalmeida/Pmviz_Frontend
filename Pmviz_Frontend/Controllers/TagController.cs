@@ -47,7 +47,7 @@ namespace Pmviz_Frontend.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Index(int mouldSelected)
+        public async Task<IActionResult> Indexx(string mouldSelected)
         {
             using (var httpClient = new HttpClient())
             {
@@ -77,12 +77,12 @@ namespace Pmviz_Frontend.Controllers
                     {
                         var parts = JsonConvert.DeserializeObject<List<Part>>(apiResponse);
                         ViewData["parts"] = parts;
-                        return View();
+                        return View("Index", "Tag");
                     }
                     else
                     {
                         ViewBag.ErrorPart = "Parts not available. Please try again later.";
-                        return View();
+                        return View("Index", "Tag");
                     }
                 }
             }

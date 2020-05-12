@@ -104,7 +104,7 @@ namespace Pmviz_Frontend.Controllers
         {
             using (var httpClient = new HttpClient())
             {
-                using (var response = await httpClient.GetAsync("http://localhost:8080/api/workflow-network/alpha-miner/processes/25"))
+                using (var response = await httpClient.GetAsync("http://localhost:8080/api/workflow-network/alpha-miner/processes/28"))
                 {
                     ViewData["alpha"] = response.Content.ReadAsStringAsync().Result;
                     var status = response.IsSuccessStatusCode;
@@ -116,7 +116,7 @@ namespace Pmviz_Frontend.Controllers
             }
             using (var httpClient = new HttpClient())
             {
-                using (var response = await httpClient.GetAsync("http://localhost:8080/api/workflow-network/heuristic-miner/processes/25"))
+                using (var response = await httpClient.GetAsync("http://localhost:8080/api/workflow-network/heuristic-miner/processes/28"))
                 {
                     ViewData["heuristic"] = response.Content.ReadAsStringAsync().Result;
                     var status = response.IsSuccessStatusCode;

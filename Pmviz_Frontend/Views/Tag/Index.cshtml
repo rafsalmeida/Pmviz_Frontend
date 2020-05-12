@@ -16,7 +16,7 @@
 }
 
 <div class="container">
-    <form method="post" id="ticketsForm" kendo-validator="true">
+    <form method="post" id="ticketsForm" action='@Url.Action("Indexx","Tag")' kendo-validator="true">
         <label for="role" class="required">Choose the mould of the parts you want to tag</label>
         <br />
         <select name="mouldSelected" class="inputfield" required>
@@ -24,7 +24,7 @@
             {
                 @foreach (var mould in moulds)
                 {
-                    <option value="@mould.CodePart">@mould.Description</option>
+                    <option value="@mould.Code">@mould.Code</option>
                 }
 
             }

@@ -13,7 +13,7 @@
             </div>
         </div>
         <div class="form-group col-md-4">
-            <p class="h5">Current active log: 22</p>
+            <p class="h5">Current active log: 29</p>
             <br />
             <label for="inputCases">Choose your algorithm</label>
             <select class="custom-select" id="algorithmSelected">
@@ -152,6 +152,9 @@
 
         graph.nodeTimes = nodeTimes;
         graph.relationTimes = relationTimes;
+
+        console.log(graph.nodeTimes);
+        console.log(graph.relationTimes);
 
         function renderCytoscapeElementFrequency() {
         cy = cytoscape(
@@ -817,7 +820,7 @@
                     return position;
                 } // transform a given node position. Useful for changing flow direction in discrete layouts
             };
-
+            console.log(graph);
             cy.layout(customBreadthfirst).run();
         }
 
