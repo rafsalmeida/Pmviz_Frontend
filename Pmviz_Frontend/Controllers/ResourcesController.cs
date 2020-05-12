@@ -90,14 +90,14 @@ namespace Pmviz_Frontend.Controllers
                     {
                         if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
                         {
-                            ViewBag.ErrorActivity = "There are no statistics in this specific activity.";
+                            ViewBag.ErrorActivity = "No activities associated to this process.";
 
                         }
                         ViewBag.ErrorActivity = "Error retrieving activities. Please try again later";
                     }
                 }
 
-                using (var response = await httpClient.GetAsync("http://localhost:8080/api/resources/processes/" + processId +"?activity=" + activity + "&threshold=0"))
+                using (var response = await httpClient.GetAsync("http://localhost:8080/api/resources/processes/" + processId +"?activity=" + activity))
                 {
                     string apiResponse = await response.Content.ReadAsStringAsync();
                     var status = response.IsSuccessStatusCode;
