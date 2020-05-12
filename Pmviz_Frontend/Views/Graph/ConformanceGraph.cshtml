@@ -4,9 +4,7 @@
         Conformance graph
     </h1>
     <h5>
-        Base process: @ViewData["baseProcess"]
-        <br />
-        Case process: @ViewData["caseProcess"]
+        Process: @ViewData["process"]
     </h5>
 </div>
 <div id="conformanceStats">
@@ -658,15 +656,13 @@
         if (Object.keys(dataFields).length === 0) {
             alert("you have to choose something");
         } else {
-            dataFields.process = @Html.Raw(ViewData["baseProcess"]);
+            dataFields.process = @Html.Raw(ViewData["process"]);
+            dataFields.nodes = data.dataConformance.nodes;
             if (document.getElementById('inputStartDate').value && document.getElementById('inputEndDate').value) {
                 let current_datetime = new Date(dataFields.startDate);
                 dataFields.startDate = current_datetime.getDate() + "-" + (current_datetime.getMonth() + 1) + "-" + current_datetime.getFullYear();
                 current_datetime = new Date(dataFields.endDate);
                 dataFields.endDate = current_datetime.getDate() + "-" + (current_datetime.getMonth() + 1) + "-" + current_datetime.getFullYear();
-            }
-            if (!dataFields.activities || dataFields.activities.length == 0) {
-                dataFields.activities = data.dataConformance.nodes;
             }
 
             $.ajax({

@@ -45,20 +45,34 @@ namespace Pmviz_Frontend.Controllers
             }
         }
 
-        public async Task<IActionResult> ConformanceGraph(string processes, string miner)
+        public async Task<IActionResult> ConformanceGraph(string process, string miner, string moulds, string startDate, string endDate, string threshold)
         {
-            int[] arr = JsonConvert.DeserializeObject<int[]>(processes);
-            int firstProcess = arr[0];
-            int lastProcess = arr[1];
+            string json, url;
+            if(moulds != null)
+            {
+                json = "{ \"moulds\":" + moulds + "}";
+            }
+            else
+            {
+                json = "{ \"startDate\":\"" + startDate + "\", \"endDate\":\"" + endDate + "\"}";
+            }
+            if (miner == "alpha-miner")
+            {
+                url = "http://localhost:8080/api/conformance/performance/" + miner + "/" + process;
+            }
+            else
+            {
+                url = "http://localhost:8080/api/conformance/performance/" + miner + "/" + process + "?threshold=" + threshold.Replace(',', '.');
+            }
             HttpResponseMessage response;
+            HttpContent c = new StringContent(json, Encoding.UTF8, "application/json");
             using (var httpClient = new HttpClient())
             {
-                using (response = await httpClient.GetAsync("http://localhost:8080/api/conformance/performance/" + miner + "/" + firstProcess + "/with/" + lastProcess))
+                using (response = await httpClient.PostAsync(url, c))
                 {
                     string apiResponse = response.Content.ReadAsStringAsync().Result;
                     ViewData["conformance"] = response.Content.ReadAsStringAsync().Result;
-                    ViewData["baseProcess"] = firstProcess;
-                    ViewData["caseProcess"] = lastProcess;
+                    ViewData["process"] = process;
                     var status = response.IsSuccessStatusCode;
                     if (status == false)
                     {
@@ -68,40 +82,56 @@ namespace Pmviz_Frontend.Controllers
                     {
                         var obj = JObject.Parse(apiResponse);
 
-                        var json = "{ \"nodes\":" + Newtonsoft.Json.JsonConvert.SerializeObject(obj["nodes"]) + "}";
+                        json = "{ \"nodes\":" + JsonConvert.SerializeObject(obj["nodes"]) + "}";
 
-                        HttpContent c = new StringContent(json, Encoding.UTF8, "application/json");
+                        c = new StringContent(json, Encoding.UTF8, "application/json");
 
 
-                        var asd = await httpClient.PostAsync("http://localhost:8080/api/conformance/process/" + firstProcess, c);
-                        ViewData["compare"] = await asd.Content.ReadAsStringAsync();
+                        response = await httpClient.PostAsync("http://localhost:8080/api/conformance/process/" + process, c);
+                        ViewData["compare"] = await response.Content.ReadAsStringAsync();
 
                         return View("ConformanceGraph");
-
-                        }
                     }
                 }
             }
+        }
 
         [HttpPost]
-        public async Task<IActionResult> GetModel(string [] activities, string[] moulds, string startDate, string endDate, int process)
+        public async Task<IActionResult> GetModel(string[] nodes, string [] activities, string[] moulds, string startDate, string endDate, int process)
         {
-            var json = "";
+            string json = "{ \"nodes\":" + JsonConvert.SerializeObject(nodes) + ", \"activities\":" + JsonConvert.SerializeObject(activities) + ", \"moulds\":" + JsonConvert.SerializeObject(moulds);
             if (startDate != null && endDate != null)
             {
-                json = "{ \"nodes\":" + JsonConvert.SerializeObject(activities) + ", \"moulds\":" + JsonConvert.SerializeObject(moulds) + ", \"startDate\":\"" + startDate + "\", \"endDate\":\"" + endDate + "\"}";
+                json +=  ", \"startDate\":\"" + startDate + "\", \"endDate\":\"" + endDate + "\"";
             }
-            else
-            {
-                json = "{ \"nodes\":" + JsonConvert.SerializeObject(activities) + ", \"moulds\":" + JsonConvert.SerializeObject(moulds) + "}";
-            }
-
+            json += "}";
             HttpContent c = new StringContent(json, Encoding.UTF8, "application/json");
 
             var httpClient = new HttpClient();
             var asd = await httpClient.PostAsync("http://localhost:8080/api/conformance/process/" + process, c);
 
             return Json(new{ success = true, request = asd.Content.ReadAsStringAsync() });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GetActivities(int process)
+        {
+            HttpResponseMessage response;
+            using (var httpClient = new HttpClient())
+            {
+                using (response = await httpClient.GetAsync("http://localhost:8080/api/processes/" + process + "/activities"))
+                {
+                    var status = response.IsSuccessStatusCode;
+                    if (status == false)
+                    {
+                        return Json(new { success = false, request = response.Content.ReadAsStringAsync() });
+                    }
+                    else
+                    {
+                        return Json(new { success = true, request = response.Content.ReadAsStringAsync() });
+                    }
+                }
+            }
         }
 
     }

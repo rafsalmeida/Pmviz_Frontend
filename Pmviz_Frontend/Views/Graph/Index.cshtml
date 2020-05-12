@@ -1,5 +1,4 @@
 ﻿<div id="conformanceStats">
-    <h4>Choose two processes or two moulds too compare</h4>
     <!--<div class="row">
            <div class="col">
                <div class="form-group">
@@ -14,15 +13,7 @@
                </div>
            </div>
        </div>-->
-    <div class="form-check form-check-inline">
-        <input class="form-check-input" type="radio" name="miner" id="alphaRadio" value="alpha-miner" onclick="handleMiner(this);" checked>
-        <label class="form-check-label" for="alphaRadio">Alpha Miner</label>
-    </div>
-    <div class="form-check form-check-inline">
-        <input class="form-check-input" type="radio" name="miner" id="heuristicRadio" onclick="handleMiner(this);" value="heuristic-miner">
-        <label class="form-check-label" for="heuristicRadio">Heuristic Miner</label>
-    </div>
-    <hr />
+    <!--
     <div class="row">
         <div class="form-group col-md-6">
             <div class="form-check form-check-inline">
@@ -38,19 +29,83 @@
                     <select id="inputMoulds" name="moulds" class="custom-select" size="6" multiple>
                     </select>
                 </div>
+            </div>-->
+    <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" name="miner" id="alphaRadio" value="alpha-miner" onclick="handleMiner(this);" checked>
+        <label class="form-check-label" for="alphaRadio">Alpha Miner</label>
+    </div>
+    <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" name="miner" id="heuristicRadio" onclick="handleMiner(this);" value="heuristic-miner">
+        <label class="form-check-label" for="heuristicRadio">Heuristic Miner</label>
+    </div>
+    <div class="form-group" id="divTreshold">
+        <label for="thresholdInput">Threshold</label>
+        <input type="number" class="form-control" id="thresholdInput" value="0.1" min="0" max="1">
+        <small id="thresholdHelp" class="form-text text-muted">O threshold tem que estar entre 0 e 1</small>
+    </div>
+    <hr />
+    <h4>Escolha um processo</h4>
+    <label class="form-check-label" for="processRadio">Processes</label>
+    <select id="inputProcesses" name="processes" class="custom-select" size="6">
+    </select>
+    <div id="clearActivities">
+        <br />
+        <h5>Não tem nenhum processo seleccionado/Processo sem Atividades</h5>
+    </div>
+    <div id="activities">
+        <br />
+        <h5>Actividades do Processo seleccionado</h5>
+        <ul class="list-unstyled" id="listActivities">
+        </ul>
+    </div>
+    <hr />
+    <div id="compareProcess">
+        <h4>Escolha como o quer filtrar</h4>
+        <div class="row">
+            <div class="form-group col-md-6">
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="filter" id="dataRadio" onclick="handleFilter(this);" value="data" checked><label class="form-check-label" for="dataRadio">Data</label>
+                </div>
+                <div class="form-group">
+                    <label for="inputStartDate">Data Inicial</label>
+                    <input class="form-control" type="date" id="inputStartDate">
+                </div>
+                <div class="form-group">
+                    <label for="inputEndDate">Data Final</label>
+                    <input class="form-control" type="date" id="inputEndDate">
+                </div>
             </div>
-    <button class="btn" id="Button" type="button">Submit</button>
+            <div class="form-group col-md-6">
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="filter" id="mouldsRadio" onclick="handleFilter(this);" value="mould"><label class="form-check-label" for="mouldsRadio">Moldes</label>
+                </div>
+                <select id="inputMoulds" name="moulds" class="custom-select" size="6" multiple>
+                </select>
+            </div>
+        </div>
+        <button class="btn btn-block" id="Button" type="button">Submit</button>
+    </div>
 </div>
 <script>
     var data = {
         dataProcesses: JSON.parse(@Html.Raw(Json.Serialize(ViewData["processes"]))),
-        dataMoudls: JSON.parse(@Html.Raw(Json.Serialize(ViewData["moulds"])))
+        dataMoulds: JSON.parse(@Html.Raw(Json.Serialize(ViewData["moulds"]))),
     }
     var miner = 'alpha-miner';
-    var process = 'process';
-    var inputSelected = document.getElementById('inputProcesses');
-    document.getElementById("inputMoulds").disabled = true;
+    var compare = 'data';
+    var process = '';
+    var divActivities = document.getElementById('activities');
+    var divClearActivities = document.getElementById('clearActivities');
+    var divCompareProcess = document.getElementById('compareProcess');
+    var inputStartDate = document.getElementById("inputStartDate");
+    var inputEndDate = document.getElementById("inputEndDate");
+    var divTreshold = document.getElementById("divTreshold"); 
+    var thresholdInput = document.getElementById("thresholdInput"); 
 
+    document.getElementById("inputMoulds").disabled = true;
+    divActivities.style.display = "none";
+    divTreshold.style.display = "none";
+    divCompareProcess.style.display = "none";
     if (data.dataProcesses.length != 0) {
         for (var i = 0; i < data.dataProcesses.length; i++) {
             var option = document.createElement("option");
@@ -59,41 +114,111 @@
             inputProcesses.appendChild(option);
         }
     }
-    if (data.dataMoudls.length != 0) {
-        for (var i = 0; i < data.dataMoudls.length; i++) {
+    if (data.dataMoulds.length != 0) {
+        for (var i = 0; i < data.dataMoulds.length; i++) {
             var option = document.createElement("option");
-            option.setAttribute("value", data.dataMoudls[i].codePart);
-            option.text = data.dataMoudls[i].codePart;
+            option.setAttribute("value", data.dataMoulds[i].code);
+            option.text = data.dataMoulds[i].code;
             inputMoulds.appendChild(option);
         }
     }
 
-    $("#Button").click(function () {
-        var selectedInput = Array.from(inputSelected.selectedOptions).map(option => option.value);
-        if (selectedInput.length != 2) {
-            alert("You have to choose two");
+    function changeInputDate(change) {
+        inputStartDate.disabled = change;
+        inputEndDate.disabled = change;
+    }
+
+    function handleFilter(myRadio) {
+        if (myRadio.value == 'data') {
+            compare = 'data';
+            changeInputDate(false);
+            document.getElementById("inputMoulds").disabled = true;
         } else {
-            window.location = '@Url.Action("ConformanceGraph", "Graph")?processes=' + JSON.stringify(selectedInput) + '&miner=' + miner;
+            compare = 'moulds';
+            changeInputDate(true);
+            document.getElementById("inputMoulds").disabled = false;
         }
-    });
+    }
 
     function handleMiner(myRadio) {
         if (myRadio.value == 'alpha-miner') {
             miner = 'alpha-miner';
+            divTreshold.style.display = "none";
         } else {
             miner = 'heuristic-miner';
+            divTreshold.style.display = "block";
         }
-        console.log(miner);
     }
-    function handleProcesses(myRadio) {
-        if (myRadio.value == 'process') {
-            inputSelected = document.getElementById('inputProcesses');
-            document.getElementById("inputProcesses").disabled = false;
-            document.getElementById("inputMoulds").disabled = true;
+
+    function convertDate(field) {
+        let current_datetime = new Date(field);
+        return current_datetime.getDate() + "-" + (current_datetime.getMonth() + 1) + "-" + current_datetime.getFullYear();
+    }
+
+    $("#inputProcesses").change(function () {
+        process = $(this).val();
+        $.ajax({
+            type: "POST",
+            data: { process: $(this).val() },
+            url: "/Graph/GetActivities",
+            dataType: 'json',
+            success: function (response) {
+                if (response.success) {
+                    $('#listActivities').empty();
+                    var activities = JSON.parse(response.request.Result);
+                    for (var i = 0; i < activities.length; i++) {
+                        var li = document.createElement("li");
+                        li.appendChild(document.createTextNode(activities[i].name));
+                        listActivities.appendChild(li);
+                    }
+                    divClearActivities.style.display = "none";
+                    divActivities.style.display = "block";
+                    divCompareProcess.style.display = "block";
+                } else {
+                    process = '';
+                    divActivities.style.display = "none";
+                    divCompareProcess.style.display = "none";
+                    divClearActivities.style.display = "block";
+                    console.log(response.request.Result);
+                }
+            },
+            error: function (response) {
+                alert("error!");  //
+            }
+
+        });
+    });
+
+    $("#Button").click(function () {
+        if (process == '') {
+            alert("You have to choose the process");
         } else {
-            inputSelected = document.getElementById('inputMoulds');
-            document.getElementById("inputProcesses").disabled = true;
-            document.getElementById("inputMoulds").disabled = false;
+            if (miner == 'heuristic-miner' && (thresholdInput.value > 1 || thresholdInput.value < 0)) {
+                alert("Treshold tem que ser entre 0 e 1");
+            } else {
+                if (compare != '') {
+                    if (compare == 'data') {
+                        if (!inputStartDate.value || !inputEndDate.value) {
+                            alert("As datas tem que estar preenchidas");
+                        } else {
+                            window.location = '@Url.Action("ConformanceGraph", "Graph")?process=' + process + '&miner=' + miner + '&startDate=' + convertDate(inputStartDate.value) + '&endDate=' + convertDate(inputEndDate.value) + '&moulds=' + '&threshold=' + thresholdInput.value;
+                        }
+
+                    } else {
+                        var moulds = Array.from(inputMoulds.selectedOptions).map(option => option.value);
+                        if (moulds.length <= 0) {
+                            alert("Tens que escolher pelo menos um molde");
+                        } else {
+                            console.log(thresholdInput.value);
+                            window.location = '@Url.Action("ConformanceGraph", "Graph")?process=' + process + '&miner=' + miner + '&startDate=&endDate=&moulds=' + JSON.stringify(moulds) + '&threshold=' + thresholdInput.value;
+                        }
+                    }
+                } else {
+                    alert("Tens que escolher alguma coisa para comparar");
+                }
+            }
+            //window.location = 'Url.Action("ConformanceGraph", "Graph")?processes=' + JSON.stringify(selectedInput) + '&miner=' + miner;
         }
-    }
+
+    });
 </script>
