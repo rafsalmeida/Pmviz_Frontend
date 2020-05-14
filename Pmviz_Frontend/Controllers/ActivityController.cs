@@ -16,7 +16,7 @@ namespace Pmviz_Frontend.Controllers
 
             using (var httpClient = new HttpClient())
             {
-                using (var response = await httpClient.GetAsync("http://localhost:8080/api/activity-frequency/"+logid))
+                using (var response = await httpClient.GetAsync("http://localhost:8080/api/activity-frequency/processes/"+logid))
                 {
                     string apiResponse = await response.Content.ReadAsStringAsync();
                     var status = response.IsSuccessStatusCode;
@@ -73,7 +73,13 @@ namespace Pmviz_Frontend.Controllers
                         return View(activityList);
                     }
                     else
-                    {
+                    {   
+                        if(response.StatusCode == System.Net.HttpStatusCode.Conflict)
+                        {
+                            ViewBag.Error = "There are no events/activities associated to the process " + logid;
+                            return View();
+
+                        }
                         return RedirectToAction("Index", "Home", new { error = "1" });
 
                     }
