@@ -167,6 +167,7 @@ namespace Pmviz_Frontend.Controllers
                             var timeSpanR = TimeSpan.FromMilliseconds(r.MeanMillis);
 
                             r.MeanMillis = timeSpanR.TotalMinutes;
+                            r.GeneralMean = timeSpan.TotalMinutes;
                         }
 
                         allResources = allResources.OrderByDescending(x => x.MeanMillis).ThenBy(x => x.Resource).ToList();

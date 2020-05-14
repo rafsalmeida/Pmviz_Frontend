@@ -17,5 +17,8 @@ namespace Pmviz_Frontend.Models
 
         [DataMember]
         public Mean Mean { get; set; }
+
+        [DataMember]
+        public double GeneralMean { get; set; }
     }
 }

@@ -12,7 +12,7 @@
     ViewData["Title"] = "All Resources Stats";
 }
 
-<h4 style="text-align:center">My Statistics</h4>
+<h4 style="text-align:center">Statistics</h4>
 @if (ViewBag.ErrorActivity != null)
 {
     <div class="alert alert-danger" role="alert">
@@ -118,7 +118,7 @@
             .Series(series =>
             {
                 series.Column(a => a.MeanMillis).Name("Mean in Minutes").CategoryField("Resource");
-
+                series.Line(a => a.GeneralMean).Name("General Mean in Minutes");
             })
             .CategoryAxis(axis => axis
                 .Name("series-axis")

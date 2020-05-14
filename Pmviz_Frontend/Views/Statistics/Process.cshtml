@@ -122,12 +122,10 @@
         {
             series.Column(new double[] { Double.Parse(meanMinutesUser.ToString()) }).Name("User Mean");
             series.Column(new double[] { Double.Parse(meanMinutesAll.ToString()) }).Name("General Mean");
-
-
         })
         .CategoryAxis(axis => axis
             .Name("series-axis")
-            .Line(line => line.Visible(true))
+            .Line(line => line.Visible(false))
         )
         .Tooltip(tooltip => tooltip
             .Visible(true)
