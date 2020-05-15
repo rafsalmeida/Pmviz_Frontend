@@ -81,6 +81,11 @@ namespace Pmviz_Frontend.Controllers
                     }
                     else
                     {
+                        if(response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                        {
+                            ViewBag.ErrorPart = "Mould not found or doesn't have any parts associated.";
+                            return View("Index", "Tag");
+                        }
                         ViewBag.ErrorPart = "Parts not available. Please try again later.";
                         return View("Index", "Tag");
                     }

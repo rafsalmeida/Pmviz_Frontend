@@ -76,11 +76,12 @@ namespace Pmviz_Frontend.Controllers
                     {   
                         if(response.StatusCode == System.Net.HttpStatusCode.Conflict)
                         {
-                            ViewBag.Error = "There are no events/activities associated to the process " + logid;
+                            ViewBag.Error = await response.Content.ReadAsStringAsync();
                             return View();
 
                         }
-                        return RedirectToAction("Index", "Home", new { error = "1" });
+                        ViewBag.Error = "Error retrieving statistics. Please, try again later.";
+                        return View();
 
                     }
                 }
