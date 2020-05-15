@@ -1,6 +1,10 @@
 ﻿@model IEnumerable<Pmviz_Frontend.Models.Log>
 @using Kendo.Mvc.UI
 @{ Layout = "_LayoutBoot"; ViewBag.Title = "All Processes";}
+@using Microsoft.AspNetCore.Http;
+@{
+    List<string> details = Context.Session.GetString("listDetails").Split(new char[] { ',' }).ToList();
+}
 
 <h4 style="text-align:center">All Processes</h4>
 
@@ -31,7 +35,10 @@ else
                     columns.Bound(l => l.NumberOfCases).Title("Number of Cases");
                     columns.Bound(l => l.StartDate).Title("Start Date");
                     columns.Bound(l => l.EndDate).Title("End Date");
-                    columns.Command(command => command.Custom("Activities Statistics").Click("showDetails")).Width(175);
+                    if (!details.Contains("activityFrequency"))
+                    {
+                        columns.Command(command => command.Custom("Activities Statistics").Click("showDetails")).Width(175);
+                    }
                     //columns.Command(command => command.Custom("Activities").Click("showActivities")).Width(110);
                     //columns.Command(command => command.Custom("Resources").Click("showResources")).Width(120);
 
@@ -51,11 +58,6 @@ else
                 .HtmlAttributes(new { style = "width:1000px" })
 
             )
-            @(Html.Kendo().Button()
-            .Name("backButton")
-            .HtmlAttributes(new { type = "button", @class = "k-primary" })
-            .Content("Go back")
-            .Events(e => e.Click("onClick_GoBack")))
         </div>
 
     }
@@ -64,10 +66,6 @@ else
 
 
 <script type="text/javascript">
-    function onClick_GoBack() {
-        window.location = '@Url.Action("Back", "Log")';
-    }
-
 
     function showDetails(e) {
         e.preventDefault();
