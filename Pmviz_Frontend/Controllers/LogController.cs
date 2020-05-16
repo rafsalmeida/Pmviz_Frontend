@@ -129,7 +129,7 @@ namespace PmvizFrontend.Controllers
             }
             else if(type == "effort")
             {
-                #region Frequency 
+                #region Effort 
                 ViewData["type"] = "effort";
                 using (var httpClient = new HttpClient())
                 {
@@ -217,10 +217,336 @@ namespace PmvizFrontend.Controllers
 
         }
 
-        public IActionResult Resource([FromQuery(Name = "id")]string processId)
+        public async Task<IActionResult> Resource([FromQuery(Name = "id")]string processId)
         {
             ViewData["processId"] = processId;
-            return View();
+            using (var httpClient = new HttpClient())
+            {
+                using (var response = await httpClient.GetAsync("http://localhost:8080/api/processes/" + processId + "/activities"))
+                {
+                    string apiResponse = await response.Content.ReadAsStringAsync();
+                    var status = response.IsSuccessStatusCode;
+                    if (status == true)
+                    {
+                        // get the list of activities
+                        var activityList = JsonConvert.DeserializeObject<List<Activity>>(apiResponse);
+                        ViewData["activities"] = activityList;
+                        ViewData["processId"] = processId;
+                        return View();
+                    }
+                    else
+                    {
+                        if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                        {
+                            ViewBag.ErrorActivity = await response.Content.ReadAsStringAsync();
+                            return View();
+
+                        }
+                        ViewBag.ErrorActivity = "Error retrieving activities. Please try again later";
+                        return View();
+                    }
+                }
+            }
+
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Resource([FromQuery(Name = "id")]string processId, string type, string activity)
+        {
+            ViewData["processId"] = processId;
+            if(type == "mean")
+            {
+                #region Mean
+                ViewData["type"] = "mean";
+
+                using (var httpClient = new HttpClient())
+                {
+                    using (var response = await httpClient.GetAsync("http://localhost:8080/api/processes/" + processId + "/activities"))
+                    {
+                        string apiResponse = await response.Content.ReadAsStringAsync();
+                        var status = response.IsSuccessStatusCode;
+                        if (status == true)
+                        {
+                            // get the list of activities
+                            var activityList = JsonConvert.DeserializeObject<List<Activity>>(apiResponse);
+                            ViewData["activities"] = activityList;
+                            ViewData["processId"] = processId;
+                        }
+                        else
+                        {
+                            if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                            {
+                                ViewBag.ErrorActivity = await response.Content.ReadAsStringAsync();
+
+                            }
+                            ViewBag.ErrorActivity = "Error retrieving activities. Please try again later";
+                        }
+                    }
+
+                    using (var response = await httpClient.GetAsync("http://localhost:8080/api/resources/" + processId + "?activity=" + activity))
+                    {
+                        string apiResponse = await response.Content.ReadAsStringAsync();
+                        var status = response.IsSuccessStatusCode;
+                        if (status == true)
+                        {
+                            var data = JObject.Parse(apiResponse);
+
+                            ViewData["activity"] = activity;
+
+                            //Parse moulds
+
+                            if (data["moulds"].ToString() == "" || data["moulds"] == null)
+                            {
+                                ViewData["moulds"] = null;
+                            }
+                            else
+                            {
+                                var moulds = JArray.Parse(data["moulds"].ToString());
+                                if (moulds.Count == 0)
+                                {
+                                    ViewData["moulds"] = null;
+                                }
+                                else
+                                {
+                                    var allMoulds = moulds.ToObject<List<string>>();
+                                    ViewData["moulds"] = allMoulds;
+
+                                }
+
+                            }
+
+
+                            // Parse parts
+                            if (data["parts"].ToString() == "")
+                            {
+                                ViewData["parts"] = null;
+                            }
+                            else
+                            {
+                                var parts = JArray.Parse(data["parts"].ToString());
+                                if (parts.Count == 0)
+                                {
+                                    ViewData["parts"] = null;
+                                }
+                                else
+                                {
+                                    var allParts = parts.ToObject<List<string>>();
+                                    ViewData["parts"] = allParts;
+
+                                }
+                            }
+
+                            var resources = JArray.Parse(data["resources"].ToString());
+                            if (resources.Count == 0)
+                            {
+                                ViewBag.ErrorActivity = "There are no records of any work in this activity.";
+                                return View();
+                            }
+
+
+                            var timeSpan = TimeSpan.FromMilliseconds(Double.Parse(data["meanMillis"].ToString()));
+                            ViewData["meanMillis"] = timeSpan.TotalMinutes;
+
+                            var allResources = JsonConvert.DeserializeObject<List<ResourceStat>>(data["resources"].ToString());
+                            foreach (var r in allResources)
+                            {
+                                var timeSpanR = TimeSpan.FromMilliseconds(r.MeanMillis);
+
+                                r.MeanMillis = timeSpanR.TotalMinutes;
+                                r.GeneralMean = timeSpan.TotalMinutes;
+                            }
+
+                            allResources = allResources.OrderByDescending(x => x.MeanMillis).ThenBy(x => x.Resource).ToList();
+
+                            ViewData["allResources"] = allResources;
+
+
+
+                            return View();
+                        }
+                        else
+                        {
+                            if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                            {
+                                ViewBag.ErrorActivity = await response.Content.ReadAsStringAsync();
+                                return View();
+
+                            }
+                            ViewBag.ErrorActivity = "Error retrieving statistics. Please try again later";
+                            return View();
+
+                        }
+                    }
+
+                }
+
+
+                #endregion
+
+            }
+            else if (type == "effort")
+            {
+                #region Effort
+                ViewData["type"] = "effort";
+
+                using (var httpClient = new HttpClient())
+                {
+                    using (var response = await httpClient.GetAsync("http://localhost:8080/api/processes/" + processId + "/activities"))
+                    {
+                        string apiResponse = await response.Content.ReadAsStringAsync();
+                        var status = response.IsSuccessStatusCode;
+                        if (status == true)
+                        {
+                            // get the list of activities
+                            var activityList = JsonConvert.DeserializeObject<List<Activity>>(apiResponse);
+                            ViewData["activities"] = activityList;
+                            ViewData["processId"] = processId;
+                        }
+                        else
+                        {
+                            if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                            {
+                                ViewBag.ErrorActivity = await response.Content.ReadAsStringAsync();
+
+                            }
+                            ViewBag.ErrorActivity = "Error retrieving activities. Please try again later";
+                        }
+                    }
+
+                    using (var response = await httpClient.GetAsync("http://localhost:8080/api/resources/effort/" + processId + "?activity=" + activity))
+                    {
+                        string apiResponse = await response.Content.ReadAsStringAsync();
+                        var status = response.IsSuccessStatusCode;
+                        if (status == true)
+                        {
+                            var data = JObject.Parse(apiResponse);
+
+                            ViewData["activity"] = activity;
+
+                            //Parse moulds
+
+                            if (data["moulds"].ToString() == "" || data["moulds"] == null)
+                            {
+                                ViewData["moulds"] = null;
+                            }
+                            else
+                            {
+                                var moulds = JArray.Parse(data["moulds"].ToString());
+                                if (moulds.Count == 0)
+                                {
+                                    ViewData["moulds"] = null;
+                                }
+                                else
+                                {
+                                    var allMoulds = moulds.ToObject<List<string>>();
+                                    ViewData["moulds"] = allMoulds;
+
+                                }
+
+                            }
+
+
+                            // Parse parts
+                            if (data["parts"].ToString() == "")
+                            {
+                                ViewData["parts"] = null;
+                            }
+                            else
+                            {
+                                var parts = JArray.Parse(data["parts"].ToString());
+                                if (parts.Count == 0)
+                                {
+                                    ViewData["parts"] = null;
+                                }
+                                else
+                                {
+                                    var allParts = parts.ToObject<List<string>>();
+                                    ViewData["parts"] = allParts;
+
+                                }
+                            }
+
+                            var resources = JArray.Parse(data["resources"].ToString());
+                            if (resources.Count == 0)
+                            {
+                                ViewBag.ErrorActivity = "There are no records of any work in this activity.";
+                                return View();
+                            }
+
+
+                            var timeSpan = TimeSpan.FromMilliseconds(Double.Parse(data["totalEffortMillis"].ToString()));
+                            ViewData["totalEffortMillis"] = timeSpan.TotalMinutes;
+
+                            var allResources = JsonConvert.DeserializeObject<List<ResourceEffort>>(data["resources"].ToString());
+                            foreach (var r in allResources)
+                            {
+                                var timeSpanR = TimeSpan.FromMilliseconds(r.EffortMillis);
+
+                                r.EffortMillis = timeSpanR.TotalMinutes;
+                            }
+
+                            allResources = allResources.OrderByDescending(x => x.EffortMillis).ThenBy(x => x.Resource).ToList();
+
+                            ViewData["allResourcesEffort"] = allResources;
+
+
+
+                            return View();
+                        }
+                        else
+                        {
+                            if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                            {
+                                ViewBag.ErrorActivity = await response.Content.ReadAsStringAsync();
+                                return View();
+
+                            }
+                            ViewBag.ErrorActivity = "Error retrieving statistics. Please try again later";
+                            return View();
+
+                        }
+                    }
+
+                }
+
+
+                #endregion
+
+
+            }
+            else
+            {
+                using (var httpClient = new HttpClient())
+                {
+                    using (var response = await httpClient.GetAsync("http://localhost:8080/api/processes/" + processId + "/activities"))
+                    {
+                        string apiResponse = await response.Content.ReadAsStringAsync();
+                        var status = response.IsSuccessStatusCode;
+                        if (status == true)
+                        {
+                            // get the list of activities
+                            var activityList = JsonConvert.DeserializeObject<List<Activity>>(apiResponse);
+                            ViewData["activities"] = activityList;
+                            ViewData["processId"] = processId;
+                        }
+                        else
+                        {
+                            if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                            {
+                                ViewBag.ErrorActivity = await response.Content.ReadAsStringAsync();
+
+                            }
+                            ViewBag.ErrorActivity = "Error retrieving activities. Please try again later";
+                        }
+                    }
+
+                }
+
+
+                ViewBag.Error = "Select an option!";
+                return View();
+
+            }
 
         }
 
@@ -299,16 +625,5 @@ namespace PmvizFrontend.Controllers
             return RedirectToAction("Index", role.ToString());
         }
 
-        public IActionResult Contact()
-        {
-            ViewData["Message"] = "Your contact page.";
-
-            return View();
-        }
-
-        public IActionResult Error()
-        {
-            return View();
-        }
     }
 }
