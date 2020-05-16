@@ -1,4 +1,4 @@
-﻿@using Microsoft.AspNetCore.Http;
+@using Microsoft.AspNetCore.Http;
 @{ 
     List<string> details = Context.Session.GetString("listDetails").Split(new char[] { ',' }).ToList();
 }
@@ -112,7 +112,7 @@
         -->
                 </ul>
             </nav>
-            <div class="content">
+          <div class="content">
                 <nav class="navbar navbar-expand-lg navbar-light bg-light active" id="navigation">
                     <div class="container-fluid">
 
@@ -127,7 +127,7 @@
                 </nav>
                 <main>
                     <br />
-                    <div class="container">
+                    <div class="container-fluid">
                         @RenderBody()
                     </div>
                 </main>
@@ -146,29 +146,31 @@
     </body>
 </html>
 <style>
-    @@import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
+  
+@@import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
+html,
+body {
+    height: 80%;
+}
+.wrapper {
+    display: flex;
+    align-items: stretch;
+}
 
-    .wrapper {
-        display: flex;
-        align-items: stretch;
-    }
-
-    #sidebar.active {
-        margin-left: -250px;
-    }
-
-    #sidebar {
-        background: #7386D5;
-        color: #fff;
-        transition: all 0.3s;
-        min-width: 250px;
-        max-width: 250px;
-        min-height: 100vh;
-    }
-
-    a[data-toggle="collapse"] {
-        position: relative;
-    }
+#sidebar.active {
+    margin-left: -250px;
+}
+#sidebar {
+    background: #7386D5;
+    color: #fff;
+    transition: all 0.3s;
+    min-width: 13vw;
+    max-width: 13vw;
+    min-height: 100vh;
+}
+a[data-toggle="collapse"] {
+    position: relative;
+}
 
     .dropdown-toggle::after {
         display: block;
@@ -177,6 +179,12 @@
         right: 20px;
         transform: translateY(-50%);
     }
+
+#sidebar .sidebar-header {
+    height:8vh;
+    background: #6d7fcc;
+    text-align:center;
+    vertical-align: middle;
 
     body {
         font-family: 'Poppins', sans-serif;
@@ -209,6 +217,26 @@
         border-bottom: 1px solid #47748b;
     }
 
+#sidebar ul li.active > a, a[aria-expanded="true"] {
+    color: #fff;
+    background: #6d7fcc;
+}
+ul ul a {
+    font-size: 0.9em !important;
+    padding-left: 30px !important;
+    background: #6d7fcc;
+}
+#navigation{
+    width:100vw;
+}
+#navigation.active{
+    width:87vw;
+    height:8vh;
+}
+#logout{
+    position:absolute;
+    right:1vw;
+  
     #sidebar ul p {
         color: #fff;
         padding: 10px;
@@ -225,31 +253,6 @@
             background: #fff;
         }
 
-    #sidebar ul li.active > a, a[aria-expanded="true"] {
-        color: #fff;
-        background: #6d7fcc;
-    }
-
-    ul ul a {
-        font-size: 0.9em !important;
-        padding-left: 30px !important;
-        background: #6d7fcc;
-    }
-
-    #navigation {
-        width: 100vw;
-    }
-
-        #navigation.active {
-            width: 81vw;
-            height: 10vh;
-        }
-
-    #logout {
-        position: absolute;
-        right: 1vw;
-    }
-
     #title {
         padding-top: 20px;
     }
@@ -263,6 +266,15 @@
                 margin-left: 0;
             }
     }
+}
+
+@@media only screen and (min-width : 1200px) {
+
+    .container-fluid {
+        max-width: 80.5vw;
+    }
+
+}
 </style>
 <script>
 

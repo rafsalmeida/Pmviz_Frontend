@@ -45,12 +45,12 @@ namespace Pmviz_Frontend.Controllers
             }
         }
 
-        public async Task<IActionResult> ConformanceGraph(string process, string miner, string moulds, string startDate, string endDate, string threshold)
+        public async Task<IActionResult> ConformanceGraph(string process, string typeCompare, string miner, string moulds, string startDate, string endDate, string threshold)
         {
             string json, url;
-            if(moulds != null)
+            if(typeCompare == "moulds")
             {
-                json = "{ \"moulds\":" + moulds + "}";
+                json = "{ \"moulds\":" + moulds.ToString() + "}";
             }
             else
             {
@@ -70,9 +70,7 @@ namespace Pmviz_Frontend.Controllers
             {
                 using (response = await httpClient.PostAsync(url, c))
                 {
-                    string apiResponse = response.Content.ReadAsStringAsync().Result;
                     ViewData["conformance"] = response.Content.ReadAsStringAsync().Result;
-                    ViewData["process"] = process;
                     var status = response.IsSuccessStatusCode;
                     if (status == false)
                     {
@@ -80,17 +78,61 @@ namespace Pmviz_Frontend.Controllers
                     }
                     else
                     {
-                        var obj = JObject.Parse(apiResponse);
+                        var obj = JObject.Parse(response.Content.ReadAsStringAsync().Result);
 
                         json = "{ \"nodes\":" + JsonConvert.SerializeObject(obj["nodes"]) + "}";
 
                         c = new StringContent(json, Encoding.UTF8, "application/json");
 
-
                         response = await httpClient.PostAsync("http://localhost:8080/api/conformance/process/" + process, c);
-                        ViewData["compare"] = await response.Content.ReadAsStringAsync();
+                        status = response.IsSuccessStatusCode;
+                        if (status == false)
+                        {
+                            return Json(new { success = false, request = response.Content.ReadAsStringAsync() });
+                        }
+                        else
+                        {
+                            return Json(new { success = true, request = new { baseData = obj, caseData = JObject.Parse(response.Content.ReadAsStringAsync().Result) } });
+                        }   
+                    }
+                }
+            }
+        }
 
-                        return View("ConformanceGraph");
+        public async Task<IActionResult> GetFilter(string process, string moulds, string resources, string activities, string startDate, string endDate, string nodes)
+        {
+            string json = "{ \"nodes\":" + nodes.ToString();
+            if (moulds != null)
+            {
+                json += ", \"moulds\":" + moulds.ToString();
+            }
+            if (resources != null)
+            {
+                json += ", \"resources\":" + resources.ToString();
+            }
+            if (activities != null)
+            {
+                json += ", \"activities\":" + activities.ToString();
+            }
+            if (startDate != null && endDate != null)
+            {
+                json += ", \"startDate\":\"" + startDate + "\", \"endDate\":\"" + endDate + "\"";
+            }
+            json += " }";
+            HttpResponseMessage response;
+            HttpContent c = new StringContent(json, Encoding.UTF8, "application/json");
+            using (var httpClient = new HttpClient())
+            {
+                using (response = await httpClient.PostAsync("http://localhost:8080/api/conformance/process/" + process, c))
+                {
+                    var status = response.IsSuccessStatusCode;
+                    if (status == false)
+                    {
+                        return Json(new { success = false, request = response.Content.ReadAsStringAsync() });
+                    }
+                    else
+                    {
+                        return Json(new { success = true, request = JObject.Parse(response.Content.ReadAsStringAsync().Result) });
                     }
                 }
             }
@@ -120,6 +162,28 @@ namespace Pmviz_Frontend.Controllers
             using (var httpClient = new HttpClient())
             {
                 using (response = await httpClient.GetAsync("http://localhost:8080/api/processes/" + process + "/activities"))
+                {
+                    var status = response.IsSuccessStatusCode;
+                    if (status == false)
+                    {
+                        return Json(new { success = false, request = response.Content.ReadAsStringAsync() });
+                    }
+                    else
+                    {
+                        var obj = response.Content.ReadAsStringAsync().Result;
+                        response = await httpClient.GetAsync("http://localhost:8080/api/processes/" + process + "/resources");
+                        return Json(new { success = true, request = new { activities = obj, resources = response.Content.ReadAsStringAsync().Result } });
+                    }
+                }
+            }
+        }
+
+        public async Task<IActionResult> GetConformance(int process)
+        {
+            HttpResponseMessage response;
+            using (var httpClient = new HttpClient())
+            {
+                using (response = await httpClient.GetAsync("http://localhost:8080/api/processes/" + process + "/resources"))
                 {
                     var status = response.IsSuccessStatusCode;
                     if (status == false)
