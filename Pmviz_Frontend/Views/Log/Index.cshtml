@@ -39,6 +39,11 @@ else
                     {
                         columns.Command(command => command.Custom("Activities Statistics").Click("showDetails")).Width(175);
                     }
+                    if (!details.Contains("resourcesStats"))
+                    {
+                        columns.Command(command => command.Custom("Resources Statistics").Click("showStats")).Width(175);
+                    }
+
                     //columns.Command(command => command.Custom("Activities").Click("showActivities")).Width(110);
                     //columns.Command(command => command.Custom("Resources").Click("showResources")).Width(120);
 
@@ -71,6 +76,13 @@ else
         e.preventDefault();
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
         window.location = '@Url.Action("Activity","Log")?id=' + dataItem.Id
+
+    }
+
+    function showStats(e) {
+        e.preventDefault();
+        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        window.location = '@Url.Action("Resource","Log")?id=' + dataItem.Id
 
     }
 
