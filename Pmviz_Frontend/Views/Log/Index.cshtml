@@ -70,7 +70,7 @@ else
     function showDetails(e) {
         e.preventDefault();
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
-        window.location = '@Url.Action("Index","Activity")?id=' + dataItem.Id
+        window.location = '@Url.Action("Activity","Log")?id=' + dataItem.Id
 
     }
 
