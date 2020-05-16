@@ -36,9 +36,10 @@ namespace Pmviz_Frontend.Middleware
                     var obj = JObject.Parse(httpContext.Session.GetString("userDetails"));
                     var role = obj["role"].ToString();
 
-                    System.Diagnostics.Debug.WriteLine(role);
+
                     // AUTHORIZATION VIA XML
                     var isAuthorized = ReadXML(role, httpContext);
+                    GetDetailsToHide(role, httpContext);
                     if (isAuthorized)
                     {
                         return _next(httpContext);
@@ -77,6 +78,21 @@ namespace Pmviz_Frontend.Middleware
             }
             return isAuthorized;
         } 
+
+        public void GetDetailsToHide(string role, HttpContext httpContext)
+        {
+            var authorizationController = new Pmviz_Frontend.Controllers.AuthorizationController();
+            
+            //GET THE LIST OF DETAILS NOT ALLOWED TO SEE
+            var listDetails = authorizationController.GetDetailsNotAllowedToSee(role);
+
+            System.Diagnostics.Debug.WriteLine("Estou a contar: "+listDetails.Count);
+
+            //STORE THE DETAILS NAMES ON SESSION STORAGE
+            string details = string.Join(",", listDetails);
+            System.Diagnostics.Debug.WriteLine(details);
+            httpContext.Session.SetString("listDetails", details);
+        }
     }
 
     // Extension method used to add the middleware to the HTTP request pipeline.

@@ -35,7 +35,7 @@ namespace Pmviz_Frontend.Controllers
                     {
                         if(response.StatusCode == System.Net.HttpStatusCode.NotFound)
                         {
-                            ViewBag.ErrorProcess = "You haven't done any activity in any process.";
+                            ViewBag.ErrorProcess = await response.Content.ReadAsStringAsync();
                             return View();
 
                         }
@@ -56,7 +56,7 @@ namespace Pmviz_Frontend.Controllers
                     var status = response.IsSuccessStatusCode;
                     if (status == true)
                     {
-                        // get the list of logs
+                        // get the list of activities
                         var activityList = JsonConvert.DeserializeObject<List<Activity>>(apiResponse);
                         ViewData["activities"] = activityList;
                         ViewData["processId"] = processId;
@@ -66,7 +66,7 @@ namespace Pmviz_Frontend.Controllers
                     {
                         if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
                         {
-                            ViewBag.ErrorActivity = "You haven't done this specific activity in any process.";
+                            ViewBag.ErrorActivity = await response.Content.ReadAsStringAsync();
                             return View("Process", "Statistics");
 
                         }
@@ -102,7 +102,7 @@ namespace Pmviz_Frontend.Controllers
                     {
                         if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
                         {
-                            ViewBag.ErrorActivity = "No activities associated to this process.";
+                            ViewBag.ErrorActivity = await response.Content.ReadAsStringAsync();
 
                         }
                         ViewBag.ErrorActivity = "Error retrieving activities. Please try again later";
@@ -174,9 +174,6 @@ namespace Pmviz_Frontend.Controllers
                         var timeSpan = TimeSpan.FromMilliseconds(Double.Parse(data["meanMillis"].ToString()));
                         ViewData["meanMillis"] = timeSpan.TotalMinutes.ToString("N2");
                        
-
-
-
                         var timeSpanUser = TimeSpan.FromMilliseconds(Double.Parse(millisUser.ToString()));
                         ViewData["meanMillisUser"] = timeSpanUser.TotalMinutes.ToString("N2");
 
@@ -187,7 +184,7 @@ namespace Pmviz_Frontend.Controllers
                     {
                         if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
                         {
-                            ViewBag.ErrorActivity = "You haven't done this specific activity in any process.";
+                            ViewBag.ErrorActivity = await response.Content.ReadAsStringAsync();
                             return View("Process", "Statistics");
 
                         }

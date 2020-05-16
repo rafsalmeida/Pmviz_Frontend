@@ -8,24 +8,54 @@
 @using Kendo.Mvc.UI
 @{ Layout = "_LayoutBoot"; ViewBag.Title = "Activity Frequency";}
 
-<div class="box">
-    <div class="box-col" style="text-align:center">
-        <h4 >Charts</h4>
-        <button class="k-button" id="frequencyButton" type="button">Frequency</button>
-        <button class="k-button" id="medianButton" type="button">Median</button>
-        <button class="k-button" id="meanButton" type="button">Mean</button>
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @ViewBag.Error
     </div>
-</div>
-<br />
+}
+else
+{
+    <div class="box">
+        <div class="box-col" style="text-align:center">
+            <h4>Charts</h4>
+            <button class="k-button" id="frequencyButton" type="button">Frequency</button>
+            <button class="k-button" id="medianButton" type="button">Median</button>
+            <button class="k-button" id="meanButton" type="button">Mean</button>
+        </div>
+    </div>
+    <br />
 
-<div id="frequencyChart">
-    @(Html.Kendo().Chart(frequency)
-            .Name("chart")
+    <div id="frequencyChart">
+        @(Html.Kendo().Chart(frequency)
+                .Name("chart")
+                .Legend(l => l.Visible(false))
+                .Series(series =>
+                {
+                    series.Column(a => a.Frequency).Name("Frequency").CategoryField("Activity");
+                    series.Line(a => a.Frequency).Name("Frequency").Color("#4e4141");
+                })
+                .CategoryAxis(axis => axis
+                    .Labels(labels => labels.Rotation(-60))
+                    .MajorGridLines(lines => lines.Visible(false))
+                )
+                .ValueAxis(axis => axis
+                    .Labels(l => l.Visible(false))
+                    .Title("Frequency")
+                )
+            .Tooltip(tooltip => tooltip
+                .Visible(true)
+                .Template("#= series.name #: #= value #")
+            )
+        )
+    </div>
+    <div id="medianChart">
+        @(Html.Kendo().Chart(median)
+            .Name("chart_median")
             .Legend(l => l.Visible(false))
             .Series(series =>
             {
-                series.Column(a => a.Frequency).Name("Frequency").CategoryField("Activity");
-                series.Line(a => a.Frequency).Name("Frequency").Color("#4e4141");
+                series.Column(a => a.MedianInMinutes).Name("MedianInMinutes").CategoryField("Activity");
             })
             .CategoryAxis(axis => axis
                 .Labels(labels => labels.Rotation(-60))
@@ -33,82 +63,69 @@
             )
             .ValueAxis(axis => axis
                 .Labels(l => l.Visible(false))
-                .Title("Frequency")
+                .Title("Median Duration")
             )
-        .Tooltip(tooltip => tooltip
-            .Visible(true)
-            .Template("#= series.name #: #= value #")
+            .Tooltip(tooltip => tooltip
+                .Visible(true)
+                .Template("#= dataItem.MedianActivityFormatted #")
+            )
         )
-    )
-</div>
-<div id="medianChart">
-    @(Html.Kendo().Chart(median)
-        .Name("chart_median")
-        .Legend(l => l.Visible(false))
-        .Series(series =>
-        {
-            series.Column(a => a.MedianInMinutes).Name("MedianInMinutes").CategoryField("Activity");
+    </div>
+    <div id="meanChart">
+        @(Html.Kendo().Chart(mean)
+            .Name("chart_mean")
+            .Legend(l => l.Visible(false))
+            .Series(series =>
+            {
+            series.Column(a => a.MeanInMinutes).Name("MeanInMinutes").CategoryField("Activity");
         })
-        .CategoryAxis(axis => axis
-            .Labels(labels => labels.Rotation(-60))
-            .MajorGridLines(lines => lines.Visible(false))
+            .CategoryAxis(axis => axis
+                .Labels(labels => labels.Rotation(-60))
+                .MajorGridLines(lines => lines.Visible(false))
+            )
+            .ValueAxis(axis => axis
+                .Labels(l => l.Visible(false))
+                .Title("Mean Duration")
+            )
+            .Tooltip(tooltip => tooltip
+                .Visible(true)
+                .Template("#= dataItem.MeanActivityFormatted #")
+            )
         )
-        .ValueAxis(axis => axis
-            .Labels(l => l.Visible(false))
-            .Title("Median Duration")
-        )
-        .Tooltip(tooltip => tooltip
-            .Visible(true)
-            .Template("#= dataItem.MedianActivityFormatted #")
-        )
-    )
-</div>
-<div id="meanChart">
-    @(Html.Kendo().Chart(mean)
-        .Name("chart_mean")
-        .Legend(l => l.Visible(false))
-        .Series(series =>
-        {
-        series.Column(a => a.MeanInMinutes).Name("MeanInMinutes").CategoryField("Activity");
-    })
-        .CategoryAxis(axis => axis
-            .Labels(labels => labels.Rotation(-60))
-            .MajorGridLines(lines => lines.Visible(false))
-        )
-        .ValueAxis(axis => axis
-            .Labels(l => l.Visible(false))
-            .Title("Mean Duration")
-        )
-        .Tooltip(tooltip => tooltip
-            .Visible(true)
-            .Template("#= dataItem.MeanActivityFormatted #")
-        )
-    )
-</div>
+    </div>
 
+    <div class="container k-content" style="height:auto">
 
-@(Html.Kendo().Grid(Model)
-    .Name("Grid")
-    .Columns(columns =>
-    {
-        columns.Bound(l => l.Frequency).Title("Frequency").Width(130);
-        columns.Bound(l => l.MeanActivityFormatted).Title("Mean Duration").Width(130);
-        columns.Bound(l => l.MedianActivityFormatted).Title("Median Duration").Width(130);
-        columns.Bound(l => l.MinActivityFormatted).Title("Min Duration").Width(130);
-        columns.Bound(l => l.MaxActivityFormatted).Title("Max Duration").Width(130);
-        columns.Bound(l => l.Activity).Title("Activity").Width(130);
-        columns.Bound(l => l.RelativeFrequency).Title("Relative Frequency").Width(130);
-    })
-    .Pageable()
-    .Sortable()
-    .Filterable()
-    .Scrollable()
-    .DataSource(dataSource => dataSource
-        .Ajax()
-        .PageSize(20)
-        .ServerOperation(false)
-     )
-)
+        @(Html.Kendo().Grid(Model)
+            .Name("Grid")
+            .Columns(columns =>
+            {
+                columns.Bound(l => l.Frequency).Title("Frequency").Width(130);
+                columns.Bound(l => l.MeanActivityFormatted).Title("Mean Duration").Width(130);
+                columns.Bound(l => l.MedianActivityFormatted).Title("Median Duration").Width(130);
+                columns.Bound(l => l.MinActivityFormatted).Title("Min Duration").Width(130);
+                columns.Bound(l => l.MaxActivityFormatted).Title("Max Duration").Width(130);
+                columns.Bound(l => l.Activity).Title("Activity").Width(130);
+                columns.Bound(l => l.RelativeFrequency).Title("Relative Frequency").Width(130);
+            })
+            .Pageable()
+            .Navigatable()
+            .Sortable()
+            .Groupable()
+            .Filterable()
+            .Scrollable(s => s.Height("auto"))
+            .DataSource(dataSource => dataSource
+                .Ajax()
+                .PageSize(20)
+                .ServerOperation(false)
+                )
+            .Resizable(resize => resize.Columns(true))
+            .HtmlAttributes(new { style = "width:1000px" })
+        )
+
+    </div>
+
+}
 
 <script>
     $(document).ready(function () {

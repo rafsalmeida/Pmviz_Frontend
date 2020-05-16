@@ -84,17 +84,17 @@ namespace Pmviz_Frontend.Controllers
             var allPaths = ReadXMLAssociation();
             var doc = ReadRoleXmlFile(role);
 
-
             var paths = doc.DocumentElement.SelectNodes("/root/path");
             var routesNameNotAllowed = new List<string>();
-
+        
             for (int i = 0; i < allPaths.Count; i++)
             {
+               
+
                 for (int j = 0; j < paths.Count; j++)
                 {
-                    System.Diagnostics.Debug.WriteLine("Path i : " + allPaths[i].InnerText + " path 2: " + paths[j].InnerText);
-
-                    if (allPaths[i].InnerText == paths[j].InnerText)
+                    
+                    if (allPaths[i].InnerText.Trim() == paths[j].InnerText.Trim())
                     {
                         routesNameNotAllowed.Add(allPaths[i].Attributes["name"].Value);
                     }
@@ -125,10 +125,32 @@ namespace Pmviz_Frontend.Controllers
             XmlDocument docAssociation = new XmlDocument();
             docAssociation.Load("../Pmviz_Frontend/Files/Association.xml");
 
+            var btns = docAssociation.SelectNodes("//button");
+                
+            // REMOVE TEMPORARILY THE BUTTONS BECAUSE THEY APPEAR ON THE INNER TEXT OF THE PARENT
+            for (int i = 0; i < btns.Count; i++)
+            {
+                btns[i].ParentNode.RemoveChild(btns[i]);
+            }
+
+            var paths = docAssociation.DocumentElement.SelectNodes("/root/path");
+
+
+
+            return paths;
+        }
+
+        public XmlNodeList ReadXMLAssociationWithDetails()
+        {
+            // READ XML ASSOCIATION FILE
+            XmlDocument docAssociation = new XmlDocument();
+            docAssociation.Load("../Pmviz_Frontend/Files/Association.xml");
+
             var paths = docAssociation.DocumentElement.SelectNodes("/root/path");
 
             return paths;
         }
+
 
         public List<string> GetAllRoutes()
         {
@@ -207,6 +229,38 @@ namespace Pmviz_Frontend.Controllers
             }
 
             doc.Save($"../Pmviz_Frontend/Files/{role}.xml");
+
+        }
+
+        public List<String> GetDetailsNotAllowedToSee(string role)
+        {
+            var routesNotAllowed = RoutesNotAllowed(role);
+            var paths = ReadXMLAssociationWithDetails();
+            var listDetails = new List<String>();
+
+
+            for (int i = 0; i < paths.Count; i++)
+            {
+
+                // SEE IF THAT ROLE CANNOT SEE THE PATH
+                if (routesNotAllowed.Contains(paths[i].Attributes["name"].Value))
+                {
+
+                    XmlNodeList buttons = paths[i].ChildNodes;
+                    for (int j = 0; j < buttons.Count; j++)
+                    { 
+                        // GET THE CHILD NODES THAT CONTAIN THE BUTTONS/DETAILS THE ROLE CANNOT SEE
+                        if(buttons[j].GetType() == typeof(System.Xml.XmlElement))
+                        {
+                            listDetails.Add(buttons[j].InnerText);
+                        }
+                    }
+
+                }
+            }
+
+            return listDetails;
+            
 
         }
 

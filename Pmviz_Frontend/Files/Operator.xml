@@ -2,8 +2,13 @@
 <root>
   <path>
   </path>
-  <path>/log/activities</path>
-  <path>/log/resources</path>
   <path>/activity</path>
-  <path>/authorization</path>
+  <path>/authorization
+    </path>
+  <path>/manager/graph
+    </path>
+  <path>/graph/index
+    </path>
+  <path>/resources
+    </path>
 </root>
