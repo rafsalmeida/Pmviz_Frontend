@@ -1,111 +1,278 @@
-﻿<div id="conformanceStats">
-    <!--<div class="row">
-           <div class="col">
-               <div class="form-group">
-                   <label for="inputAddress">Start date</label>
-                   <input class="form-control" type="date" id="example-date-input">
-               </div>
+﻿@{
+    ViewData["Title"] = "Compare Process";
+}
+<link href="@Url.Content("~/css/GraphConformance.css")" rel="stylesheet" />
+<link rel="stylesheet" href="@Url.Content("~/vendor/bootstrap-select/dist/css/bootstrap-select.min.css")">
+<style>
+    #loader {
+        position: absolute;
+        left: 55%;
+        top: 50%;
+        z-index: 1;
+        width: 150px;
+        height: 150px;
+        margin: -75px 0 0 -75px;
+        border: 16px solid #f3f3f3;
+        border-radius: 50%;
+        border-top: 16px solid #b3b3b3;
+        width: 120px;
+        height: 120px;
+        -webkit-animation: spin 2s linear infinite;
+        animation: spin 2s linear infinite;
+    }
+
+    @@-webkit-keyframes spin {
+        0% {
+            -webkit-transform: rotate(0deg);
+        }
+
+        100% {
+            -webkit-transform: rotate(360deg);
+        }
+    }
+
+    @@keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+    /* Add animation to "page content" */
+    .animate-bottom {
+        position: relative;
+        -webkit-animation-name: animatebottom;
+        -webkit-animation-duration: 1s;
+        animation-name: animatebottom;
+        animation-duration: 1s
+    }
+
+    @@-webkit-keyframes animatebottom {
+        from {
+            bottom: -100px;
+            opacity: 0
+        }
+
+        to {
+            bottom: 0px;
+            opacity: 1
+        }
+    }
+
+    @@keyframes animatebottom {
+        from {
+            bottom: -100px;
+            opacity: 0
+        }
+
+        to {
+            bottom: 0;
+            opacity: 1
+        }
+    }
+</style>
+<!--<div class="row">
+       <div class="col">
+           <div class="form-group">
+               <label for="inputAddress">Start date</label>
+               <input class="form-control" type="date" id="example-date-input">
            </div>
-           <div class="col">
-               <div class="form-group">
-                   <label for="inputAddress2">End date</label>
-                   <input class="form-control" type="date" id="example-date-input">
-               </div>
+       </div>
+       <div class="col">
+           <div class="form-group">
+               <label for="inputAddress2">End date</label>
+               <input class="form-control" type="date" id="example-date-input">
            </div>
-       </div>-->
-    <!--
-    <div class="row">
+       </div>
+   </div>-->
+<!--
+<div class="row">
+    <div class="form-group col-md-6">
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="process" id="processRadio" onclick="handleProcesses(this);" value="process" checked><label class="form-check-label" for="processRadio">Processes</label>
+        </div>
+            <select id="inputProcesses" name="processes" class="custom-select" size="6" multiple>
+            </select>
+        </div>
         <div class="form-group col-md-6">
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="process" id="processRadio" onclick="handleProcesses(this);" value="process" checked><label class="form-check-label" for="processRadio">Processes</label>
+                <input class="form-check-input" type="radio" name="process" id="mouldsRadio" onclick="handleProcesses(this);" value="mould"><label class="form-check-label" for="mouldsRadio">Moulds</label>
             </div>
-                <select id="inputProcesses" name="processes" class="custom-select" size="6" multiple>
-                </select>
-            </div>
-            <div class="form-group col-md-6">
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="process" id="mouldsRadio" onclick="handleProcesses(this);" value="mould"><label class="form-check-label" for="mouldsRadio">Moulds</label>
-                </div>
-                    <select id="inputMoulds" name="moulds" class="custom-select" size="6" multiple>
-                    </select>
-                </div>
-            </div>-->
-    <div class="form-check form-check-inline">
-        <input class="form-check-input" type="radio" name="miner" id="alphaRadio" value="alpha-miner" onclick="handleMiner(this);" checked>
-        <label class="form-check-label" for="alphaRadio">Alpha Miner</label>
-    </div>
-    <div class="form-check form-check-inline">
-        <input class="form-check-input" type="radio" name="miner" id="heuristicRadio" onclick="handleMiner(this);" value="heuristic-miner">
-        <label class="form-check-label" for="heuristicRadio">Heuristic Miner</label>
-    </div>
-    <div class="form-group" id="divTreshold">
-        <label for="thresholdInput">Threshold</label>
-        <input type="number" class="form-control" id="thresholdInput" value="0.1" min="0" max="1">
-        <small id="thresholdHelp" class="form-text text-muted">O threshold tem que estar entre 0 e 1</small>
-    </div>
-    <hr />
-    <h4>Escolha um processo</h4>
-    <label class="form-check-label" for="processRadio">Processes</label>
-    <select id="inputProcesses" name="processes" class="custom-select" size="6">
-    </select>
-    <div id="clearActivities">
-        <br />
-        <h5>Não tem nenhum processo seleccionado/Processo sem Atividades</h5>
-    </div>
-    <div id="activities">
-        <br />
-        <h5>Actividades do Processo seleccionado</h5>
-        <ul class="list-unstyled" id="listActivities">
-        </ul>
-    </div>
-    <hr />
-    <div id="compareProcess">
-        <h4>Escolha como o quer filtrar</h4>
-        <div class="row">
-            <div class="form-group col-md-6">
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="filter" id="dataRadio" onclick="handleFilter(this);" value="data" checked><label class="form-check-label" for="dataRadio">Data</label>
-                </div>
-                <div class="form-group">
-                    <label for="inputStartDate">Data Inicial</label>
-                    <input class="form-control" type="date" id="inputStartDate">
-                </div>
-                <div class="form-group">
-                    <label for="inputEndDate">Data Final</label>
-                    <input class="form-control" type="date" id="inputEndDate">
-                </div>
-            </div>
-            <div class="form-group col-md-6">
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="filter" id="mouldsRadio" onclick="handleFilter(this);" value="mould"><label class="form-check-label" for="mouldsRadio">Moldes</label>
-                </div>
                 <select id="inputMoulds" name="moulds" class="custom-select" size="6" multiple>
                 </select>
             </div>
+        </div>-->
+<div id="loader" style="display: none;"></div>
+<div id="page">
+    <div class="row">
+        <div class="col-sm-5">
+            <div id="divSelectCase">
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="miner" id="alphaRadio" value="alpha-miner" onclick="handleMiner(this);" checked>
+                    <label class="form-check-label" for="alphaRadio">Alpha Miner</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="miner" id="heuristicRadio" onclick="handleMiner(this);" value="heuristic-miner">
+                    <label class="form-check-label" for="heuristicRadio">Heuristic Miner</label>
+                </div>
+                <div class="form-group" id="divTreshold">
+                    <label for="thresholdInput">Threshold</label>
+                    <input type="number" class="form-control" id="thresholdInput" value="0.1" step=".1" min="0" max="1">
+                    <small id="thresholdHelp" class="form-text text-muted">O threshold tem que estar entre 0 e 1</small>
+                </div>
+                <hr />
+                <h4 id="processSelected">Escolha o processo de referência</h4>
+                <div class="row" style="height: 120px;">
+                    <div class="col-sm-6">
+                        <br />
+                        <label class="form-check-label" for="processRadio">Processos</label>
+                        <select id="inputProcesses" name="processes" class="form-control">
+                        </select>
+                    </div>
+                    <div class="col-sm-6">
+                        <div id="activities">
+                            <p class="text-dark">Actividades do Processo:</p>
+                            <ul class="list-unstyled" id="listActivities" style="overflow: auto;max-height: 75px;">
+                            </ul>
+                        </div>
+                        <div class="clearActivities">
+                            <br />
+                            <p class="text-dark">Não tem nenhum processo seleccionado/Processo sem Atividades</p>
+                        </div>
+                    </div>
+                </div>
+                <hr />
+                <div class="clearActivities">
+                    <br />
+                    <h5>Não tem nenhum processo seleccionado/Processo sem Atividades</h5>
+                </div>
+                <div id="compareProcess">
+                    <h4>Escolha o caso </h4>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="filter" id="dataRadio" onclick="handleFilter(this);" value="data" checked><label class="form-check-label" for="dataRadio">Data</label>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputStartDate">Data Inicial</label>
+                                <input class="form-control" type="date" id="inputStartDate" onkeydown="event.preventDefault()">
+                            </div>
+                            <div class="form-group">
+                                <label for="inputEndDate">Data Final</label>
+                                <input class="form-control" type="date" id="inputEndDate" onkeydown="event.preventDefault()">
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="filter" id="mouldsRadio" onclick="handleFilter(this);" value="mould"><label class="form-check-label" for="mouldsRadio">Moldes</label>
+                            </div>
+                            <select id="inputMoulds" name="moulds" class="custom-select" size="6" multiple>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="btn btn-block btn-dark" id="btnCompareGraph" type="button">Gerar grafo</button>
+                </div>
+            </div>
+            <div id="divSelectFilter">
+                <button id="refreshButton" class="btn btn-primary"><i class="fas fa-redo"></i> Escolher outro caso</button>
+                <br />
+                <br />
+                <div id="cardInfo" class="card">
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-muted">Algoritmo</h6>
+                        <p id="infoMiner" class="card-text text-dark">Alpha Miner</p>
+                        <h6 class="card-subtitle mb-2 text-muted">Processo Referência</h6>
+                        <p id="infoProcess" class="card-text text-dark">ProcessoDemo etc</p>
+                        <h6 class="card-subtitle mb-2 text-muted">Caso</h6>
+                        <p id="infoCase" class="card-text text-dark">Casos entre tal e tal</p>
+                    </div>
+                </div>
+                <hr />
+                <h5 class="card-title">Filtros</h5>
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="inputStartDate">Data Inicial</label>
+                            <input class="form-control" type="date" id="inputStartFilter" onkeydown="event.preventDefault()">
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="inputEndDate">Data Final</label>
+                            <input class="form-control" type="date" id="inputEndFilter" onkeydown="event.preventDefault()">
+                        </div>
+                    </div>
+                </div>
+                <p class="lead text-dark">Moldes</p>
+                <select id="mouldsFilter" class="form-control selectpicker" multiple title="Nenhum molde selecionado" data-size="4" data-dropup-auto="false"></select>
+                <p class="lead text-dark">Atividades</p>
+                <select id="activitiesFilter" class="form-control selectpicker" multiple title="Nenhuma atividade selecionado" data-size="4" data-dropup-auto="false"></select>
+                <p class="lead text-dark">Operadores</p>
+                <select id="resourcesFilter" class="form-control selectpicker" multiple title="Nenhum operador selecionado" data-size="4" data-dropup-auto="false"></select>
+                <br />
+                <br />
+                <button class="btn btn-block btn-dark" id="btnFilterGraph" type="button">Filtrar</button>
+            </div>
         </div>
-        <button class="btn btn-block" id="Button" type="button">Submit</button>
+        <div class="col-sm-7" style="height: 85vh;">
+            <div id="cyCompare"></div>
+        </div>
     </div>
 </div>
 <script>
+    var divActivities = document.getElementById('activities');
+    var divClearActivities = document.getElementsByClassName("clearActivities");
+    var divCompareProcess = document.getElementById('compareProcess');
+    var inputStartDate = document.getElementById("inputStartDate");
+    var inputEndDate = document.getElementById("inputEndDate");
+    var divTreshold = document.getElementById("divTreshold");
+    var thresholdInput = document.getElementById("thresholdInput");
+    var divLoader = document.getElementById("loader");
+    var divPage = document.getElementById("page");
+    var divSelectCase = document.getElementById("divSelectCase");
+    var divSelectFilter = document.getElementById("divSelectFilter");
+    var mouldsFilter = document.getElementById("mouldsFilter");
+    var activitiesFilter = document.getElementById("activitiesFilter"); 
+    var inputStartFilter = document.getElementById("inputStartFilter");
+    var inputEndFilter = document.getElementById("inputEndFilter");
+
     var data = {
         dataProcesses: JSON.parse(@Html.Raw(Json.Serialize(ViewData["processes"]))),
         dataMoulds: JSON.parse(@Html.Raw(Json.Serialize(ViewData["moulds"]))),
     }
-    var miner = 'alpha-miner';
-    var compare = 'data';
-    var process = '';
-    var divActivities = document.getElementById('activities');
-    var divClearActivities = document.getElementById('clearActivities');
-    var divCompareProcess = document.getElementById('compareProcess');
-    var inputStartDate = document.getElementById("inputStartDate");
-    var inputEndDate = document.getElementById("inputEndDate");
-    var divTreshold = document.getElementById("divTreshold"); 
-    var thresholdInput = document.getElementById("thresholdInput"); 
+
+    var process = {
+        idProcess: null,
+        nameProcess: null,
+        compare: 'data',
+        miner: 'alpha-miner',
+        startDate: null,
+        endDate: null,
+        moulds: [],
+        threshold: null,
+        baseData: {},
+        caseData: {},
+        activities: [],
+        moulds: [],
+        resources: [],
+        filter: {
+            activities: null,
+            moulds: null,
+            resources: null,
+            startDate: null,
+            endDate: null
+        }
+    };
 
     document.getElementById("inputMoulds").disabled = true;
     divActivities.style.display = "none";
     divTreshold.style.display = "none";
     divCompareProcess.style.display = "none";
+    divSelectFilter.style.display = "none";
+
     if (data.dataProcesses.length != 0) {
         for (var i = 0; i < data.dataProcesses.length; i++) {
             var option = document.createElement("option");
@@ -130,11 +297,11 @@
 
     function handleFilter(myRadio) {
         if (myRadio.value == 'data') {
-            compare = 'data';
+            process.compare = 'data';
             changeInputDate(false);
             document.getElementById("inputMoulds").disabled = true;
         } else {
-            compare = 'moulds';
+            process.compare = 'moulds';
             changeInputDate(true);
             document.getElementById("inputMoulds").disabled = false;
         }
@@ -142,44 +309,57 @@
 
     function handleMiner(myRadio) {
         if (myRadio.value == 'alpha-miner') {
-            miner = 'alpha-miner';
+            process.miner = 'alpha-miner';
             divTreshold.style.display = "none";
         } else {
-            miner = 'heuristic-miner';
+            process.miner = 'heuristic-miner';
             divTreshold.style.display = "block";
         }
     }
 
     function convertDate(field) {
-        let current_datetime = new Date(field);
-        return current_datetime.getDate() + "-" + (current_datetime.getMonth() + 1) + "-" + current_datetime.getFullYear();
+        if (field) {
+            let current_datetime = new Date(field);
+            return current_datetime.getDate() + "-" + (current_datetime.getMonth() + 1) + "-" + current_datetime.getFullYear();
+        }
     }
 
     $("#inputProcesses").change(function () {
-        process = $(this).val();
+        process.idProcess = $(this).val();
+        process.nameProcess = $('#inputProcesses option:selected').text();
         $.ajax({
             type: "POST",
-            data: { process: $(this).val() },
+            data: { process: process.idProcess },
             url: "/Graph/GetActivities",
             dataType: 'json',
             success: function (response) {
                 if (response.success) {
+                    $('#processSelected').empty();
+                    $('#processSelected').text('Processo Referência: ' + process.nameProcess);
                     $('#listActivities').empty();
-                    var activities = JSON.parse(response.request.Result);
+                    console.log(response);
+                    var activities = JSON.parse(response.request.activities);
+                    process.activities = activities;
+                    process.resources = JSON.parse(response.request.resources);
                     for (var i = 0; i < activities.length; i++) {
                         var li = document.createElement("li");
                         li.appendChild(document.createTextNode(activities[i].name));
                         listActivities.appendChild(li);
                     }
-                    divClearActivities.style.display = "none";
+                    for (var i = 0; i < divClearActivities.length; i++) {
+                        divClearActivities[i].style.display = 'none';
+                    }
                     divActivities.style.display = "block";
                     divCompareProcess.style.display = "block";
                 } else {
-                    process = '';
+                    process.idProcess = '';
+                    $('#processSelected').empty();
+                    $('#processSelected').text('Escolha o processo de referência');
                     divActivities.style.display = "none";
                     divCompareProcess.style.display = "none";
-                    divClearActivities.style.display = "block";
-                    console.log(response.request.Result);
+                    for (var i = 0; i < divClearActivities.length; i++) {
+                        divClearActivities[i].style.display = 'block';
+                    }
                 }
             },
             error: function (response) {
@@ -189,36 +369,768 @@
         });
     });
 
-    $("#Button").click(function () {
-        if (process == '') {
-            alert("You have to choose the process");
+    $("#btnCompareGraph").click(function () {
+        if (process.idProcess == '') {
+            alert("Não há nenhum processo selecionado");
         } else {
-            if (miner == 'heuristic-miner' && (thresholdInput.value > 1 || thresholdInput.value < 0)) {
-                alert("Treshold tem que ser entre 0 e 1");
-            } else {
-                if (compare != '') {
-                    if (compare == 'data') {
-                        if (!inputStartDate.value || !inputEndDate.value) {
-                            alert("As datas tem que estar preenchidas");
-                        } else {
-                            window.location = '@Url.Action("ConformanceGraph", "Graph")?process=' + process + '&miner=' + miner + '&startDate=' + convertDate(inputStartDate.value) + '&endDate=' + convertDate(inputEndDate.value) + '&moulds=' + '&threshold=' + thresholdInput.value;
-                        }
-
-                    } else {
-                        var moulds = Array.from(inputMoulds.selectedOptions).map(option => option.value);
-                        if (moulds.length <= 0) {
-                            alert("Tens que escolher pelo menos um molde");
-                        } else {
-                            console.log(thresholdInput.value);
-                            window.location = '@Url.Action("ConformanceGraph", "Graph")?process=' + process + '&miner=' + miner + '&startDate=&endDate=&moulds=' + JSON.stringify(moulds) + '&threshold=' + thresholdInput.value;
-                        }
-                    }
-                } else {
-                    alert("Tens que escolher alguma coisa para comparar");
+            if (process.compare == 'data') {
+                if (!inputStartDate.value || !inputEndDate.value) {
+                    alert("As datas tem que estar preenchidas");
+                    return;
                 }
+                if (new Date(inputStartDate.value) > new Date(inputEndDate.value)) {
+                    alert("A data inicial não pode ser maior do que a data final");
+                    return;
+                }
+                process.startDate = convertDate(inputStartDate.value);
+                process.endDate = convertDate(inputEndDate.value);
+            } else {
+                var moulds = Array.from(inputMoulds.selectedOptions).map(option => option.value);
+                if (moulds.length <= 0) {
+                    alert("Não há nenhum molde selecionado");
+                    return;
+                }
+                process.moulds = moulds;
+                //window.location = 'Url.Action("ConformanceGraph", "Graph")?process=' + process + '&miner=' + miner + '&startDate=&endDate=&moulds=' + JSON.stringify(moulds) + '&threshold=' + thresholdInput.value;
             }
-            //window.location = 'Url.Action("ConformanceGraph", "Graph")?processes=' + JSON.stringify(selectedInput) + '&miner=' + miner;
+            process.threshold = thresholdInput.value;
+            loading(divPage, divLoader);
+            $.ajax({
+                type: "POST",
+                data: {
+                    process: process.idProcess,
+                    typeCompare: process.compare,
+                    miner: process.miner,
+                    moulds: JSON.stringify(process.moulds),
+                    startDate: process.startDate,
+                    endDate: process.endDate,
+                    threshold: process.threshold
+                },
+                url: "/Graph/ConformanceGraph",
+                dataType: 'json',
+                success: function (response) {
+                    if (response.success) {
+                        process.baseData = response.request.baseData;
+                        process.caseData = response.request.caseData;
+                        process.moulds = process.baseData.moulds;
+                        insertFilters(process.moulds, process.activities, process.resources)
+                        changeCards();
+                        loading(divSelectCase, divSelectFilter);
+                        loading(divLoader, divPage);
+
+                        renderCytoscapeElementConformance();
+                    } else {
+                        loading(divLoader, divPage);
+                        console.log(response);
+                    }
+                },
+                error: function (response) {
+                    loading(divLoader, divPage);
+                    alert("error!");  //
+                }
+
+            });
+
+            //window.location = 'Url.Action("ConformanceGraph", "Graph")?processes=' + JSON.stringify(selectedInput) + '&miner=' + miner; FALTA O ARROBA
         }
 
     });
+
+    $("#btnFilterGraph").click(function () {
+        if (process.compare == "data") {
+            if (!$("#mouldsFilter option:selected").length && !$("#activitiesFilter option:selected").length && !$("#resourcesFilter option:selected").length && inputStartFilter.value == inputStartDate.value && inputEndFilter.value == inputEndDate.value) {
+                alert('Não há nada seleccionado');
+                return;
+            }
+        }
+        
+        if (!$("#mouldsFilter option:selected").length && !$("#activitiesFilter option:selected").length && !$("#resourcesFilter option:selected").length && !inputStartFilter.value && !inputEndFilter.value) {
+            alert('Não há nada seleccionado');
+            return;
+        }else if ((inputStartFilter.value && !inputEndFilter.value) || (!inputStartFilter.value && inputEndFilter.value)) {
+                alert("Só uma data é que está inserida");
+                return;
+        }else {
+            if (inputStartFilter.value || inputEndFilter.value) {
+                if (new Date(inputStartFilter.value) < new Date(inputStartDate.value) || new Date(inputEndFilter.value) > new Date(inputEndDate.value) || new Date(inputStartFilter.value) > new Date(inputEndFilter.value)) {
+                    alert('As datas não estão inseridas corretamente ');
+                    return;
+                }
+            }
+        }
+        loading(divPage, divLoader);
+        process.filter.startDate = convertDate(inputStartFilter.value);
+        process.filter.endDate = convertDate(inputEndFilter.value);
+        var moulds = Array.from(mouldsFilter.selectedOptions).map(option => option.value);
+        if (moulds.length > 0) {
+            process.filter.moulds = JSON.stringify(moulds);
+        }
+        var activities = Array.from(activitiesFilter.selectedOptions).map(option => option.text);
+        if (activities.length > 0) {
+            process.filter.activities = JSON.stringify(activities);
+        }
+        var resources = Array.from(resourcesFilter.selectedOptions).map(option => option.value);
+        if (resources.length > 0) {
+            process.filter.resources = JSON.stringify(resources);
+        }
+
+        $.ajax({
+            type: "POST",
+            data: {
+                process: process.idProcess,
+                moulds: process.filter.moulds,
+                resources: process.filter.resources,
+                activities: process.filter.activities,
+                startDate: process.filter.startDate,
+                endDate: process.filter.endDate,
+                nodes: JSON.stringify(process.baseData.nodes)
+            },
+            url: "/Graph/GetFilter",
+            dataType: 'json',
+            success: function (response) {
+                if (response.success) {
+                    process.caseData = response.request;
+                    loading(divLoader, divPage);
+
+                    renderCytoscapeElementConformance();
+                } else {
+                    loading(divLoader, divPage);
+                    console.log(response);
+                }
+            },
+            error: function (response) {
+                loading(divLoader, divPage);
+                alert("error!");  //
+            }
+        });
+    });
+
+    function loading(x, y) {
+        x.style.display = "none";
+        y.style.display = "block";
+    }
+
+    function insertFilters(moulds, activities, resources) {
+        if (moulds != null && moulds.length != 0) {
+            for (var i = 0; i < moulds.length; i++) {
+                var option = document.createElement("option");
+                option.setAttribute("value", moulds[i]);
+                option.text = moulds[i];
+                mouldsFilter.appendChild(option);
+            }
+            $('#mouldsFilter').selectpicker('refresh');
+        }
+
+        if (activities != null || activities.length != 0) {
+            for (var i = 0; i < activities.length; i++) {
+                var option = document.createElement("option");
+                option.setAttribute("value", activities[i].id);
+                option.text = activities[i].name;
+                activitiesFilter.appendChild(option);
+            }
+            $('#activitiesFilter').selectpicker('refresh');
+        }
+
+        if (resources != null || resources.length != 0) {
+            for (var i = 0; i < resources.length; i++) {
+                var option = document.createElement("option");
+                option.setAttribute("value", resources[i].username);
+                option.text = resources[i].username;
+                resourcesFilter.appendChild(option);
+            }
+            $('#resourcesFilter').selectpicker('refresh');
+        }
+
+        if (process.compare == "data") {
+            inputStartFilter.value = inputStartDate.value;
+            inputEndFilter.value = inputEndDate.value;
+        }
+    }
+
+    function changeCards() {
+        if (process.miner == 'alpha-miner') {
+            $("#infoMiner").html("Alpha miner");
+        } else {
+            $("#infoMiner").html("Heuristic miner | Treshold " + process.threshold);
+        }
+        $("#infoProcess").html(process.nameProcess);
+        if (process.compare == 'data') {
+            $("#infoCase").html("Casos de " + inputStartDate.value + " a " + inputEndDate.value);
+        } else {
+            $("#infoCase").html("Casos selecionados: " + process.moulds.toString());
+        }
+
+    }
+
+    $("#refreshButton").click(function () {
+        loading(divPage, divLoader);
+        window.location.reload(true);
+    });
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    var cy = null;
+    function renderCytoscapeElementConformance() {
+        cy = cytoscape(
+            {
+                wheelSensitivity: 0.5,
+                minZoom: 0.1,
+                maxZoom: 1,
+                container: document.getElementById('cyCompare'),
+                style: [
+                    //Nodes styles
+                    {
+                        //white
+                        selector: 'node[type=0]',
+                        style: {
+                            "shape": 'rectangle',
+                            "background-color": "#FFFFFF",
+                            "label": "data(label)",
+                            'width': '350',
+                            "height": "40",
+                            "border-width": 4,
+                            "border-color": "#484848",
+                            "font-size": "16px",
+                            "text-valign": "center",
+                            "text-halign": "center",
+                            "text-wrap": "wrap",
+                            "text-max-width": "1000px",
+                            "color": "#222222"
+                        }
+                    },
+                    {
+                        //green with green text
+                        selector: 'node[type=1]',
+                        style: {
+                            "shape": 'rectangle',
+                            "background-color": "#FFFFFF",
+                            "label": "data(label)",
+                            'width': '350',
+                            "height": "40",
+                            "border-width": 4,
+                            "border-color": "#82EB71",
+                            "font-size": "16px",
+                            "text-valign": "center",
+                            "text-halign": "center",
+                            "text-wrap": "wrap",
+                            "text-max-width": "1000px",
+                            "color": "#82EB71",
+                            "text-outline-color": "#222222",
+                            "text-outline-width": "0.15px"
+                        }
+                    },
+                    {
+                        //red with green text
+                        selector: 'node[type=2]',
+                        style: {
+                            "shape": 'rectangle',
+                            "background-color": "#FFFFFF",
+                            "label": "data(label)",
+                            'width': '350',
+                            "height": "40",
+                            "border-width": 4,
+                            "border-color": "#FF4E4E",
+                            "font-size": "16px",
+                            "text-valign": "center",
+                            "text-halign": "center",
+                            "color": "#82EB71"
+                        }
+                    },
+                    {
+                        //green with red text
+                        selector: 'node[type=3]',
+                        style: {
+                            "shape": 'rectangle',
+                            "background-color": "#FFFFFF",
+                            "label": "data(label)",
+                            'width': '350',
+                            "height": "40",
+                            "border-width": 4,
+                            "border-color": "#82EB71",
+                            "font-size": "16px",
+                            "text-valign": "center",
+                            "text-halign": "center",
+                            "text-wrap": "wrap",
+                            "text-max-width": "1000px",
+                            "color": "#FF4E4E"
+                        }
+                    },
+                    {
+                        //red with red text
+                        selector: 'node[type=4]',
+                        style: {
+                            "shape": 'rectangle',
+                            "background-color": "#FFFFFF",
+                            "label": "data(label)",
+                            'width': '350',
+                            "height": "40",
+                            "border-width": 4,
+                            "border-color": "#FF4E4E",
+                            "font-size": "16px",
+                            "text-valign": "center",
+                            "text-halign": "center",
+                            "text-wrap": "wrap",
+                            "text-max-width": "1000px",
+                            "color": "#FF4E4E"
+                        }
+                    },
+                    {
+                        //process start node
+                        selector: 'node[type=20]',
+                        style: {
+                            "shape": 'ellipse',
+                            "background-color": "#3f3f3f",
+                            "border-width": 4,
+                            "border-color": "#131313",
+                            'width': '50',
+                            "height": "50",
+                            "font-size": "16px",
+                            "text-valign": "center",
+                            "text-halign": "center",
+                            "text-wrap": "wrap",
+                            "text-max-width": "1000px",
+                            "color": "#FF2222"
+                        }
+                    },
+
+                    //Edges styles
+                    {
+                        //grey
+                        selector: 'edge[type=0]',
+                        style: {
+                            'width': 5,
+                            'curve-style': 'bezier',
+                            "line-color": "#989898",
+                            'target-arrow-color': '#989898',
+                            "font-size": "32px",
+                            "color": "#222222",
+                            "loop-direction": "0deg",
+                            'target-arrow-shape': 'triangle',
+                            "loop-sweep": "45deg",
+                            "text-margin-y": "-15px",
+                            "source-text-offset": "50px",
+                            "text-outline-color": "#222222",
+                            "text-outline-width": "0.3px"
+                        }
+                    },
+                    {
+                        //green with green text
+                        selector: 'edge[type=1]',
+                        style: {
+                            'width': 5,
+                            'curve-style': 'bezier',
+                            "line-color": "#82EB71",
+                            'target-arrow-color': '#82EB71',
+                            "label": "data(label)",
+                            "font-size": "32px",
+                            "color": "#82EB71",
+                            "loop-direction": "0deg",
+                            'target-arrow-shape': 'triangle',
+                            "loop-sweep": "45deg",
+                            "text-outline-color": "#222222",
+                            "text-outline-width": "0.3px",
+                            "text-rotation": "0deg",
+                            "text-margin-y": "-20px"
+                        }
+                    },
+                    {
+                        //red with green text
+                        selector: 'edge[type=2]',
+                        style: {
+                            'width': 5,
+                            'curve-style': 'bezier',
+                            "line-color": "#FF4E4E",
+                            'target-arrow-color': '#FF4E4E',
+                            "content": "data(label)",
+                            "font-size": "32px",
+                            "color": "#82EB71",
+                            "loop-direction": "0deg",
+                            'target-arrow-shape': 'triangle',
+                            "loop-sweep": "45deg",
+                            "text-margin-y": "-15px",
+                            "source-text-offset": "50px",
+                            "text-outline-color": "#222222",
+                            "text-outline-width": "0.3px",
+                            "text-rotation": "0deg"
+                        }
+                    },
+                    {
+                        //red with red text
+                        selector: 'edge[type=4]',
+                        style: {
+                            'width': 5,
+                            'curve-style': 'bezier',
+                            "line-color": "#FF4E4E",
+                            'target-arrow-color': '#FF4E4E',
+                            "content": "data(label)",
+                            "font-size": "32px",
+                            "color": "#FF4E4E",
+                            "loop-direction": "0deg",
+                            'target-arrow-shape': 'triangle',
+                            "loop-sweep": "45deg",
+                            "text-margin-y": "-15px",
+                            "source-text-offset": "50px",
+                            "text-outline-color": "#222222",
+                            "text-outline-width": "0.3px",
+                            "text-rotation": "0deg"
+                        }
+                    },
+                    {
+                        //green with red text
+                        selector: 'edge[type=5]',
+                        style: {
+                            'width': 5,
+                            'curve-style': 'bezier',
+                            "line-color": "#82EB71",
+                            'target-arrow-color': '#82EB71',
+                            "content": "data(label)",
+                            "font-size": "32px",
+                            "color": "#FF4E4E",
+                            "loop-direction": "0deg",
+                            'target-arrow-shape': 'triangle',
+                            "loop-sweep": "45deg",
+                            "text-margin-y": "-15px",
+                            "source-text-offset": "50px",
+                            "text-outline-color": "#222222",
+                            "text-outline-width": "0.3px",
+                            "text-rotation": "0deg"
+                        }
+                    },
+
+                    {
+                        //green with green text
+                        selector: 'edge[type=6]',
+                        style: {
+                            'width': 5,
+                            'curve-style': 'bezier',
+                            "line-color": "#82EB71",
+                            'target-arrow-color': '#82EB71',
+                            "label": "data(label)",
+                            "font-size": "32px",
+                            "color": "#82EB71",
+                            "loop-direction": "0deg",
+                            'target-arrow-shape': 'triangle',
+                            "loop-sweep": "45deg",
+                            "text-outline-color": "#222222",
+                            "text-outline-width": "0.3px",
+                            "text-margin-y": "20px"
+                        }
+                    },
+
+
+                    //temporary type to flag node as having non conform time, and to later be changed to type 5 if it is associated to the case (if not stays grey)
+                    {
+                        selector: 'edge[type=10]',
+                        style: {
+                            'width': 5,
+                            'curve-style': 'bezier',
+                            "line-color": "#989898",
+                            'target-arrow-color': '#989898',
+                            "font-size": "32px",
+                            "color": "#222222",
+                            "loop-direction": "0deg",
+                            'target-arrow-shape': 'triangle',
+                            "loop-sweep": "45deg",
+                            "text-margin-y": "-15px",
+                            "source-text-offset": "50px",
+                            "text-outline-color": "#222222",
+                            "text-outline-width": "0.3px",
+                            "text-rotation": "0deg"
+                        }
+                    },
+                    {
+                        //process start edge
+                        selector: 'edge[type=20]',
+                        style: {
+                            'width': 8,
+                            'curve-style': 'bezier',
+                            'line-color': "#232323",
+                            'target-arrow-color': '#232323',
+                            "font-size": "32px",
+                            "color": "#222222",
+                            "loop-direction": "0deg",
+                            'target-arrow-shape': 'triangle',
+                            "loop-sweep": "45deg",
+                            "text-margin-y": "-15px",
+                            "source-text-offset": "50px",
+                            "text-outline-color": "#222222",
+                            "text-outline-width": "0.3px"
+                        }
+                    },
+                ],
+            });
+
+        //Nodes\\
+        for (let i = 0; i < process.baseData.nodes.length; i++) {
+            //determinar cor do nó
+            let typeValue = 0;
+
+            //verificar se faz parte da Path do case escolhido -> verde
+            for (let k = 0; k < process.caseData.nodes.length; k++) {
+                if (process.caseData.nodes[k].node === i) {
+                    typeValue = 1;
+                }
+            }
+
+            //verificar se tempo execução é não conforme -> texto vermelho
+            //procurar a ocorrência do nó em questão com maior duração (pior caso)
+            let maxDuration = {};
+            maxDuration.days = 0;
+            maxDuration.hours = 0;
+            maxDuration.minutes = 0;
+            maxDuration.seconds = 0;
+
+            for (let k = 0; k < process.caseData.nodes.length; k++) {
+                if (process.caseData.nodes[k].node === i && convertToSeconds(process.caseData.nodes[k].duration) > convertToSeconds(maxDuration)) {
+                    maxDuration = process.caseData.nodes[k].duration;
+                }
+            }
+
+            if (convertToSeconds(maxDuration) > convertToSeconds(process.baseData.taskDurations[i].duration)) {
+                typeValue = 3;
+            }
+
+            //format label acording to time value
+            let prevLabel;
+            if (process.baseData.taskDurations[i].duration.days !== 0) {
+                prevLabel = "\n Prev: " + process.baseData.taskDurations[i].duration.days + "D " + process.baseData.taskDurations[i].duration.hours + "H " + process.baseData.taskDurations[i].duration.minutes + "M " + process.baseData.taskDurations[i].duration.seconds + "S";
+            } else if (process.baseData.taskDurations[i].duration.hours !== 0) {
+                prevLabel = "\n Prev: " + process.baseData.taskDurations[i].duration.hours + "H " + process.baseData.taskDurations[i].duration.minutes + "M " + process.baseData.taskDurations[i].duration.seconds + "S";
+            } else if (process.baseData.taskDurations[i].duration.minutes !== 0) {
+                prevLabel = "\n Prev: " + process.baseData.taskDurations[i].duration.minutes + "M " + process.baseData.taskDurations[i].duration.seconds + "S";
+            } else {
+                prevLabel = "\n Prev: " + process.baseData.taskDurations[i].duration.seconds + "S";
+            }
+
+            let realLabel;
+            if (process.baseData.taskDurations[i].duration.days !== 0) {
+                realLabel = " / Real: " + maxDuration.days + "D " + maxDuration.hours + "H " + maxDuration.minutes + "M " + maxDuration.seconds + "S";
+            } else if (process.baseData.taskDurations[i].duration.hours !== 0) {
+                realLabel = " / Real: " + maxDuration.hours + "H " + maxDuration.minutes + "M " + maxDuration.seconds + "S";
+            } else if (process.baseData.taskDurations[i].duration.minutes !== 0) {
+                realLabel = " / Real: " + maxDuration.minutes + "M " + maxDuration.seconds + "S";
+            } else {
+                realLabel = " / Real: " + maxDuration.seconds + "S";
+            }
+
+            //se typevalue for 0 (não faz parte do caso em análise) formata texto de forma diferente
+            if (typeValue === 0) {
+                cy.add({
+                    data: {
+                        id: i,
+                        label: process.baseData.nodes[i] + prevLabel,
+                        type: typeValue
+                    },
+                }
+                );
+            } else {
+                cy.add({
+                    data: {
+                        id: i,
+                        label: process.baseData.nodes[i] + prevLabel + realLabel,
+                        type: typeValue
+                    },
+                }
+                );
+            }
+
+        }
+
+        //Edges\\
+        for (let i = 0; i < process.baseData.relations.length; i++) {
+            for (let j = 0; j < process.baseData.relations[i].to.length; j++) {
+
+                //search for max duration for this relation, if it occurs more then once
+                let maxDuration = {};
+                maxDuration.days = 0;
+                maxDuration.hours = 0;
+                maxDuration.minutes = 0;
+                maxDuration.seconds = 0;
+                let edgeTypeValue = 0;
+                for (let k = 0; k < process.caseData.relations.length; k++) {
+                    if (process.caseData.relations[k].from === process.baseData.relations[i].from) {
+                        for (let l = 0; l < process.caseData.relations[k].to.length; l++) {
+                            if (process.caseData.relations[k].to[l].node === process.baseData.relations[i].to[j].node) {
+                                if (convertToSeconds(process.caseData.relations[k].to[l].duration) > convertToSeconds(maxDuration)) {
+                                    maxDuration = process.caseData.relations[k].to[l].duration;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                //mark edge as having nonconform time
+                if (convertToSeconds(maxDuration) > convertToSeconds(process.baseData.relations[i].to[j].duration)) {
+                    edgeTypeValue = 10;
+                }
+
+                let prevLabel = 0;
+                if (process.baseData.relations[i].to[j].duration.days !== 0) {
+                    prevLabel = "\n Prev: " + process.baseData.relations[i].to[j].duration.days + "D " + process.baseData.relations[i].to[j].duration.hours + "H " + process.baseData.relations[i].to[j].duration.minutes + "M ";
+                } else if (process.baseData.relations[i].to[j].duration.hours !== 0) {
+                    prevLabel = "\n Prev: " + process.baseData.relations[i].to[j].duration.hours + "H " + process.baseData.relations[i].to[j].duration.minutes + "M ";
+                } else if (process.baseData.relations[i].to[j].duration.minutes !== 0) {
+                    prevLabel = "\n Prev: " + process.baseData.relations[i].to[j].duration.minutes + "M " + process.baseData.relations[i].to[j].duration.seconds + "S";
+                } else {
+                    prevLabel = "\n Prev: " + process.baseData.relations[i].to[j].duration.seconds + "S";
+                }
+
+                let realLabel = 0;
+                if (maxDuration.days !== 0) {
+                    realLabel = "Real: " + maxDuration.days + "D " + maxDuration.hours + "H " + maxDuration.minutes + "M ";
+                } else if (maxDuration.hours !== 0) {
+                    realLabel = "Real: " + maxDuration.hours + "H " + maxDuration.minutes + "M ";
+                } else if (maxDuration.minutes !== 0) {
+                    realLabel = "Real: " + maxDuration.minutes + "M " + maxDuration.seconds + "S";
+                } else {
+                    realLabel = "Real: " + maxDuration.seconds + "S";
+                }
+
+                cy.add({
+                    data: {
+                        id: 'edge' + process.baseData.relations[i].from + '-' + process.baseData.relations[i].to[j].node,
+                        source: process.baseData.relations[i].from,
+                        target: process.baseData.relations[i].to[j].node,
+                        label: prevLabel + " / " + realLabel,
+                        type: edgeTypeValue
+                    }
+                });
+            }
+        }
+
+        let edges = [];
+        //identify realtions which are part of the case(s) selected
+        for (let i = 0; i < process.caseData.relations.length; i++) {
+            for (let j = 0; j < process.caseData.relations[i].to.length; j++) {
+
+                //check if already exists connection between the two nodes, in order to shift the text slightly so it doesn't overlap
+                let control = 0;
+                let edge = process.caseData.relations[i].from + "-" + process.caseData.relations[i].to[j].node;
+                for (let k = 0; k < edges.length; k++) {
+                    if (edges[k] === process.caseData.relations[i].to[j].node + "-" + process.caseData.relations[i].from) {
+                        control = 1;
+                    }
+                }
+                edges.push(edge);
+
+
+                if (cy.getElementById("edge" + process.caseData.relations[i].from + "-" + process.caseData.relations[i].to[j].node).data('type') === 10) {
+                    cy.getElementById("edge" + process.caseData.relations[i].from + "-" + process.caseData.relations[i].to[j].node).data('type', 5);
+                } else {
+                    if (control === 0) {
+                        cy.getElementById("edge" + process.caseData.relations[i].from + "-" + process.caseData.relations[i].to[j].node).data('type', 1);
+                    } else {
+                        cy.getElementById("edge" + process.caseData.relations[i].from + "-" + process.caseData.relations[i].to[j].node).data('type', 6);
+                    }
+
+                }
+            }
+        }
+
+        //change nodes which are outliers to red with green or red text
+        for (let i = 0; i < process.baseData.deviations.nodes.length; i++) {
+            if (cy.getElementById(process.baseData.deviations.nodes[i].toString()).data('type') === 3) {
+                cy.getElementById(process.baseData.deviations.nodes[i].toString()).data('type', 4);
+            } else if (cy.getElementById(process.baseData.deviations.nodes[i].toString()).data('type') === 1) {
+                cy.getElementById(process.baseData.deviations.nodes[i].toString()).data('type', 2);
+            } else {
+                //cy.remove(cy.getElementById("edge" + process.baseData.deviations.nodes[i].from + "-" + process.baseData.deviations.nodes[i].to))
+            }
+        }
+
+        //change edges which are outliers to red with green or red text
+        for (let i = 0; i < process.baseData.deviations.relations.length; i++) {
+            if (cy.getElementById("edge" + process.baseData.deviations.relations[i].from + "-" + process.baseData.deviations.relations[i].to).data('type') === 5) {
+                cy.getElementById("edge" + process.baseData.deviations.relations[i].from + "-" + process.baseData.deviations.relations[i].to).data('type', 4);
+            } else if (cy.getElementById("edge" + process.baseData.deviations.relations[i].from + "-" + process.baseData.deviations.relations[i].to).data('type') === 1) {
+                cy.getElementById("edge" + process.baseData.deviations.relations[i].from + "-" + process.baseData.deviations.relations[i].to).data('type', 2);
+            } else {
+                //cy.remove(cy.getElementById("edge" + process.baseData.deviations.relations[i].from + "-" + process.baseData.deviations.relations[i].to))
+            }
+        }
+
+        /*cy.getElementById("edge6-18_conformance").data('name', "8")*/
+
+        //add process start and end nodes
+        for (let i = 0; i < process.caseData.startEvents.length; i++) {
+            cy.add({
+                data: {
+                    id: 'start-' + i,
+                    type: 20
+                },
+            });
+
+            cy.add({
+                data: {
+                    id: 'edge_start-' + i,
+                    source: 'start-' + i,
+                    target: process.caseData.startEvents[i].node,
+                    type: 20
+                }
+            });
+        }
+
+        for (let i = 0; i < process.caseData.endEvents.length; i++) {
+            cy.add({
+                data: {
+                    id: 'end-' + i,
+                    type: 20
+                },
+            });
+            console.log(process.caseData.endEvents[i]);
+            cy.add({
+                data: {
+                    id: 'edge_end-' + i,
+                    source: process.caseData.endEvents[i].node,
+                    target: 'end-' + i,
+                    type: 20
+                }
+            });
+        }
+
+
+        let customBreadthfirst = {
+            name: 'breadthfirst',
+
+            fit: true, // whether to fit the viewport to the graph
+            directed: true, // whether the tree is directed downwards (or edges can point in any direction if false)
+            padding: 10, // padding on fit
+            circle: false, // put depths in concentric circles if true, put depths top down if false
+            grid: false, // whether to create an even grid into which the DAG is placed (circle:false only)
+            spacingFactor: 0.90, // positive spacing factor, larger => more space between nodes (N.B. n/a if causes overlap)
+            boundingBox: undefined, // constrain layout bounds; { x1, y1, x2, y2 } or { x1, y1, w, h }
+            avoidOverlap: true, // prevents node overlap, may overflow boundingBox if not enough space
+            nodeDimensionsIncludeLabels: false, // Excludes the label when calculating node bounding boxes for the layout algorithm
+            roots: undefined, // the roots of the trees
+            maximal: false, // whether to shift nodes down their natural BFS depths in order to avoid upwards edges (DAGS only)
+            animate: false, // whether to transition the node positions
+            animationDuration: 500, // duration of animation in ms if enabled
+            animationEasing: undefined, // easing of animation if enabled,
+            animateFilter: function (node, i) {
+                return true;
+            }, // a function that determines whether the node should be animated.  All nodes animated by default on animate enabled.  Non-animated nodes are positioned immediately when the layout starts
+            ready: undefined, // callback on layoutready
+            stop: undefined, // callback on layoutstop
+            transform: function (node, position) {
+                return position;
+            } // transform a given node position. Useful for changing flow direction in discrete layouts
+        };
+        cy.layout(customBreadthfirst).run();
+    }
+
+
+    function convertToSeconds(duration) {
+        return duration.days * 86400 + duration.hours * 3600 + duration.minutes * 60 + duration.seconds;
+    }
+
+    $("#centerButton").click(function () {
+        if (typeof cy !== "undefined") {
+            cy.fit();
+        }
+    });
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 </script>
+<script src="@Url.Content("~/vendor/cytoscape/dist/cytoscape.min.js")"></script>
+<script src="@Url.Content("~/vendor/moment/min/moment.min.js")"></script>
+<script src="@Url.Content("~/vendor/bootstrap-select/dist/js/bootstrap-select.min.js")"></script>

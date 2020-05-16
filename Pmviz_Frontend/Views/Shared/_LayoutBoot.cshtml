@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -120,7 +120,7 @@
             </nav>
             <main>
                 <br />
-                <div class="container">
+                <div class="container-fluid">
                     @RenderBody()
                 </div>
             </main>
@@ -140,6 +140,10 @@
 </html>
 <style>
 @@import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
+html,
+body {
+    height: 80%;
+}
 .wrapper {
     display: flex;
     align-items: stretch;
@@ -152,8 +156,8 @@
     background: #7386D5;
     color: #fff;
     transition: all 0.3s;
-    min-width: 250px;
-    max-width: 250px;
+    min-width: 13vw;
+    max-width: 13vw;
     min-height: 100vh;
 }
 a[data-toggle="collapse"] {
@@ -188,7 +192,7 @@ a, a:hover, a:focus {
 }
 
 #sidebar .sidebar-header {
-    height:10vh;
+    height:8vh;
     background: #6d7fcc;
     text-align:center;
     vertical-align: middle;
@@ -228,8 +232,8 @@ ul ul a {
     width:100vw;
 }
 #navigation.active{
-    width:81vw;
-    height:10vh;
+    width:87vw;
+    height:8vh;
 }
 #logout{
     position:absolute;
@@ -247,6 +251,14 @@ ul ul a {
     #sidebar.active {
         margin-left: 0;
     }
+}
+
+@@media only screen and (min-width : 1200px) {
+
+    .container-fluid {
+        max-width: 80.5vw;
+    }
+
 }
 </style>
 <script>
