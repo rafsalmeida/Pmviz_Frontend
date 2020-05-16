@@ -56,7 +56,7 @@ namespace Pmviz_Frontend.Controllers
                     {
                         if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
                         {
-                            ViewBag.ErrorActivity = "There are no statistics in this specific activity.";
+                            ViewBag.ErrorActivity = await response.Content.ReadAsStringAsync();
                             return View("Process", "Resources");
 
                         }
@@ -90,7 +90,7 @@ namespace Pmviz_Frontend.Controllers
                     {
                         if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
                         {
-                            ViewBag.ErrorActivity = "No activities associated to this process.";
+                            ViewBag.ErrorActivity = await response.Content.ReadAsStringAsync();
 
                         }
                         ViewBag.ErrorActivity = "Error retrieving activities. Please try again later";
@@ -167,6 +167,7 @@ namespace Pmviz_Frontend.Controllers
                             var timeSpanR = TimeSpan.FromMilliseconds(r.MeanMillis);
 
                             r.MeanMillis = timeSpanR.TotalMinutes;
+                            r.GeneralMean = timeSpan.TotalMinutes;
                         }
 
                         allResources = allResources.OrderByDescending(x => x.MeanMillis).ThenBy(x => x.Resource).ToList();
@@ -181,11 +182,11 @@ namespace Pmviz_Frontend.Controllers
                     {
                         if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
                         {
-                            ViewBag.ErrorActivity = "There are no records of any work in this activity.";
+                            ViewBag.ErrorActivity = await response.Content.ReadAsStringAsync();
                             return View("Process", "Statistics");
 
                         }
-                        ViewBag.ErrorActivity = "Error retrieving activities. Please try again later";
+                        ViewBag.ErrorActivity = "Error retrieving statistics. Please try again later";
                         return View("Process", "Statistics");
 
                     }

@@ -2,5 +2,8 @@
 <root>
   <path>
   </path>
-  <path>/authorization</path>
+  <path>/authorization
+    </path>
+  <path>/tag
+    </path>
 </root>

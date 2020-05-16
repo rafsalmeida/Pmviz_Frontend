@@ -1,87 +1,94 @@
-﻿<!DOCTYPE html>
+@using Microsoft.AspNetCore.Http;
+@{ 
+    List<string> details = Context.Session.GetString("listDetails").Split(new char[] { ',' }).ToList();
+}
+<!DOCTYPE html>
 <html>
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - PMVIZ</title>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>@ViewData["Title"] - PMVIZ</title>
 
-    <environment names="Development">
-        <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.css" />
-        <link rel="stylesheet" href="~/css/site.css" />
-    </environment>
-    <environment names="Staging,Production">
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
-              asp-fallback-href="~/lib/bootstrap/css/bootstrap.min.css"
-              asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
-        <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
-    </environment>
-    <link href="https://kendo.cdn.telerik.com/2020.1.219/styles/kendo.bootstrap-v4.min.css" rel="stylesheet" type="text/css" />
-    <script src="https://kendo.cdn.telerik.com/2020.1.219/js/jquery.min.js"></script>
-    <script src="https://kendo.cdn.telerik.com/2020.1.219/js/jszip.min.js"></script>
-    <script src="https://kendo.cdn.telerik.com/2020.1.219/js/kendo.all.min.js"></script>
-    <script src="https://kendo.cdn.telerik.com/2020.1.219/js/kendo.aspnetmvc.min.js"></script>
-    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous"></script>
-    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
+        <environment names="Development">
+            <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.css" />
+            <link rel="stylesheet" href="~/css/site.css" />
+        </environment>
+        <environment names="Staging,Production">
+            <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+                  asp-fallback-href="~/lib/bootstrap/css/bootstrap.min.css"
+                  asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
+            <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
+        </environment>
+        <link href="https://kendo.cdn.telerik.com/2020.1.219/styles/kendo.bootstrap-v4.min.css" rel="stylesheet" type="text/css" />
+        <script src="https://kendo.cdn.telerik.com/2020.1.219/js/jquery.min.js"></script>
+        <script src="https://kendo.cdn.telerik.com/2020.1.219/js/jszip.min.js"></script>
+        <script src="https://kendo.cdn.telerik.com/2020.1.219/js/kendo.all.min.js"></script>
+        <script src="https://kendo.cdn.telerik.com/2020.1.219/js/kendo.aspnetmvc.min.js"></script>
+        <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous"></script>
+        <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
 
-</head>
-<body class="k-content">
-    <!-- jQuery CDN - Slim version (=without AJAX) 
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>-->
-    <!-- Popper.JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
-    <!-- Bootstrap JS -->
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
+    </head>
+    <body class="k-content">
+        <!-- jQuery CDN - Slim version (=without AJAX)
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>-->
+        <!-- Popper.JS -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
+        <!-- Bootstrap JS -->
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
 
-    <div class="wrapper">
-        <!-- Sidebar -->
-        <nav id="sidebar">
-            <div class="sidebar-header">
-                <h3 id="title">Pmviz</h3>
-            </div>
-
-            <ul class="list-unstyled components">
-                <li>
-                    <a href="/home"><i class="fas fa-home"></i> Home</a>
-                </li>
-                <li>
-                    <a href="/log"><i class="fas fa-table"></i> All Logs</a>
-                </li>
-                <li>
-                    <a href="/authorization"><i class="fas fa-ban"></i> Manage Access</a>
-                </li>
-                <li>
-                    <a href="/manager/graph"><i class="fas fa-project-diagram"></i> Graphs: Freq. Perf.</a>
-                </li>
-                <li>
-                    <a href="/graph/index"><i class="fas fa-project-diagram"></i> Graphs: Compare Proc.</a>
-                </li>
-                <li>
-                    <a href="/tag"><i class="fas fa-tag"></i> Tag Parts</a>
-                </li>
-                <li>
-                    <a href="/statistics"><i class="fas fa-chart-bar"></i> My Stats</a>
-                </li>
-                <li>
-                    <a href="/resources"><i class="fas fa-chart-line"></i> Resources Stats</a>
-                </li>
-                <li>
-                    <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Pages</a>
-                    <ul class="collapse list-unstyled" id="pageSubmenu">
-                        <li>
-                            <a href="#">Page 1</a>
+        <div class="wrapper">
+            <!-- Sidebar -->
+            <nav id="sidebar">
+                <div class="sidebar-header">
+                    <h3 id="title">Pmviz</h3>
+                </div>
+                <ul class="list-unstyled components">
+                    <li>
+                        <a href="/home"><i class="fas fa-home"></i> Home</a>
+                    </li>
+                    @if (!details.Contains("seeAllProcesses"))
+                    {
+                        <li id="seeAllProcesses">
+                            <a href="/log"><i class="fas fa-table"></i> All Processes</a>
                         </li>
-                        <li>
-                            <a href="#">Page 2</a>
+                    }
+                    @if (!details.Contains("manageAccess"))
+                    {
+                        <li id="manageAccess">
+                            <a href="/authorization"><i class="fas fa-ban"></i> Manage Access</a>
                         </li>
-                        <li>
-                            <a href="#">Page 3</a>
+                    }
+                    @if (!details.Contains("frequencyGraph"))
+                    {
+                        <li id="frequencyGraph">
+                            <a href="/manager/graph"><i class="fas fa-project-diagram"></i> Graphs: Freq. Perf.</a>
                         </li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="/statistics"><i class="fas fa-chart-bar"></i> My Stats</a>
-                </li>
-                <!--
+                    }
+                    @if (!details.Contains("compareGraphs"))
+                    {
+                        <li id="compareGraphs">
+                            <a href="/graph/index"><i class="fas fa-project-diagram"></i> Graphs: Compare Proc.</a>
+                        </li>
+                    }
+                    @if (!details.Contains("tagParts"))
+                    {
+                        <li id="tagParts">
+                            <a href="/tag"><i class="fas fa-tag"></i> Tag Parts</a>
+                        </li>
+                    }
+                    @if (!details.Contains("myStatistics"))
+                    {
+                        <li id="myStatistics">
+                            <a href="/statistics"><i class="fas fa-chart-bar"></i> My Stats</a>
+                        </li>
+                    }
+                    @if (!details.Contains("resourcesStats"))
+                    { 
+                        <li id="resourcesStats">
+                            <a href="/resources"><i class="fas fa-chart-line"></i> Resources Stats</a>
+                        </li>
+                    }
+                    <!--
     <li>
         <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Pages</a>
         <ul class="collapse list-unstyled" id="pageSubmenu">
@@ -103,42 +110,43 @@
         <a href="#">Contact</a>
     </li>
         -->
-            </ul>
-        </nav>
-        <div class="content">
-            <nav class="navbar navbar-expand-lg navbar-light bg-light active"  id="navigation" >
-                <div class="container-fluid">
-
-                    <!--<button type="button" id="sidebarCollapse" class="btn btn-info">
-                        <i class="fas fa-align-left"></i>
-                        <span>Toggle Sidebar</span>
-                    </button>-->
-                    <button class="btn" id="logout">
-                        <i class="fas fa-sign-out-alt"></i><a href="/login/logout">Logout</a>
-                    </button>
-                </div>
+                </ul>
             </nav>
-            <main>
-                <br />
-                <div class="container-fluid">
-                    @RenderBody()
-                </div>
-            </main>
-        </div>
-    </div>
+          <div class="content">
+                <nav class="navbar navbar-expand-lg navbar-light bg-light active" id="navigation">
+                    <div class="container-fluid">
 
-    <environment names="Development">
-        <script src="~/lib/bootstrap/js/bootstrap.js"></script>
-    </environment>
-    <environment names="Staging,Production">
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
-                asp-fallback-src="~/lib/bootstrap/js/bootstrap.min.js"
-                asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"></script>
-    </environment>
-    @RenderSection("scripts", required: false)
-</body>
+                        <!--<button type="button" id="sidebarCollapse" class="btn btn-info">
+                            <i class="fas fa-align-left"></i>
+                            <span>Toggle Sidebar</span>
+                        </button>-->
+                        <button class="btn" id="logout">
+                            <i class="fas fa-sign-out-alt"></i><a href="/login/logout">Logout</a>
+                        </button>
+                    </div>
+                </nav>
+                <main>
+                    <br />
+                    <div class="container-fluid">
+                        @RenderBody()
+                    </div>
+                </main>
+            </div>
+        </div>
+
+        <environment names="Development">
+            <script src="~/lib/bootstrap/js/bootstrap.js"></script>
+        </environment>
+        <environment names="Staging,Production">
+            <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+                    asp-fallback-src="~/lib/bootstrap/js/bootstrap.min.js"
+                    asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"></script>
+        </environment>
+        @RenderSection("scripts", required: false)
+    </body>
 </html>
 <style>
+  
 @@import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
 html,
 body {
@@ -164,32 +172,13 @@ a[data-toggle="collapse"] {
     position: relative;
 }
 
-.dropdown-toggle::after {
-    display: block;
-    position: absolute;
-    top: 50%;
-    right: 20px;
-    transform: translateY(-50%);
-}
-
-body {
-    font-family: 'Poppins', sans-serif;
-    background: #fafafa;
-}
-
-p {
-    font-family: 'Poppins', sans-serif;
-    font-size: 1.1em;
-    font-weight: 300;
-    line-height: 1.7em;
-    color: #999;
-}
-
-a, a:hover, a:focus {
-    color: inherit;
-    text-decoration: none;
-    transition: all 0.3s;
-}
+    .dropdown-toggle::after {
+        display: block;
+        position: absolute;
+        top: 50%;
+        right: 20px;
+        transform: translateY(-50%);
+    }
 
 #sidebar .sidebar-header {
     height:8vh;
@@ -197,27 +186,36 @@ a, a:hover, a:focus {
     text-align:center;
     vertical-align: middle;
 
-}
+    body {
+        font-family: 'Poppins', sans-serif;
+        background: #fafafa;
+    }
 
-#sidebar ul.components {
-    padding: 20px 0;
-    border-bottom: 1px solid #47748b;
-}
+    p {
+        font-family: 'Poppins', sans-serif;
+        font-size: 1.1em;
+        font-weight: 300;
+        line-height: 1.7em;
+        color: #999;
+    }
 
-#sidebar ul p {
-    color: #fff;
-    padding: 10px;
-}
+    a, a:hover, a:focus {
+        color: inherit;
+        text-decoration: none;
+        transition: all 0.3s;
+    }
 
-#sidebar ul li a {
-    padding: 10px;
-    font-size: 1.1em;
-    display: block;
-}
-#sidebar ul li a:hover {
-    color: #7386D5;
-    background: #fff;
-}
+    #sidebar .sidebar-header {
+        height: 10vh;
+        background: #6d7fcc;
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    #sidebar ul.components {
+        padding: 20px 0;
+        border-bottom: 1px solid #47748b;
+    }
 
 #sidebar ul li.active > a, a[aria-expanded="true"] {
     color: #fff;
@@ -238,18 +236,35 @@ ul ul a {
 #logout{
     position:absolute;
     right:1vw;
-
-}
-#title{
-    padding-top:20px;
-}
-
-@@media (max-width: 768px) {
-    #sidebar {
-        margin-left: -250px;
+  
+    #sidebar ul p {
+        color: #fff;
+        padding: 10px;
     }
-    #sidebar.active {
-        margin-left: 0;
+
+    #sidebar ul li a {
+        padding: 10px;
+        font-size: 1.1em;
+        display: block;
+    }
+
+        #sidebar ul li a:hover {
+            color: #7386D5;
+            background: #fff;
+        }
+
+    #title {
+        padding-top: 20px;
+    }
+
+    @@media (max-width: 768px) {
+        #sidebar {
+            margin-left: -250px;
+        }
+
+            #sidebar.active {
+                margin-left: 0;
+            }
     }
 }
 

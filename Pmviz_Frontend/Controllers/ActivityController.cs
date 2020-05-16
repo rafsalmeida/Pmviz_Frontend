@@ -16,7 +16,7 @@ namespace Pmviz_Frontend.Controllers
 
             using (var httpClient = new HttpClient())
             {
-                using (var response = await httpClient.GetAsync("http://localhost:8080/api/activity-frequency/"+logid))
+                using (var response = await httpClient.GetAsync("http://localhost:8080/api/activity-frequency/processes/"+logid))
                 {
                     string apiResponse = await response.Content.ReadAsStringAsync();
                     var status = response.IsSuccessStatusCode;
@@ -73,8 +73,15 @@ namespace Pmviz_Frontend.Controllers
                         return View(activityList);
                     }
                     else
-                    {
-                        return RedirectToAction("Index", "Home", new { error = "1" });
+                    {   
+                        if(response.StatusCode == System.Net.HttpStatusCode.Conflict)
+                        {
+                            ViewBag.Error = await response.Content.ReadAsStringAsync();
+                            return View();
+
+                        }
+                        ViewBag.Error = "Error retrieving statistics. Please, try again later.";
+                        return View();
 
                     }
                 }

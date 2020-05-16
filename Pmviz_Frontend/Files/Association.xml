@@ -1,10 +1,28 @@
 ﻿<root>
-  <path name="All Logs">/log</path>
-  <path name="Activities of a Log">/log/activities</path>
-  <path name="Resources of a Log">/log/resources</path>
-  <path name="Activity Frequency of a Log">/activity</path>
-  <path name="Manage Access">/authorization</path>
-  <path name="Graphs">/manager/graph</path>
-  <path name="Tag Parts">/tag</path>
-  <path name="My Statistics">/statistics</path>
+  <path name="See the list of all Processes">/log
+    <button>seeAllProcesses</button>
+  </path>
+  <!--<path name="Activities of a Log">/log/activities</path>
+  <path name="Resources of a Log">/log/resources</path>-->
+  <path name="See the activity frequency of a process">/activity
+    <button>activityFrequency</button>
+  </path>
+  <path name="Manage Access">/authorization
+    <button>manageAccess</button>
+  </path>  
+  <path name="See processes graphs">/manager/graph
+    <button>frequencyGraph</button>
+  </path>
+  <path name="Compare processes graphs">/graph/index
+    <button>compareGraphs</button>
+  </path>
+  <path name="Tag Parts">/tag
+    <button>tagParts</button>
+  </path>
+  <path name="See personal statistics">/statistics
+    <button>myStatistics</button>
+  </path>
+  <path name="See all resources statistics">/resources
+    <button>resourcesStats</button>
+  </path>
 </root>
