@@ -4,7 +4,7 @@
   </path>
   <!--<path name="Activities of a Log">/log/activities</path>
   <path name="Resources of a Log">/log/resources</path>-->
-  <path name="See the activity frequency of a process">/activity
+  <path name="See the activities statistics of a process">/log/activity
     <button>activityFrequency</button>
   </path>
   <path name="Manage Access">/authorization
@@ -22,7 +22,7 @@
   <path name="See personal statistics">/statistics
     <button>myStatistics</button>
   </path>
-  <path name="See all resources statistics">/resources
+  <path name="See all resources statistics">/log/resources
     <button>resourcesStats</button>
   </path>
 </root>
