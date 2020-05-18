@@ -70,6 +70,7 @@ namespace Pmviz_Frontend.Middleware
 
             for (int i = 0; i < paths.Count; i++)
             {
+                System.Diagnostics.Debug.WriteLine(paths[i].InnerText);
                 if((httpContext.Request.Path == paths[i].InnerText || httpContext.Request.Path.StartsWithSegments(paths[i].InnerText) && 
                     paths[i].InnerText != ""))
                 {
@@ -86,11 +87,8 @@ namespace Pmviz_Frontend.Middleware
             //GET THE LIST OF DETAILS NOT ALLOWED TO SEE
             var listDetails = authorizationController.GetDetailsNotAllowedToSee(role);
 
-            System.Diagnostics.Debug.WriteLine("Estou a contar: "+listDetails.Count);
-
             //STORE THE DETAILS NAMES ON SESSION STORAGE
             string details = string.Join(",", listDetails);
-            System.Diagnostics.Debug.WriteLine(details);
             httpContext.Session.SetString("listDetails", details);
         }
     }
