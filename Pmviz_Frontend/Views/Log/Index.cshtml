@@ -24,46 +24,53 @@ else
     }
     else
     {
-        <div class="container k-content" style="height:auto">
-            @(Html.Kendo().Grid(Model)
-                .Name("Grid")
-                .Columns(columns =>
-                {
-                    columns.Bound(l => l.Id).Title("Id");
-                    columns.Bound(l => l.Description).Title("Description").Width(200);
-                    columns.Bound(l => l.NumberOfActivities).Title("Number of Activities");
-                    columns.Bound(l => l.NumberOfCases).Title("Number of Cases");
-                    columns.Bound(l => l.StartDate).Title("Start Date");
-                    columns.Bound(l => l.EndDate).Title("End Date");
+<div class="container k-content" style="height:auto">
+    @(Html.Kendo().Grid(Model)
+        .Name("Grid")
+        .Columns(columns =>
+        {
+            columns.Bound(l => l.Id).Title("Id");
+            columns.Bound(l => l.Description).Title("Description").Width(200);
+            columns.Bound(l => l.NumberOfActivities).Title("Number of Activities");
+            columns.Bound(l => l.NumberOfCases).Title("Number of Cases");
+            columns.Bound(l => l.StartDate).Title("Start Date");
+            columns.Bound(l => l.EndDate).Title("End Date");
+            columns.Group(group => group
+                .Title("Statistics")
+                .Columns(info => { 
                     if (!details.Contains("activityFrequency"))
                     {
-                        columns.Command(command => command.Custom("Activities Statistics").Click("showDetails")).Width(175);
+                        info.Command(command => command.Custom("Activities").Click("showDetails")).Width(110);
+
                     }
                     if (!details.Contains("resourcesStats"))
                     {
-                        columns.Command(command => command.Custom("Resources Statistics").Click("showStats")).Width(175);
+                        info.Command(command => command.Custom("Resources").Click("showStats")).Width(130);
                     }
-
-                    //columns.Command(command => command.Custom("Activities").Click("showActivities")).Width(110);
-                    //columns.Command(command => command.Custom("Resources").Click("showResources")).Width(120);
-
+            
                 })
-                .Pageable()
-                .Navigatable()
-                .Sortable()
-                .Groupable()
-                .Filterable()
-                .Scrollable(s => s.Height("auto"))
-                .DataSource(dataSource => dataSource
-                    .Ajax()
-                    .PageSize(20)
-                    .ServerOperation(false)
-                 )
-                .Resizable(resize => resize.Columns(true))
-                .HtmlAttributes(new { style = "width:1000px" })
+            );
 
-            )
-        </div>
+
+
+
+        })
+        .Pageable()
+        .Navigatable()
+        .Sortable()
+        .Groupable()
+        .Filterable()
+        .Scrollable(s => s.Height("auto"))
+        .DataSource(dataSource => dataSource
+        .Ajax()
+        .PageSize(20)
+        .ServerOperation(false)
+        )
+        .Resizable(resize => resize.Columns(true))
+        .HtmlAttributes(new { style = "width:1000px" })
+
+        )
+    </div>
 
     }
 

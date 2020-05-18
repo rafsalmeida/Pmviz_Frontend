@@ -1,7 +1,7 @@
 ﻿@{
     IEnumerable<Pmviz_Frontend.Models.Mould> moulds = ViewData["moulds"] as IEnumerable<Pmviz_Frontend.Models.Mould>;
     IEnumerable<Pmviz_Frontend.Models.Part> parts = ViewData["parts"] as IEnumerable<Pmviz_Frontend.Models.Part>;
-
+    string chosenMould = ViewData["mouldSelected"] as string;
 }
 @{
     ViewData["Title"] = "Tag";
@@ -16,7 +16,7 @@
 }
 
 <div class="container">
-    <form method="post" id="ticketsForm" action='@Url.Action("Indexx","Tag")' kendo-validator="true">
+    <form method="post" id="ticketsForm" action='@Url.Action("Mould","Tag")' kendo-validator="true">
         <label for="role" class="required">Choose the mould of the parts you want to tag</label>
         <br />
         <select name="mouldSelected" class="inputfield" required>
@@ -24,7 +24,14 @@
             {
                 @foreach (var mould in moulds)
                 {
-                    <option value="@mould.Code">@mould.Code</option>
+                    if (chosenMould == mould.Code)
+                    {
+                        <option value="@mould.Code" selected>@mould.Code</option>
+                    }
+                    else
+                    {
+                        <option value="@mould.Code">@mould.Code</option>
+                    }
                 }
 
             }

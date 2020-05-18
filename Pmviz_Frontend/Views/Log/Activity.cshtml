@@ -1,6 +1,6 @@
 ﻿@{
     var processId = ViewData["processId"];
-    var type = ViewData["type"];
+    string type = ViewData["type"] as string;
     IEnumerable<Pmviz_Frontend.Models.ActivityFreq> frequency = ViewData["Frequency"] as IEnumerable<Pmviz_Frontend.Models.ActivityFreq>;
     IEnumerable<Pmviz_Frontend.Models.ActivityFreq> median = ViewData["Median"] as IEnumerable<Pmviz_Frontend.Models.ActivityFreq>;
     IEnumerable<Pmviz_Frontend.Models.ActivityFreq> mean = ViewData["Mean"] as IEnumerable<Pmviz_Frontend.Models.ActivityFreq>;
@@ -15,18 +15,32 @@
 <h4 style="text-align:center">Activities Statistics</h4>
 <div class="container" style="text-align:center">
     <h6>Choose the type of statistics:</h6>
-</div>   
-<div class="container" style="text-align:center"> 
+</div>
+<div class="container" style="text-align:center">
     <form method="post" action='@Url.Action("Activity","Log", new {id = processId})'>
+        @if (type == "frequency")
+        {
+            <input type="radio" name="type" value="frequency" checked>
+        }
+        else
+        {
             <input type="radio" name="type" value="frequency">
-            <label for="frequency">Activities Frequency</label>
-            &nbsp;&nbsp;&nbsp;
+        }
+        <label for="frequency">Activities Frequency</label>
+        &nbsp;&nbsp;&nbsp;
+        @if (type == "effort")
+        {
+            <input type="radio" name="type" value="effort" checked>
+        }
+        else
+        {
             <input type="radio" name="type" value="effort">
-            <label for="effort">Activities Effort</label>
-            <div>
-                <button class="k-button k-primary" type="submit">Submit</button>
-            </div>
-     </form>
+        }
+        <label for="effort">Activities Effort</label>
+        <div>
+            <button class="k-button k-primary" type="submit">Submit</button>
+        </div>
+    </form>
 </div>
 <br />
 
@@ -35,6 +49,9 @@
 {
     <div class="alert alert-danger" role="alert">
         @ViewBag.Error
+    </div>
+    <div class="container" style="text-align:center">
+        <a href='@Url.Action("Index","Log")' class="btn btn-danger">Go Back</a>
     </div>
 }
 else

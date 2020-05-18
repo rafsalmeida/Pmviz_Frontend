@@ -1,6 +1,6 @@
 ﻿@{
     var processId = ViewData["processId"];
-    var type = ViewData["type"];
+    string type = ViewData["type"] as string;
     IEnumerable<Pmviz_Frontend.Models.Activity> activities = ViewData["activities"] as IEnumerable<Pmviz_Frontend.Models.Activity>;
     string activityChosen = ViewData["activity"] as string;
     var moulds = ViewData["moulds"] as List<String>;
@@ -22,47 +22,83 @@
 </div>
 
 <div class="container" style="text-align:center">
-    <form method="post" action='@Url.Action("Resource","Log", new {id = processId})'>
-        <input type="radio" name="type" value="mean">
-        <label for="mean">Resources Mean Times</label>
-        &nbsp;&nbsp;&nbsp;
-        <input type="radio" name="type" value="effort">
-        <label for="effort">Resources Effort</label>
-        <br />
-        <select name="activity" class="inputfield" required>
-            @if (activities != null)
+    @if (ViewBag.ErrorActivity != null)
+    {
+        <div class="alert alert-danger" role="alert">
+            @ViewBag.ErrorActivity
+        </div>
+    }
+    @if (activities != null)
+    {
+        <form method="post" action='@Url.Action("Resource", "Log", new { id = processId })'>
+            @if (type == "mean")
             {
-                @foreach (var act in activities)
-                {
-                    <option value="@act.Id">@act.Id - @act.Name</option>
-                }
+                <input type="radio" name="type" value="mean" checked>
+            }
+            else
+            {
+                <input type="radio" name="type" value="mean">
 
             }
-        </select>
-        <br />
-        <br />
+            <label for="mean">Resources Mean Times</label>
+            &nbsp;&nbsp;&nbsp;
+            @if (type == "effort")
+            {
+                <input type="radio" name="type" value="effort" checked>
+            }
+            else
+            {
+                <input type="radio" name="type" value="effort">
+            }
+            <label for="effort">Resources Effort</label>
+            <br />
+
+            <select name="activity" class="inputfield" required>
+
+                @foreach (var act in activities)
+                {
+                    if (activityChosen == act.Id.ToString())
+                    {
+                        <option value="@act.Id" selected>@act.Id - @act.Name</option>
+                    }
+                    else
+                    {
+                        <option value="@act.Id">@act.Id - @act.Name</option>
+                    }
+                }
+
+
+            </select>
+
+            <br />
+            <br />
+            <div>
+                <button class="k-button k-primary" type="submit">Submit</button>
+            </div>
+        </form>
+    }
+    else
+    {
         <div>
-            <button class="k-button k-primary" type="submit">Submit</button>
+            <a href='@Url.Action("Index","Log")' class="btn btn-danger">Go Back</a>
         </div>
-    </form>
+    }
 </div>
 <br />
-@if (ViewBag.ErrorActivity != null)
-{
-    <div class="alert alert-danger" role="alert">
-        @ViewBag.ErrorActivity
-    </div>
-}
+
 
 @if (ViewBag.Error != null)
 {
     <div class="alert alert-danger" role="alert">
         @ViewBag.Error
     </div>
+    <div class="container" style="text-align:center">
+        <a href='@Url.Action("Index","Log")' class="btn btn-danger">Go Back</a>
+    </div>
 }
 else
 {
-    @if ((type == "mean" || type == "effort") &&(meanMinutesAll != null || totalEffort != null))
+    @if ((type == "mean" || type == "effort") && (meanMinutesAll != null || totalEffort != null))
     {
         <div class="row">
             <div class="col">
