@@ -1,110 +1,10 @@
 ﻿@{
     ViewData["Title"] = "Compare Process";
 }
-<link href="@Url.Content("~/css/GraphConformance.css")" rel="stylesheet" />
+<link href="@Url.Content("~/css/Graphs.css")" rel="stylesheet" />
+<link href="@Url.Content("~/css/Loading.css")" rel="stylesheet" />
 <link rel="stylesheet" href="@Url.Content("~/vendor/bootstrap-select/dist/css/bootstrap-select.min.css")">
-<style>
-    #loader {
-        position: absolute;
-        left: 55%;
-        top: 50%;
-        z-index: 1;
-        width: 150px;
-        height: 150px;
-        margin: -75px 0 0 -75px;
-        border: 16px solid #f3f3f3;
-        border-radius: 50%;
-        border-top: 16px solid #b3b3b3;
-        width: 120px;
-        height: 120px;
-        -webkit-animation: spin 2s linear infinite;
-        animation: spin 2s linear infinite;
-    }
 
-    @@-webkit-keyframes spin {
-        0% {
-            -webkit-transform: rotate(0deg);
-        }
-
-        100% {
-            -webkit-transform: rotate(360deg);
-        }
-    }
-
-    @@keyframes spin {
-        0% {
-            transform: rotate(0deg);
-        }
-
-        100% {
-            transform: rotate(360deg);
-        }
-    }
-
-    /* Add animation to "page content" */
-    .animate-bottom {
-        position: relative;
-        -webkit-animation-name: animatebottom;
-        -webkit-animation-duration: 1s;
-        animation-name: animatebottom;
-        animation-duration: 1s
-    }
-
-    @@-webkit-keyframes animatebottom {
-        from {
-            bottom: -100px;
-            opacity: 0
-        }
-
-        to {
-            bottom: 0px;
-            opacity: 1
-        }
-    }
-
-    @@keyframes animatebottom {
-        from {
-            bottom: -100px;
-            opacity: 0
-        }
-
-        to {
-            bottom: 0;
-            opacity: 1
-        }
-    }
-</style>
-<!--<div class="row">
-       <div class="col">
-           <div class="form-group">
-               <label for="inputAddress">Start date</label>
-               <input class="form-control" type="date" id="example-date-input">
-           </div>
-       </div>
-       <div class="col">
-           <div class="form-group">
-               <label for="inputAddress2">End date</label>
-               <input class="form-control" type="date" id="example-date-input">
-           </div>
-       </div>
-   </div>-->
-<!--
-<div class="row">
-    <div class="form-group col-md-6">
-        <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="process" id="processRadio" onclick="handleProcesses(this);" value="process" checked><label class="form-check-label" for="processRadio">Processes</label>
-        </div>
-            <select id="inputProcesses" name="processes" class="custom-select" size="6" multiple>
-            </select>
-        </div>
-        <div class="form-group col-md-6">
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="process" id="mouldsRadio" onclick="handleProcesses(this);" value="mould"><label class="form-check-label" for="mouldsRadio">Moulds</label>
-            </div>
-                <select id="inputMoulds" name="moulds" class="custom-select" size="6" multiple>
-                </select>
-            </div>
-        </div>-->
 <div id="loader" style="display: none;"></div>
 <div id="page">
     <div class="row">
@@ -130,6 +30,7 @@
                         <br />
                         <label class="form-check-label" for="processRadio">Processos</label>
                         <select id="inputProcesses" name="processes" class="form-control">
+                            <option value="" disabled selected>Escolha um processo</option>
                         </select>
                     </div>
                     <div class="col-sm-6">
@@ -173,11 +74,24 @@
                             </select>
                         </div>
                     </div>
+                    <div class="form-group col-md-6">
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" name="filter" id="estimatedEnd" checked><label class="form-check-label" for="estimatedEnd">Tempo estimado</label>
+                        </div>
+                    </div>
+                    <br />
                     <button class="btn btn-block btn-dark" id="btnCompareGraph" type="button">Gerar grafo</button>
+                    </div>
                 </div>
-            </div>
             <div id="divSelectFilter">
-                <button id="refreshButton" class="btn btn-primary"><i class="fas fa-redo"></i> Escolher outro caso</button>
+                <div class="row">
+                    <div class="col-md-8">
+                        <button id="refreshButton" class="btn btn-primary"> Escolher outro caso</button>
+                    </div>
+                    <div class="col-md-2">
+                        <button id="centerButton" class="btn pull-right"><i class="fas fa-project-diagram"></i>Centrar Grafo</button>
+                    </div>
+                </div>
                 <br />
                 <br />
                 <div id="cardInfo" class="card">
@@ -218,7 +132,7 @@
             </div>
         </div>
         <div class="col-sm-7" style="height: 85vh;">
-            <div id="cyCompare"></div>
+            <div id="cy"></div>
         </div>
     </div>
 </div>
@@ -239,22 +153,20 @@
     var inputStartFilter = document.getElementById("inputStartFilter");
     var inputEndFilter = document.getElementById("inputEndFilter");
 
-    var data = {
-        dataProcesses: JSON.parse(@Html.Raw(Json.Serialize(ViewData["processes"]))),
-        dataMoulds: JSON.parse(@Html.Raw(Json.Serialize(ViewData["moulds"]))),
-    }
+    var processes = JSON.parse(@Html.Raw(Json.Serialize(ViewData["processes"])));
 
     var process = {
         idProcess: null,
         nameProcess: null,
         compare: 'data',
         miner: 'alpha-miner',
-        startDate: null,
-        endDate: null,
-        moulds: [],
+        estimatedEnd: '',
+        mouldsSelected: [],
         threshold: null,
         baseData: {},
         caseData: {},
+        startDate: null,
+        endDate: null,
         activities: [],
         moulds: [],
         resources: [],
@@ -273,20 +185,12 @@
     divCompareProcess.style.display = "none";
     divSelectFilter.style.display = "none";
 
-    if (data.dataProcesses.length != 0) {
-        for (var i = 0; i < data.dataProcesses.length; i++) {
+    if (processes.length != 0) {
+        for (var i = 0; i < processes.length; i++) {
             var option = document.createElement("option");
-            option.setAttribute("value", data.dataProcesses[i].id);
-            option.text = data.dataProcesses[i].name;
+            option.setAttribute("value", processes[i].id);
+            option.text = processes[i].name;
             inputProcesses.appendChild(option);
-        }
-    }
-    if (data.dataMoulds.length != 0) {
-        for (var i = 0; i < data.dataMoulds.length; i++) {
-            var option = document.createElement("option");
-            option.setAttribute("value", data.dataMoulds[i].code);
-            option.text = data.dataMoulds[i].code;
-            inputMoulds.appendChild(option);
         }
     }
 
@@ -330,22 +234,21 @@
         $.ajax({
             type: "POST",
             data: { process: process.idProcess },
-            url: "/Graph/GetActivities",
+            url: "/Graph/GetInformation",
             dataType: 'json',
             success: function (response) {
                 if (response.success) {
                     $('#processSelected').empty();
                     $('#processSelected').text('Processo Referência: ' + process.nameProcess);
-                    $('#listActivities').empty();
-                    console.log(response);
-                    var activities = JSON.parse(response.request.activities);
-                    process.activities = activities;
-                    process.resources = JSON.parse(response.request.resources);
-                    for (var i = 0; i < activities.length; i++) {
-                        var li = document.createElement("li");
-                        li.appendChild(document.createTextNode(activities[i].name));
-                        listActivities.appendChild(li);
-                    }
+                    
+
+                    var information = JSON.parse(response.request);
+                    process.activities = information.activities;
+                    process.moulds = information.moulds;
+                    process.resources = information.resources;
+
+                    insertCases(process.activities, process.moulds);
+
                     for (var i = 0; i < divClearActivities.length; i++) {
                         divClearActivities[i].style.display = 'none';
                     }
@@ -353,6 +256,7 @@
                     divCompareProcess.style.display = "block";
                 } else {
                     process.idProcess = '';
+                    
                     $('#processSelected').empty();
                     $('#processSelected').text('Escolha o processo de referência');
                     divActivities.style.display = "none";
@@ -385,14 +289,20 @@
                 process.startDate = convertDate(inputStartDate.value);
                 process.endDate = convertDate(inputEndDate.value);
             } else {
-                var moulds = Array.from(inputMoulds.selectedOptions).map(option => option.value);
-                if (moulds.length <= 0) {
+                var mouldsSelected = Array.from(inputMoulds.selectedOptions).map(option => option.value);
+                if (mouldsSelected.length <= 0) {
                     alert("Não há nenhum molde selecionado");
                     return;
                 }
-                process.moulds = moulds;
+                process.mouldsSelected = mouldsSelected;
                 //window.location = 'Url.Action("ConformanceGraph", "Graph")?process=' + process + '&miner=' + miner + '&startDate=&endDate=&moulds=' + JSON.stringify(moulds) + '&threshold=' + thresholdInput.value;
             }
+            if ($('#estimatedEnd').is(':checked')) {
+                process.estimatedEnd = "true";
+            } else {
+                process.estimatedEnd = "false";
+            }
+
             process.threshold = thresholdInput.value;
             loading(divPage, divLoader);
             $.ajax({
@@ -401,10 +311,11 @@
                     process: process.idProcess,
                     typeCompare: process.compare,
                     miner: process.miner,
-                    moulds: JSON.stringify(process.moulds),
+                    moulds: JSON.stringify(process.mouldsSelected),
                     startDate: process.startDate,
                     endDate: process.endDate,
-                    threshold: process.threshold
+                    threshold: process.threshold,
+                    estimatedEnd: process.estimatedEnd
                 },
                 url: "/Graph/ConformanceGraph",
                 dataType: 'json',
@@ -412,8 +323,9 @@
                     if (response.success) {
                         process.baseData = response.request.baseData;
                         process.caseData = response.request.caseData;
-                        process.moulds = process.baseData.moulds;
-                        insertFilters(process.moulds, process.activities, process.resources)
+
+
+                        insertFilters(process.moulds, process.activities, process.resources);
                         changeCards();
                         loading(divSelectCase, divSelectFilter);
                         loading(divLoader, divPage);
@@ -452,37 +364,37 @@
                 return;
         }else {
             if (inputStartFilter.value || inputEndFilter.value) {
-                if (new Date(inputStartFilter.value) < new Date(inputStartDate.value) || new Date(inputEndFilter.value) > new Date(inputEndDate.value) || new Date(inputStartFilter.value) > new Date(inputEndFilter.value)) {
+                if (new Date(inputStartFilter.value) > new Date(inputEndFilter.value)) {
                     alert('As datas não estão inseridas corretamente ');
                     return;
                 }
+                var startDate = convertDate(inputStartFilter.value);
+                var endDate = convertDate(inputEndFilter.value);
+            }
+            loading(divPage, divLoader);
+            var moulds = Array.from(mouldsFilter.selectedOptions).map(option => option.value);
+            if (moulds.length > 0) {
+                moulds = JSON.stringify(moulds);
+            }
+            var activities = Array.from(activitiesFilter.selectedOptions).map(option => option.text);
+            if (activities.length > 0) {
+                activities = JSON.stringify(activities);
+            }
+            var resources = Array.from(resourcesFilter.selectedOptions).map(option => option.value);
+            if (resources.length > 0) {
+                resources = JSON.stringify(resources);
             }
         }
-        loading(divPage, divLoader);
-        process.filter.startDate = convertDate(inputStartFilter.value);
-        process.filter.endDate = convertDate(inputEndFilter.value);
-        var moulds = Array.from(mouldsFilter.selectedOptions).map(option => option.value);
-        if (moulds.length > 0) {
-            process.filter.moulds = JSON.stringify(moulds);
-        }
-        var activities = Array.from(activitiesFilter.selectedOptions).map(option => option.text);
-        if (activities.length > 0) {
-            process.filter.activities = JSON.stringify(activities);
-        }
-        var resources = Array.from(resourcesFilter.selectedOptions).map(option => option.value);
-        if (resources.length > 0) {
-            process.filter.resources = JSON.stringify(resources);
-        }
-
         $.ajax({
             type: "POST",
             data: {
                 process: process.idProcess,
-                moulds: process.filter.moulds,
-                resources: process.filter.resources,
-                activities: process.filter.activities,
-                startDate: process.filter.startDate,
-                endDate: process.filter.endDate,
+                moulds: moulds,
+                resources: resources,
+                activities: activities,
+                startDate: startDate,
+                endDate: endDate,
+                estimatedEnd: process.estimatedEnd,
                 nodes: JSON.stringify(process.baseData.nodes)
             },
             url: "/Graph/GetFilter",
@@ -490,6 +402,7 @@
             success: function (response) {
                 if (response.success) {
                     process.caseData = response.request;
+                    console.log(process.caseData);
                     loading(divLoader, divPage);
 
                     renderCytoscapeElementConformance();
@@ -524,8 +437,8 @@
         if (activities != null || activities.length != 0) {
             for (var i = 0; i < activities.length; i++) {
                 var option = document.createElement("option");
-                option.setAttribute("value", activities[i].id);
-                option.text = activities[i].name;
+                option.setAttribute("value", activities[i]);
+                option.text = activities[i];
                 activitiesFilter.appendChild(option);
             }
             $('#activitiesFilter').selectpicker('refresh');
@@ -534,16 +447,33 @@
         if (resources != null || resources.length != 0) {
             for (var i = 0; i < resources.length; i++) {
                 var option = document.createElement("option");
-                option.setAttribute("value", resources[i].username);
-                option.text = resources[i].username;
+                option.setAttribute("value", resources[i]);
+                option.text = resources[i];
                 resourcesFilter.appendChild(option);
             }
             $('#resourcesFilter').selectpicker('refresh');
         }
+    }
 
-        if (process.compare == "data") {
-            inputStartFilter.value = inputStartDate.value;
-            inputEndFilter.value = inputEndDate.value;
+    function insertCases(activities, moulds) {
+        $('#listActivities').empty();
+        $('#inputMoulds').empty();
+
+        if (activities) {
+            for (var i = 0; i < activities.length; i++) {
+                var li = document.createElement("li");
+                li.appendChild(document.createTextNode(activities[i]));
+                listActivities.appendChild(li);
+            }
+        }
+        
+        if (moulds) {
+            for (var i = 0; i < moulds.length; i++) {
+                var option = document.createElement("option");
+                option.setAttribute("value", moulds[i]);
+                option.text = moulds[i];
+                inputMoulds.appendChild(option);
+            }
         }
     }
 
@@ -557,7 +487,7 @@
         if (process.compare == 'data') {
             $("#infoCase").html("Casos de " + inputStartDate.value + " a " + inputEndDate.value);
         } else {
-            $("#infoCase").html("Casos selecionados: " + process.moulds.toString());
+            $("#infoCase").html("Casos selecionados: " + process.mouldsSelected.toString());
         }
 
     }
@@ -576,7 +506,7 @@
                 wheelSensitivity: 0.5,
                 minZoom: 0.1,
                 maxZoom: 1,
-                container: document.getElementById('cyCompare'),
+                container: document.getElementById('cy'),
                 style: [
                     //Nodes styles
                     {
@@ -912,7 +842,7 @@
             } else {
                 realLabel = " / Real: " + maxDuration.seconds + "S";
             }
-
+            
             //se typevalue for 0 (não faz parte do caso em análise) formata texto de forma diferente
             if (typeValue === 0) {
                 cy.add({
@@ -1077,7 +1007,6 @@
                     type: 20
                 },
             });
-            console.log(process.caseData.endEvents[i]);
             cy.add({
                 data: {
                     id: 'edge_end-' + i,

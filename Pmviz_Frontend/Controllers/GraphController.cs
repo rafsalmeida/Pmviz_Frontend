@@ -25,37 +25,25 @@ namespace Pmviz_Frontend.Controllers
                     {
                         return RedirectToAction("Index", "Home", new { error = "1" });
                     }
-                    else
-                    {
-                        using (response = await httpClient.GetAsync("http://localhost:8080/api/moulds"))
-                        {
-                            ViewData["moulds"] = response.Content.ReadAsStringAsync().Result;
-                            status = response.IsSuccessStatusCode;
-                            if (status == false)
-                            {
-                                return RedirectToAction("Index", "Home", new { error = "1" });
-                            }
-                            else
-                            {
-                                return View();
-                            }
-                        }
-                    }
+                    return View();
                 }
             }
         }
 
-        public async Task<IActionResult> ConformanceGraph(string process, string typeCompare, string miner, string moulds, string startDate, string endDate, string threshold)
+        public async Task<IActionResult> ConformanceGraph(string process, string typeCompare, string miner, string moulds, string startDate, string endDate, string threshold, string estimatedEnd)
         {
             string json, url;
             if(typeCompare == "moulds")
             {
-                json = "{ \"moulds\":" + moulds.ToString() + "}";
+                json = "{ \"moulds\":" + moulds.ToString();
             }
             else
             {
-                json = "{ \"startDate\":\"" + startDate + "\", \"endDate\":\"" + endDate + "\"}";
+                json = "{ \"startDate\":\"" + startDate + "\", \"endDate\":\"" + endDate + "\"";
             }
+
+            json += ", \"isEstimatedEnd\":" + estimatedEnd + "}";
+
             if (miner == "alpha-miner")
             {
                 url = "http://localhost:8080/api/conformance/performance/" + miner + "/" + process;
@@ -79,7 +67,6 @@ namespace Pmviz_Frontend.Controllers
                     else
                     {
                         var obj = JObject.Parse(response.Content.ReadAsStringAsync().Result);
-
                         json = "{ \"nodes\":" + JsonConvert.SerializeObject(obj["nodes"]) + "}";
 
                         c = new StringContent(json, Encoding.UTF8, "application/json");
@@ -99,9 +86,9 @@ namespace Pmviz_Frontend.Controllers
             }
         }
 
-        public async Task<IActionResult> GetFilter(string process, string moulds, string resources, string activities, string startDate, string endDate, string nodes)
+        public async Task<IActionResult> GetFilter(string process, string moulds, string resources, string activities, string startDate, string endDate, string estimatedEnd, string nodes)
         {
-            string json = "{ \"nodes\":" + nodes.ToString();
+            string json = "{ \"nodes\":" + nodes.ToString() + ", \"isEstimatedEnd\":" + estimatedEnd;
             if (moulds != null)
             {
                 json += ", \"moulds\":" + moulds.ToString();
@@ -156,12 +143,12 @@ namespace Pmviz_Frontend.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> GetActivities(int process)
+        public async Task<IActionResult> GetInformation(int process)
         {
             HttpResponseMessage response;
             using (var httpClient = new HttpClient())
             {
-                using (response = await httpClient.GetAsync("http://localhost:8080/api/processes/" + process + "/activities"))
+                using (response = await httpClient.GetAsync("http://localhost:8080/api/conformance/" + process + "/filterInformation"))
                 {
                     var status = response.IsSuccessStatusCode;
                     if (status == false)
@@ -170,9 +157,7 @@ namespace Pmviz_Frontend.Controllers
                     }
                     else
                     {
-                        var obj = response.Content.ReadAsStringAsync().Result;
-                        response = await httpClient.GetAsync("http://localhost:8080/api/processes/" + process + "/resources");
-                        return Json(new { success = true, request = new { activities = obj, resources = response.Content.ReadAsStringAsync().Result } });
+                        return Json(new { success = true, request = response.Content.ReadAsStringAsync().Result });
                     }
                 }
             }
@@ -194,6 +179,23 @@ namespace Pmviz_Frontend.Controllers
                     {
                         return Json(new { success = true, request = response.Content.ReadAsStringAsync() });
                     }
+                }
+            }
+        }
+
+        public async Task<IActionResult> GetWorkFlow(string process, string miner)
+        {
+            HttpResponseMessage response;
+            using (var httpClient = new HttpClient())
+            {
+                using (response = await httpClient.GetAsync("http://localhost:8080/api/workflow-network/" + miner + "/processes/" + process))
+                {
+                    var status = response.IsSuccessStatusCode;
+                    if (status == false)
+                    {
+                        return Json(new { success = false, request = response.Content.ReadAsStringAsync() });
+                    }
+                    return Json(new { success = true, request = JObject.Parse(response.Content.ReadAsStringAsync().Result) });
                 }
             }
         }
