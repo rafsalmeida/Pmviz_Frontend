@@ -82,12 +82,6 @@
                             <a href="/statistics"><i class="fas fa-chart-bar"></i> My Stats</a>
                         </li>
                     }
-                    @if (!details.Contains("resourcesStats"))
-                    { 
-                        <li id="resourcesStats">
-                            <a href="/resources"><i class="fas fa-chart-line"></i> Resources Stats</a>
-                        </li>
-                    }
                     <!--
     <li>
         <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Pages</a>
@@ -146,31 +140,35 @@
     </body>
 </html>
 <style>
-  
-@@import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
-html,
-body {
-    height: 80%;
-}
-.wrapper {
-    display: flex;
-    align-items: stretch;
-}
 
-#sidebar.active {
-    margin-left: -250px;
-}
-#sidebar {
-    background: #7386D5;
-    color: #fff;
-    transition: all 0.3s;
-    min-width: 13vw;
-    max-width: 13vw;
-    min-height: 100vh;
-}
-a[data-toggle="collapse"] {
-    position: relative;
-}
+    @@import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
+
+    html,
+    body {
+        height: 80%;
+    }
+
+    .wrapper {
+        display: flex;
+        align-items: stretch;
+    }
+
+    #sidebar.active {
+        margin-left: -250px;
+    }
+
+    #sidebar {
+        background: #7386D5;
+        color: #fff;
+        transition: all 0.3s;
+        min-width: 13vw;
+        max-width: 13vw;
+        min-height: 100vh;
+    }
+
+    a[data-toggle="collapse"] {
+        position: relative;
+    }
 
     .dropdown-toggle::after {
         display: block;
@@ -186,7 +184,8 @@ a[data-toggle="collapse"] {
         text-align: center;
         vertical-align: middle;
     }
-    body{
+
+    body {
         font-family: 'Poppins', sans-serif;
         background: #fafafa;
     }
@@ -221,11 +220,13 @@ a[data-toggle="collapse"] {
         color: #fff;
         background: #6d7fcc;
     }
+
     ul ul a {
         font-size: 0.9em !important;
         padding-left: 30px !important;
         background: #6d7fcc;
     }
+
     #navigation{
         width:100vw;
     }
@@ -233,10 +234,12 @@ a[data-toggle="collapse"] {
         width:87vw;
         height:8vh;
     }
+
     #logout {
         position: absolute;
         right: 1vw;
     }
+
     #sidebar ul p {
         color: #fff;
         padding: 10px;

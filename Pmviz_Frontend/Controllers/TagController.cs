@@ -47,10 +47,11 @@ namespace Pmviz_Frontend.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Indexx(string mouldSelected)
+        public async Task<IActionResult> Mould(string mouldSelected)
         {
             using (var httpClient = new HttpClient())
             {
+                ViewData["mouldSelected"] = mouldSelected;
                 // GET ALL MOULDS
                 using (var response = await httpClient.GetAsync("http://localhost:8080/api/moulds"))
                 {

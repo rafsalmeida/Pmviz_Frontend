@@ -13,129 +13,144 @@
 }
 
 <h4 style="text-align:center">My Statistics</h4>
+
+
+<div class="container" style="text-align:center">
+    @if (activities != null)
+    {
+        <form action='@Url.Action("Process", "Statistics", new { id = processId })' method="post" id="ticketsForm" kendo-validator="true">
+            <label for="role" class="required">Choose an activity to see your statistics:</label>
+            <br />
+            <select name="activity" class="inputfield" required>
+
+                @foreach (var act in activities)
+                {
+                    if (activityChosen == act.Id.ToString())
+                    {
+                        <option value="@act.Id" selected>@act.Id - @act.Name</option>
+                    }
+                    else
+                    {
+                        <option value="@act.Id">@act.Id - @act.Name</option>
+                    }
+                }
+
+
+            </select>
+            <button class="k-button k-primary" type="submit">Submit</button>
+        </form>
+    }
+</div>
+<br />
 @if (ViewBag.ErrorActivity != null)
 {
     <div class="alert alert-danger" role="alert">
         @ViewBag.ErrorActivity
     </div>
+    <div class="container" style="text-align:center">
+        <a href='@Url.Action("Index","Statistics")' class="btn btn-danger">Go Back</a>
+    </div>
+    <br />
 }
 
-<div class="container" style="text-align:center">
-    <form action='@Url.Action("Process","Statistics", new { id = processId})' method="post" id="ticketsForm" kendo-validator="true">
-        <label for="role" class="required">Choose an activity to see your statistics:</label>
-        <br />
-        <select name="activity" class="inputfield" required>
-            @if (activities != null)
-            {
-                @foreach (var act in activities)
-                {
-                    <option value="@act.Id">@act.Id - @act.Name</option>
-                }
-
-            }
-        </select>
-        <button class="k-button k-primary" type="submit">Submit</button>
-    </form>
-</div>
-<br />
 @if (meanMinutesUser != null || meanMinutesAll != null)
 {
-<div class="row">
-    <div class="col">
-        <div class="container">
-            <div class="k-card" >
-                <div class="k-card-header">
-                    <h6 class="k-card-subtitle">Information</h6>
-                </div>
-                <div class="k-card-body">
-                    <h6>
-                        General mean time: @meanMinutesAll minutes
-                    </h6>
-                    <h6>
-                        User mean time: @meanMinutesUser minutes
-                    </h6>
-                    <h6>
-                        Activity Chosen: @activityChosen
-                    </h6>
+    <div class="row">
+        <div class="col">
+            <div class="container">
+                <div class="k-card">
+                    <div class="k-card-header">
+                        <h6 class="k-card-subtitle">Information</h6>
+                    </div>
+                    <div class="k-card-body">
+                        <h6>
+                            General mean time: @meanMinutesAll minutes
+                        </h6>
+                        <h6>
+                            User mean time: @meanMinutesUser minutes
+                        </h6>
+                        <h6>
+                            Activity Chosen: @activityChosen
+                        </h6>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="col">
-        <div class="container">
-            <div class="k-card" >
-                <div class="k-card-header">
-                    <h6 class="k-card-subtitle">Parts</h6>
-                </div>
-                <div class="k-card-body">
-                    @if (parts == null)
-                    {
-                        <h6>No parts were involved.</h6>
-                    }
-                    else
-                    {
-                        foreach (var p in parts)
+        <div class="col">
+            <div class="container">
+                <div class="k-card">
+                    <div class="k-card-header">
+                        <h6 class="k-card-subtitle">Parts</h6>
+                    </div>
+                    <div class="k-card-body">
+                        @if (parts == null)
                         {
-                            <h6>@p</h6>
+                            <h6>No parts were involved.</h6>
                         }
-                    }
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col">
-        <div class="container">
-            <div class="k-card">
-                <div class="k-card-header">
-                    <h6 class="k-card-subtitle">Moulds</h6>
-                </div>
-                <div class="k-card-body">
-                    @if (moulds == null)
-                    {
-                        <h6>No moulds were involved.</h6>
-                    }
-                    else
-                    {
-                        foreach (var m in moulds)
+                        else
                         {
-                            <h6>@m</h6>
+                            foreach (var p in parts)
+                            {
+                                <h6>@p</h6>
+                            }
                         }
-                    }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="container">
+                <div class="k-card">
+                    <div class="k-card-header">
+                        <h6 class="k-card-subtitle">Moulds</h6>
+                    </div>
+                    <div class="k-card-body">
+                        @if (moulds == null)
+                        {
+                            <h6>No moulds were involved.</h6>
+                        }
+                        else
+                        {
+                            foreach (var m in moulds)
+                            {
+                                <h6>@m</h6>
+                            }
+                        }
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
 
-<div class="demo-section k-content wide">
-    @(Html.Kendo().Chart()
-        .Name("chart")
-        .Title("Mean time in minutes")
-        .Legend(legend => legend
-            .Position(ChartLegendPosition.Top)
-        )
-        .ChartArea(chartArea => chartArea
-            .Background("transparent")
-        )
-        .Series(series =>
-        {
-            series.Column(new double[] { Double.Parse(meanMinutesUser.ToString()) }).Name("User Mean");
-            series.Column(new double[] { Double.Parse(meanMinutesAll.ToString()) }).Name("General Mean");
-        })
-        .CategoryAxis(axis => axis
-            .Name("series-axis")
-            .Line(line => line.Visible(false))
-        )
-        .Tooltip(tooltip => tooltip
-            .Visible(true)
-            .Format("{0}%")
-            .Template("#= series.name #: #= value # minutes")
-        )
+    <div class="demo-section k-content wide">
+        @(Html.Kendo().Chart()
+            .Name("chart")
+            .Title("Mean time in minutes")
+            .Legend(legend => legend
+                .Position(ChartLegendPosition.Top)
+            )
+            .ChartArea(chartArea => chartArea
+                .Background("transparent")
+            )
+            .Series(series =>
+            {
+                series.Column(new double[] { Double.Parse(meanMinutesUser.ToString()) }).Name("User Mean");
+                series.Column(new double[] { Double.Parse(meanMinutesAll.ToString()) }).Name("General Mean");
+            })
+            .CategoryAxis(axis => axis
+                .Name("series-axis")
+                .Line(line => line.Visible(false))
+            )
+            .Tooltip(tooltip => tooltip
+                .Visible(true)
+                .Format("{0}%")
+                .Template("#= series.name #: #= value # minutes")
+            )
 
 
-    )
-</div>
+        )
+    </div>
 
 }
 
