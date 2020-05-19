@@ -102,61 +102,21 @@ namespace Pmviz_Frontend.Controllers
 
         public async Task<IActionResult> Graph()
         {
+            HttpResponseMessage response;
             using (var httpClient = new HttpClient())
             {
-                using (var response = await httpClient.GetAsync("http://localhost:8080/api/workflow-network/alpha-miner/processes/28"))
+                using (response = await httpClient.GetAsync("http://localhost:8080/api/processes"))
                 {
-                    ViewData["alpha"] = response.Content.ReadAsStringAsync().Result;
-                    var status = response.IsSuccessStatusCode;
-                    if (status == false) {
-                        return RedirectToAction("Index", "Home", new { error = "1" });
-
-                    }
-                }
-            }
-            using (var httpClient = new HttpClient())
-            {
-                using (var response = await httpClient.GetAsync("http://localhost:8080/api/workflow-network/heuristic-miner/processes/28"))
-                {
-                    ViewData["heuristic"] = response.Content.ReadAsStringAsync().Result;
+                    ViewData["processes"] = response.Content.ReadAsStringAsync().Result;
                     var status = response.IsSuccessStatusCode;
                     if (status == false)
                     {
                         return RedirectToAction("Index", "Home", new { error = "1" });
                     }
-                    else
-                    {
-                        return View();
-                    }
+                    return View();
                 }
             }
-            using (var httpClient = new HttpClient())
-            {
-                using (var response = await httpClient.GetAsync("http://localhost:8080/api/conformance/performance/alpha-miner/23/with/14"))
-                {
-                    ViewData["conformance"] = response.Content.ReadAsStringAsync().Result;
-                    var status = response.IsSuccessStatusCode;
-                    if (status == false)
-                    {
-                        return RedirectToAction("Index", "Home", new { error = "1" });
-                    }
-                    else
-                    {
-                        var payload = "{ \"startDate\": \"01-01-2020\", \"endDate\": \"31-12-2020\", \"activities\": [ ], \"resources\": [ ], \"nodes\": [ \"Tagging\", \"Fresagem\", \"Erosão\" ]}";
-
-                        HttpContent c = new StringContent(payload, Encoding.UTF8, "application/json");
-
-
-                        var asd = await httpClient.PostAsync("http://localhost:8080/api/conformance/process/23", c);
-                        ViewData["compare"] = await asd.Content.ReadAsStringAsync();
-
-                        return View();
-                    }
-                }
-            }
-            }
-
-
+        }
 
         public async Task<IActionResult> Api()
         {
@@ -176,15 +136,17 @@ namespace Pmviz_Frontend.Controllers
             }
             return Content(apiResponse);*/
 
-            var httpClient = new HttpClient();
-            var payload = "{ \"startDate\": \"01-01-2020\", \"endDate\": \"31-12-2020\", \"activities\": [ ], \"resources\": [ ], \"nodes\": [ \"Tagging\", \"Fresagem\", \"Erosão\" ]}";
-            HttpContent c = new StringContent(payload, Encoding.UTF8, "application/json");
+            HttpResponseMessage response;
+            using (var httpClient = new HttpClient())
+            {
+                //using (response = await httpClient.GetAsync("http://localhost:8080/api/conformance/" + process + "/filterInformation"))
+                using (response = await httpClient.GetAsync("http://localhost:8080/api/conformance/25/filterInformation"))
+                {
+                    return Content(await response.Content.ReadAsStringAsync());
+                }
+            }
 
-
-            var response = await httpClient.PostAsync("http://localhost:8080/api/conformance/process/23", c);
-            string apiResponse = await response.Content.ReadAsStringAsync();
-
-            return Content(apiResponse);
+            
         }
     }
 }

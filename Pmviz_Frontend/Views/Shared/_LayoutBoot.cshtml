@@ -1,4 +1,4 @@
-@using Microsoft.AspNetCore.Http;
+﻿@using Microsoft.AspNetCore.Http;
 @{ 
     List<string> details = Context.Session.GetString("listDetails").Split(new char[] { ',' }).ToList();
 }
@@ -180,13 +180,13 @@ a[data-toggle="collapse"] {
         transform: translateY(-50%);
     }
 
-#sidebar .sidebar-header {
-    height:8vh;
-    background: #6d7fcc;
-    text-align:center;
-    vertical-align: middle;
-
-    body {
+    #sidebar .sidebar-header {
+        height: 8vh;
+        background: #6d7fcc;
+        text-align: center;
+        vertical-align: middle;
+    }
+    body{
         font-family: 'Poppins', sans-serif;
         background: #fafafa;
     }
@@ -217,26 +217,26 @@ a[data-toggle="collapse"] {
         border-bottom: 1px solid #47748b;
     }
 
-#sidebar ul li.active > a, a[aria-expanded="true"] {
-    color: #fff;
-    background: #6d7fcc;
-}
-ul ul a {
-    font-size: 0.9em !important;
-    padding-left: 30px !important;
-    background: #6d7fcc;
-}
-#navigation{
-    width:100vw;
-}
-#navigation.active{
-    width:87vw;
-    height:8vh;
-}
-#logout{
-    position:absolute;
-    right:1vw;
-  
+    #sidebar ul li.active > a, a[aria-expanded="true"] {
+        color: #fff;
+        background: #6d7fcc;
+    }
+    ul ul a {
+        font-size: 0.9em !important;
+        padding-left: 30px !important;
+        background: #6d7fcc;
+    }
+    #navigation{
+        width:100vw;
+    }
+    #navigation.active{
+        width:87vw;
+        height:8vh;
+    }
+    #logout {
+        position: absolute;
+        right: 1vw;
+    }
     #sidebar ul p {
         color: #fff;
         padding: 10px;
@@ -248,10 +248,10 @@ ul ul a {
         display: block;
     }
 
-        #sidebar ul li a:hover {
-            color: #7386D5;
-            background: #fff;
-        }
+    #sidebar ul li a:hover {
+        color: #7386D5;
+        background: #fff;
+    }
 
     #title {
         padding-top: 20px;
@@ -266,15 +266,14 @@ ul ul a {
                 margin-left: 0;
             }
     }
-}
 
-@@media only screen and (min-width : 1200px) {
+    @@media only screen and (min-width : 1200px) {
 
-    .container-fluid {
-        max-width: 80.5vw;
+        .container-fluid {
+            max-width: 80.5vw;
+        }
+
     }
-
-}
 </style>
 <script>
 

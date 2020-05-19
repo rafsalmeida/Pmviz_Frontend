@@ -74,7 +74,7 @@
 
 
 /******** GRAFOS ********/
-#cyCompare {
+#cy {
     position: absolute;
     margin-top: 2%;
     margin-bottom: 2%;
@@ -101,7 +101,7 @@
         margin-left: 2%;
     }
 
-    #cyCompare {
+    #cy {
         width: 100%;
     }
 
@@ -119,7 +119,7 @@
         width: 97%;
     }
 
-    #cyCompare {
+    #cy {
         width: 100%;
     }
 
