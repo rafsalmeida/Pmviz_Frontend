@@ -100,7 +100,33 @@ else
             )
         </div>
         <div id="medianChart">
-            @(Html.Kendo().Chart(median)
+
+            @if (type == "effort")
+            {
+                @(Html.Kendo().Chart(median)
+                    .Name("chart_median")
+                    .Legend(l => l.Visible(false))
+                    .Series(series =>
+                    {
+                        series.Column(a => a.MedianInMinutes).Name("MedianInMinutes").CategoryField("Activity");
+                    })
+                    .CategoryAxis(axis => axis
+                        .Labels(labels => labels.Rotation(-60))
+                        .MajorGridLines(lines => lines.Visible(false))
+                    )
+                    .ValueAxis(axis => axis
+                        .Labels(l => l.Visible(false))
+                        .Title("Median Effort")
+                    )
+                    .Tooltip(tooltip => tooltip
+                        .Visible(true)
+                        .Template("#= dataItem.MedianActivityFormatted #")
+                    )
+            )
+            }
+            else
+            {
+                @(Html.Kendo().Chart(median)
                     .Name("chart_median")
                     .Legend(l => l.Visible(false))
                     .Series(series =>
@@ -120,9 +146,35 @@ else
                         .Template("#= dataItem.MedianActivityFormatted #")
                     )
             )
+            }
         </div>
         <div id="meanChart">
-            @(Html.Kendo().Chart(mean)
+            @if (type == "effort")
+            {
+                @(Html.Kendo().Chart(mean)
+                    .Name("chart_mean")
+                    .Legend(l => l.Visible(false))
+                    .Series(series =>
+                    {
+                        series.Column(a => a.MeanInMinutes).Name("MeanInMinutes").CategoryField("Activity");
+                    })
+                    .CategoryAxis(axis => axis
+                        .Labels(labels => labels.Rotation(-60))
+                        .MajorGridLines(lines => lines.Visible(false))
+                    )
+                    .ValueAxis(axis => axis
+                        .Labels(l => l.Visible(false))
+                        .Title("Mean Effort")
+                    )
+                    .Tooltip(tooltip => tooltip
+                        .Visible(true)
+                        .Template("#= dataItem.MeanActivityFormatted #")
+                    )
+            )
+            }
+            else
+            {
+                @(Html.Kendo().Chart(mean)
                     .Name("chart_mean")
                     .Legend(l => l.Visible(false))
                     .Series(series =>
@@ -142,6 +194,8 @@ else
                         .Template("#= dataItem.MeanActivityFormatted #")
                     )
             )
+            }
+
         </div>
 
         <div class="container k-content" style="height:auto">
