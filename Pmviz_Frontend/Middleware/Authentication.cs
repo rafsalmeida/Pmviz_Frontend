@@ -71,7 +71,7 @@ namespace Pmviz_Frontend.Middleware
             for (int i = 0; i < paths.Count; i++)
             {
                 System.Diagnostics.Debug.WriteLine(paths[i].InnerText);
-                if((httpContext.Request.Path == paths[i].InnerText || httpContext.Request.Path.StartsWithSegments(paths[i].InnerText) && 
+                if((httpContext.Request.Path == paths[i].InnerText.Trim() || httpContext.Request.Path.StartsWithSegments(paths[i].InnerText.Trim()) && 
                     paths[i].InnerText != ""))
                 {
                     isAuthorized = false;

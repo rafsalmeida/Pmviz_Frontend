@@ -58,6 +58,7 @@ namespace Pmviz_Frontend.Controllers
                     {
                         // get the list of activities
                         var activityList = JsonConvert.DeserializeObject<List<Activity>>(apiResponse);
+                        activityList.RemoveAt(6);
                         ViewData["activities"] = activityList;
                         ViewData["processId"] = processId;
                         return View("Process", "Statistics");
@@ -95,6 +96,7 @@ namespace Pmviz_Frontend.Controllers
                     {
                         // get the list of logs
                         var activityList = JsonConvert.DeserializeObject<List<Activity>>(apiResponse);
+                        activityList.RemoveAt(6);
                         ViewData["activities"] = activityList;
                         ViewData["processId"] = processId;
                     }

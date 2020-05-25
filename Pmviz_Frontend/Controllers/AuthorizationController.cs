@@ -24,6 +24,7 @@ namespace Pmviz_Frontend.Controllers
                     if (status == true)
                     {
                         var roles = JsonConvert.DeserializeObject<List<String>>(apiResponse);
+                        roles.Remove("Administrator");
                         ViewData["roles"] = roles;
                         return View();
                     }
@@ -40,6 +41,45 @@ namespace Pmviz_Frontend.Controllers
         public IActionResult Save(string roleChosen, List<string> allowed, List<string> notAllowed)
         {
             var newRoutesNotAllowed = GetRouteFromNames(notAllowed);
+
+            var hasLog = false;
+            var hasActivity = false;
+            var hasresource = false;
+
+            foreach (var route in newRoutesNotAllowed)
+            {
+                if(route.Trim() == "/log")
+                {
+                    hasLog = true;
+                }
+
+                if(route.Trim() == "/log/resource")
+                {
+                    hasresource = true;
+
+                }
+
+                if (route.Trim() == "/log/activity")
+                {
+                     hasActivity = true;
+
+                }
+
+            }
+           
+            if(hasLog)
+            {
+                if (!hasresource)
+                {
+                    newRoutesNotAllowed.Add("/log/resource");
+                }
+
+                if (!hasActivity)
+                {
+                    newRoutesNotAllowed.Add("/log/activity");
+                }
+            }
+
 
             UpdateXmlFile(roleChosen, newRoutesNotAllowed);
 

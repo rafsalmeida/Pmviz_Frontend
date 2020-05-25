@@ -22,7 +22,7 @@
   <path name="See personal statistics">/statistics
     <button>myStatistics</button>
   </path>
-  <path name="See all resources statistics">/log/resources
+  <path name="See all resources statistics">/log/resource
     <button>resourcesStats</button>
   </path>
 </root>

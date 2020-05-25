@@ -46,10 +46,16 @@
                     <li>
                         <a href="/home"><i class="fas fa-home"></i> Home</a>
                     </li>
-                    @if (!details.Contains("seeAllProcesses"))
+                    @if (!details.Contains("seeAllProcesses") && (!details.Contains("activityFrequency") || !details.Contains("resourcesStats")))
                     {
                         <li id="seeAllProcesses">
-                            <a href="/log"><i class="fas fa-table"></i> All Processes</a>
+                            <a href="/log"><i class="fas fa-table"></i> Processes and Statistics</a>
+                        </li>
+                    }
+                    @if (!details.Contains("seeAllProcesses") && details.Contains("activityFrequency") && details.Contains("resourcesStats"))
+                    {
+                        <li id="seeAllProcesses">
+                            <a href="/log"><i class="fas fa-table"></i> Processes</a>
                         </li>
                     }
                     @if (!details.Contains("manageAccess"))
