@@ -4,6 +4,32 @@
 <link href="@Url.Content("~/css/Graphs.css")" rel="stylesheet" />
 <link href="@Url.Content("~/css/Loading.css")" rel="stylesheet" />
 <div id="loader" style="display: none;"></div>
+<style>
+    .dot {
+        height: 25px;
+        width: 25px;
+        background-color: #bbb;
+        border-radius: 50%;
+        display: inline-block;
+    }
+    .dot-blue {
+        background-color: #acbcff;
+    }
+    #grad1 {
+        height: 150px;
+        width: 50px;
+        background: linear-gradient(to bottom, #0032ff 25%, #365eff 25%, #365eff 50%, #748fff 50%, #748fff 75%, #acbcff 75%, #acbcff 100%);
+    }
+
+    #listLegend li {
+        height: 37.5px;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+
+    }
+</style>
 <div id="page">
     <div class="row">
         <div class="col-md-5">
@@ -30,8 +56,8 @@
                 <small id="thresholdHelp" class="form-text text-muted">O threshold tem que estar entre 0 e 1</small>
             </div>
             <hr />
-            <h4 id="processSelected">Escolha o processo de referência</h4>
-            <div class="row" style="height: 120px;">
+            <h4 id="processSelected">Seleccione o processo de referência</h4>
+            <div class="row" style="height: 120px; ">
                 <div class="col-sm-10">
                     <br />
                     <label class="form-check-label" for="processRadio">Processos</label>
@@ -40,6 +66,41 @@
                     </select>
                 </div>
             </div>
+            <br />
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+
+                </div>
+                <div class="col-md-2">
+                    <button id="centerButton" class="btn pull-right" style="display: none;"><i class="fas fa-project-diagram"></i>Centrar Grafo</button>
+                </div>
+            </div>
+            <br />
+            <div id="infoFrequency" class="alert alert-info" role="alert" style="width:95%;display: none;">
+                <strong>Informação!</strong> O grafo indica a frequência de cada atividade do processo seleccionado.
+            </div>
+            <div id="infoPerformance" class="alert alert-info" role="alert" style="width:95%;display: none;">
+                <strong>Informação!</strong> O grafo indica a performance, <strong>em minutos</strong>, de cada atividade do processo seleccionado.
+            </div>
+            <!--<div id="cardInfo" class="card">
+                <div class="card-body">
+                    <p>Frequência</p>
+                    <div class="row">
+                        <div id="grad1"></div>
+                        <ul class="list-unstyled align-bottom" id="listLegend">
+                            <li>4</li>
+                            <li>3</li>
+                            <li>0</li>
+                            <li>0</li>
+                        </ul>
+                    </div>
+                    <br />
+                                <span class="dot dot-blue"></span><span class="align-top"> Frequência</span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+    </div>
+        </div>-->
         </div>
         <div class="col-sm-7" style="height: 85vh;">
             <div id="cy"></div>
@@ -47,8 +108,8 @@
     </div>
 </div>
 
-    <script src="@Url.Content("~/vendor/cytoscape/dist/cytoscape.min.js")"></script>
-    <script src="@Url.Content("~/vendor/moment/min/moment.min.js")"></script>
+<script src="@Url.Content("~/vendor/cytoscape/dist/cytoscape.min.js")"></script>
+<script src="@Url.Content("~/vendor/moment/min/moment.min.js")"></script>
 <script>
     /*
     var frequencyButton = document.getElementById("frequencyButton");
@@ -66,6 +127,9 @@
     var thresholdInput = document.getElementById("thresholdInput");
     var divLoader = document.getElementById("loader");
     var divPage = document.getElementById("page");
+    var infoFrequency = document.getElementById("infoFrequency");
+    var infoPerformance = document.getElementById("infoPerformance");
+    var centerButton = document.getElementById("centerButton");
     var processes = JSON.parse(@Html.Raw(Json.Serialize(ViewData["processes"])));
     var cy = null;
 
@@ -103,7 +167,7 @@
 
     function handleGraph(myRadio) {
         if (myRadio.value == 'frequency') {
-            process.graph = 'frequency';
+            process.graph = 'frequency';       
         } else {
             process.graph = 'performance';
         }
@@ -125,6 +189,44 @@
         }
     }
 
+    (function($){
+        $.fn.extend({
+            donetyping: function(callback,timeout){
+                timeout = timeout || 1e3;
+                var timeoutReference,
+                    doneTyping = function(el){
+                        if (!timeoutReference) {
+                            return;
+                        }
+                        timeoutReference = null;
+                        callback.call(el);
+                    };
+                return this.each(function(i,el){
+                    var $el = $(el);
+                    $el.is(':input') && $el.on('keyup keypress paste',function(e){
+                        if (e.type == 'keyup' && e.keyCode != 8) {
+                            return;
+                        }
+                        if (timeoutReference) {
+                            clearTimeout(timeoutReference);
+                        }
+                        timeoutReference = setTimeout(function(){
+                            doneTyping(el);
+                        }, timeout);
+                    }).on('blur',function(){
+                        doneTyping(el);
+                    });
+                });
+            }
+        });
+    })(jQuery);
+
+    $('#thresholdInput').donetyping(function(){
+        if (process.idProcess && $(this).val() >= 0 && $(this).val() <= 1) {
+            getData();
+        }
+    });
+
     if (processes.length != 0) {
         for (var i = 0; i < processes.length; i++) {
             var option = document.createElement("option");
@@ -142,6 +244,8 @@
     function generateGraph() {
         if (process.graph == 'frequency') {
             renderCytoscapeElementFrequency();
+            infoPerformance.style.display = "none";
+            infoFrequency.style.display = "block";
         } else {
             let nodeTimes = [];
             for (let i = 0; i < process.data.statistics.nodes.length; i++) {
@@ -164,6 +268,8 @@
             process.nodeTimes = nodeTimes;
             process.relationTimes = relationTimes;
             renderCytoscapeElementPerformance();
+            infoFrequency.style.display = "none";
+            infoPerformance.style.display = "block";
         }
     }
 
@@ -173,21 +279,23 @@
             type: "POST",
             data: {
                 process: process.idProcess,
-                miner: process.miner
+                miner: process.miner,
+                threshold: thresholdInput.value
             },
             url: "/Graph/GetWorkFlow",
             dataType: 'json',
             success: function (response) {
                 if (response.success) {
                     $('#processSelected').empty();
-                    $('#processSelected').text('Processo Referência: ' + process.nameProcess);
+                    $('#processSelected').text('Processo Seleccionado: ' + process.nameProcess);
                     process.data = response.request;
                     loading(divLoader, divPage);
-
+                    centerButton.style.display = "block";
                     generateGraph();
                 } else {
                     $('#processSelected').empty();
                     $('#processSelected').text('Escolha o processo de referência');
+                    centerButton.style.display = "none";
                     cy = null;
                 }
             },
@@ -442,10 +550,11 @@
             }
         }
     }
-
+    var legendSetUp = [0, 0, 0, 0];
     //Nodes\\
     for (let i = 0; i < process.data.nodes.length; i++) {
         let typeValue = Math.round(process.data.statistics.nodes[i].frequency * 4 / maxFrequency);
+        //asd[typeValue] = process.data.statistics.nodes[i].frequency;
         cy.add({
             data: {
                 id: i,
@@ -456,7 +565,6 @@
         );
     }
     process.maxFrequency = maxFrequency;
-    //this.setParentLegend();
 
     //Edges\\
     for (let i = 0; i < process.data.relations.length; i++) {
@@ -872,4 +980,10 @@
         };
         cy.layout(customBreadthfirst).run();
     }
+
+    $("#centerButton").click(function () {
+        if (typeof cy !== "undefined") {
+            cy.fit();
+        }
+    });
     </script>

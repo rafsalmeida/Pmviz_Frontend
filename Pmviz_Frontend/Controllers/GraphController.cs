@@ -30,19 +30,27 @@ namespace Pmviz_Frontend.Controllers
             }
         }
 
-        public async Task<IActionResult> ConformanceGraph(string process, string typeCompare, string miner, string moulds, string startDate, string endDate, string threshold, string estimatedEnd)
+        public async Task<IActionResult> ConformanceGraph(string process, string miner, string moulds, string activities, string resources, string startDate, string endDate, string threshold, string estimatedEnd)
         {
             string json, url;
-            if(typeCompare == "moulds")
+            json = "{ \"isEstimatedEnd\":" + estimatedEnd;
+            if (moulds != null)
             {
-                json = "{ \"moulds\":" + moulds.ToString();
+                json += ", \"moulds\":" + moulds.ToString();
             }
-            else
+            if (resources != null)
             {
-                json = "{ \"startDate\":\"" + startDate + "\", \"endDate\":\"" + endDate + "\"";
+                json += ", \"resources\":" + resources.ToString();
             }
-
-            json += ", \"isEstimatedEnd\":" + estimatedEnd + "}";
+            if (activities != null)
+            {
+                json += ", \"activities\":" + activities.ToString();
+            }
+            if (startDate != null && endDate != null)
+            {
+                json += ", \"startDate\":\"" + startDate + "\", \"endDate\":\"" + endDate + "\"";
+            }
+            json += " }";
 
             if (miner == "alpha-miner")
             {
@@ -58,7 +66,6 @@ namespace Pmviz_Frontend.Controllers
             {
                 using (response = await httpClient.PostAsync(url, c))
                 {
-                    ViewData["conformance"] = response.Content.ReadAsStringAsync().Result;
                     var status = response.IsSuccessStatusCode;
                     if (status == false)
                     {
@@ -183,12 +190,17 @@ namespace Pmviz_Frontend.Controllers
             }
         }
 
-        public async Task<IActionResult> GetWorkFlow(string process, string miner)
+        public async Task<IActionResult> GetWorkFlow(string process, string miner, string threshold)
         {
             HttpResponseMessage response;
             using (var httpClient = new HttpClient())
             {
-                using (response = await httpClient.GetAsync("http://localhost:8080/api/workflow-network/" + miner + "/processes/" + process))
+                string url = "http://localhost:8080/api/workflow-network/" + miner + "/processes/" + process;
+                if (miner == "heuristic-miner")
+                {
+                    url += "?threshold=" + threshold.Replace(',', '.');
+                }
+                using (response = await httpClient.GetAsync(url))
                 {
                     var status = response.IsSuccessStatusCode;
                     if (status == false)
