@@ -33,56 +33,83 @@
                             <option value="" disabled selected>Escolha um processo</option>
                         </select>
                     </div>
-                    <div class="col-sm-6">
-                        <div id="activities">
-                            <p class="text-dark">Actividades do Processo:</p>
-                            <ul class="list-unstyled" id="listActivities" style="overflow: auto;max-height: 75px;">
-                            </ul>
-                        </div>
-                        <div class="clearActivities">
-                            <br />
-                            <p class="text-dark">Não tem nenhum processo seleccionado/Processo sem Atividades</p>
-                        </div>
-                    </div>
+                    <!--
+    <div class="col-sm-6">
+        <div id="activities">
+            <p class="text-dark">Actividades do Processo:</p>
+            <ul class="list-unstyled" id="listActivities" style="overflow: auto;max-height: 75px;">
+            </ul>
+        </div>
+        <div class="clearActivities">
+            <br />
+            <p class="text-dark">Não tem nenhum processo seleccionado/Processo sem Atividades</p>
+        </div>
+    </div>-->
                 </div>
                 <hr />
-                <div class="clearActivities">
+                <div id="clearActivities">
                     <br />
                     <h5>Não tem nenhum processo seleccionado/Processo sem Atividades</h5>
                 </div>
+                <!--
+    <div id="">
+        <h4>Escolha o caso </h4>
+        <div class="row">
+            <div class="form-group col-md-6">
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="filter" id="dataRadio" onclick="handleFilter(this);" value="data" checked><label class="form-check-label" for="dataRadio">Data</label>
+                </div>
+                <div class="form-group">
+                    <label for="inputStartDate">Data Inicial</label>
+                    <input class="form-control" type="date" id="inputStartDate" onkeydown="event.preventDefault()">
+                </div>
+                <div class="form-group">
+                    <label for="inputEndDate">Data Final</label>
+                    <input class="form-control" type="date" id="inputEndDate" onkeydown="event.preventDefault()">
+                </div>
+            </div>
+            <div class="form-group col-md-6">
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="filter" id="mouldsRadio" onclick="handleFilter(this);" value="mould"><label class="form-check-label" for="mouldsRadio">Moldes</label>
+                </div>
+                <select id="inputMoulds" name="moulds" class="custom-select" size="6" multiple>
+                </select>
+            </div>
+        </div>
+        <br />
+    </div>-->
                 <div id="compareProcess">
                     <h4>Escolha o caso </h4>
                     <div class="row">
-                        <div class="form-group col-md-6">
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="filter" id="dataRadio" onclick="handleFilter(this);" value="data" checked><label class="form-check-label" for="dataRadio">Data</label>
-                            </div>
+                        <div class="col">
                             <div class="form-group">
-                                <label for="inputStartDate">Data Inicial</label>
-                                <input class="form-control" type="date" id="inputStartDate" onkeydown="event.preventDefault()">
-                            </div>
-                            <div class="form-group">
-                                <label for="inputEndDate">Data Final</label>
-                                <input class="form-control" type="date" id="inputEndDate" onkeydown="event.preventDefault()">
+                                <label for="inputStartCase">Data Inicial</label>
+                                <input class="form-control" type="date" id="inputStartCase" onkeydown="event.preventDefault()">
                             </div>
                         </div>
-                        <div class="form-group col-md-6">
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="filter" id="mouldsRadio" onclick="handleFilter(this);" value="mould"><label class="form-check-label" for="mouldsRadio">Moldes</label>
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="inputEndCase">Data Final</label>
+                                <input class="form-control" type="date" id="inputEndCase" onkeydown="event.preventDefault()">
                             </div>
-                            <select id="inputMoulds" name="moulds" class="custom-select" size="6" multiple>
-                            </select>
                         </div>
                     </div>
+                    <p class="lead text-dark">Moldes</p>
+                    <select id="mouldsCase" class="form-control selectpicker" multiple title="Nenhum molde selecionado" data-size="4" data-dropup-auto="false" data-actions-box="true"></select>
+                    <p class="lead text-dark">Atividades</p>
+                    <select id="activitiesCase" class="form-control selectpicker" multiple title="Nenhuma atividade selecionado" data-size="4" data-dropup-auto="false" data-actions-box="true"></select>
+                    <p class="lead text-dark">Operadores</p>
+                    <select id="resourcesCase" class="form-control selectpicker" multiple title="Nenhum operador selecionado" data-size="4" data-dropup-auto="false" data-actions-box="true"></select>
+                    <br />
+                    <br />
                     <div class="form-group col-md-6">
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="checkbox" name="filter" id="estimatedEnd" checked><label class="form-check-label" for="estimatedEnd">Tempo estimado</label>
                         </div>
                     </div>
-                    <br />
                     <button class="btn btn-block btn-dark" id="btnCompareGraph" type="button">Gerar grafo</button>
-                    </div>
                 </div>
+            </div>
             <div id="divSelectFilter">
                 <div class="row">
                     <div class="col-md-8">
@@ -94,14 +121,14 @@
                 </div>
                 <br />
                 <br />
-                <div id="cardInfo" class="card">
+                <div id="cardInfo" class="card" style="max-height: 275px; overflow: auto;">
                     <div class="card-body">
-                        <h6 class="card-subtitle mb-2 text-muted">Algoritmo</h6>
-                        <p id="infoMiner" class="card-text text-dark">Alpha Miner</p>
                         <h6 class="card-subtitle mb-2 text-muted">Processo Referência</h6>
                         <p id="infoProcess" class="card-text text-dark">ProcessoDemo etc</p>
-                        <h6 class="card-subtitle mb-2 text-muted">Caso</h6>
+                        <h6 class="card-subtitle mb-2 text-muted">Caso Seleccionado</h6>
                         <p id="infoCase" class="card-text text-dark">Casos entre tal e tal</p>
+                        <h6 class="card-subtitle mb-2 text-muted">Algoritmo</h6>
+                        <p id="infoMiner" class="card-text text-dark">Alpha Miner</p>
                     </div>
                 </div>
                 <hr />
@@ -137,11 +164,12 @@
     </div>
 </div>
 <script>
-    var divActivities = document.getElementById('activities');
-    var divClearActivities = document.getElementsByClassName("clearActivities");
+    var divClearActivities = document.getElementById("clearActivities");
     var divCompareProcess = document.getElementById('compareProcess');
-    var inputStartDate = document.getElementById("inputStartDate");
-    var inputEndDate = document.getElementById("inputEndDate");
+
+    var inputStartCase = document.getElementById("inputStartCase");
+    var inputEndCase = document.getElementById("inputEndCase");
+
     var divTreshold = document.getElementById("divTreshold");
     var thresholdInput = document.getElementById("thresholdInput");
     var divLoader = document.getElementById("loader");
@@ -158,15 +186,18 @@
     var process = {
         idProcess: null,
         nameProcess: null,
-        compare: 'data',
         miner: 'alpha-miner',
-        estimatedEnd: '',
-        mouldsSelected: [],
-        threshold: null,
         baseData: {},
         caseData: {},
-        startDate: null,
-        endDate: null,
+        caseSelected: {
+            startDate: null,
+            endDate: null,
+            activities: null,
+            moulds: null,
+            resources: null,
+            estimatedEnd: null,
+            threshold: null
+        },
         activities: [],
         moulds: [],
         resources: [],
@@ -178,9 +209,7 @@
             endDate: null
         }
     };
-
-    document.getElementById("inputMoulds").disabled = true;
-    divActivities.style.display = "none";
+    var caseText = null;
     divTreshold.style.display = "none";
     divCompareProcess.style.display = "none";
     divSelectFilter.style.display = "none";
@@ -198,7 +227,7 @@
         inputStartDate.disabled = change;
         inputEndDate.disabled = change;
     }
-
+    /*
     function handleFilter(myRadio) {
         if (myRadio.value == 'data') {
             process.compare = 'data';
@@ -209,7 +238,7 @@
             changeInputDate(true);
             document.getElementById("inputMoulds").disabled = false;
         }
-    }
+    }*/
 
     function handleMiner(myRadio) {
         if (myRadio.value == 'alpha-miner') {
@@ -247,23 +276,17 @@
                     process.moulds = information.moulds;
                     process.resources = information.resources;
 
-                    insertCases(process.activities, process.moulds);
+                    insertCases(process.activities, process.moulds, process.resources);
 
-                    for (var i = 0; i < divClearActivities.length; i++) {
-                        divClearActivities[i].style.display = 'none';
-                    }
-                    divActivities.style.display = "block";
+                    divClearActivities.style.display = 'none';
                     divCompareProcess.style.display = "block";
                 } else {
                     process.idProcess = '';
                     
                     $('#processSelected').empty();
                     $('#processSelected').text('Escolha o processo de referência');
-                    divActivities.style.display = "none";
                     divCompareProcess.style.display = "none";
-                    for (var i = 0; i < divClearActivities.length; i++) {
-                        divClearActivities[i].style.display = 'block';
-                    }
+                    divClearActivities.style.display = 'block';
                 }
             },
             error: function (response) {
@@ -274,48 +297,63 @@
     });
 
     $("#btnCompareGraph").click(function () {
+        var moulds = Array.from(mouldsCase.selectedOptions).map(option => option.text);
+        var activities = Array.from(activitiesCase.selectedOptions).map(option => option.text);
+        var resources = Array.from(resourcesCase.selectedOptions).map(option => option.text);
+
         if (process.idProcess == '') {
             alert("Não há nenhum processo selecionado");
-        } else {
-            if (process.compare == 'data') {
-                if (!inputStartDate.value || !inputEndDate.value) {
-                    alert("As datas tem que estar preenchidas");
-                    return;
-                }
-                if (new Date(inputStartDate.value) > new Date(inputEndDate.value)) {
-                    alert("A data inicial não pode ser maior do que a data final");
-                    return;
-                }
-                process.startDate = convertDate(inputStartDate.value);
-                process.endDate = convertDate(inputEndDate.value);
+        } else if (!inputStartCase.value && !inputEndCase.value && moulds < 1 && activities < 1 && resources < 1) {
+            alert("Não há nada seleccionado");
+        }else {
+
+            if ((inputStartCase.value && !inputEndCase.value) || (!inputStartCase.value && inputEndCase.value)) {
+                alert("Só uma data é que está inserida");
+                return;
             } else {
-                var mouldsSelected = Array.from(inputMoulds.selectedOptions).map(option => option.value);
-                if (mouldsSelected.length <= 0) {
-                    alert("Não há nenhum molde selecionado");
-                    return;
+                if (inputStartCase.value || inputEndCase.value) {
+                    if (new Date(inputStartCase.value) > new Date(inputEndCase.value)) {
+                        alert('As datas não estão inseridas corretamente ');
+                        return;
+                    }
+                    process.caseSelected.startDate = convertDate(inputStartCase.value);
+                    process.caseSelected.endDate = convertDate(inputEndCase.value);
                 }
-                process.mouldsSelected = mouldsSelected;
-                //window.location = 'Url.Action("ConformanceGraph", "Graph")?process=' + process + '&miner=' + miner + '&startDate=&endDate=&moulds=' + JSON.stringify(moulds) + '&threshold=' + thresholdInput.value;
-            }
-            if ($('#estimatedEnd').is(':checked')) {
-                process.estimatedEnd = "true";
-            } else {
-                process.estimatedEnd = "false";
+                loading(divPage, divLoader);
+                
+                if (moulds.length > 0) {
+                    process.caseSelected.moulds = moulds;
+                }
+                if (activities.length > 0) {
+                    process.caseSelected.activities = activities;
+                }
+                if (resources.length > 0) {
+                    process.caseSelected.resources = resources;
+                }
+
+                if ($('#estimatedEnd').is(':checked')) {
+                    process.caseSelected.estimatedEnd = "true";
+                } else {
+                    process.caseSelected.estimatedEnd = "false";
+                }
+
+                process.caseSelected.threshold = thresholdInput.value;
             }
 
-            process.threshold = thresholdInput.value;
+            
             loading(divPage, divLoader);
             $.ajax({
                 type: "POST",
                 data: {
                     process: process.idProcess,
-                    typeCompare: process.compare,
                     miner: process.miner,
-                    moulds: JSON.stringify(process.mouldsSelected),
-                    startDate: process.startDate,
-                    endDate: process.endDate,
-                    threshold: process.threshold,
-                    estimatedEnd: process.estimatedEnd
+                    moulds: JSON.stringify(process.caseSelected.moulds), 
+                    activities: JSON.stringify(process.caseSelected.activities),
+                    resources: JSON.stringify(process.caseSelected.resources),
+                    startDate: process.caseSelected.startDate,
+                    endDate: process.caseSelected.endDate,
+                    threshold: process.caseSelected.threshold,
+                    estimatedEnd: process.caseSelected.estimatedEnd
                 },
                 url: "/Graph/ConformanceGraph",
                 dataType: 'json',
@@ -394,7 +432,7 @@
                 activities: activities,
                 startDate: startDate,
                 endDate: endDate,
-                estimatedEnd: process.estimatedEnd,
+                estimatedEnd: process.caseSelected.estimatedEnd,
                 nodes: JSON.stringify(process.baseData.nodes)
             },
             url: "/Graph/GetFilter",
@@ -402,7 +440,6 @@
             success: function (response) {
                 if (response.success) {
                     process.caseData = response.request;
-                    console.log(process.caseData);
                     loading(divLoader, divPage);
 
                     renderCytoscapeElementConformance();
@@ -455,40 +492,67 @@
         }
     }
 
-    function insertCases(activities, moulds) {
-        $('#listActivities').empty();
-        $('#inputMoulds').empty();
+    function insertCases(activities, moulds, resources) {
+        $('#mouldsCase').empty();
+        $('#activitiesCase').empty();
+        $('#resourcesCase').empty();
 
-        if (activities) {
-            for (var i = 0; i < activities.length; i++) {
-                var li = document.createElement("li");
-                li.appendChild(document.createTextNode(activities[i]));
-                listActivities.appendChild(li);
-            }
-        }
-        
-        if (moulds) {
+        if (moulds != null && moulds.length != 0) {
             for (var i = 0; i < moulds.length; i++) {
                 var option = document.createElement("option");
                 option.setAttribute("value", moulds[i]);
                 option.text = moulds[i];
-                inputMoulds.appendChild(option);
+                $('#mouldsCase').append(option);
             }
+            $('#mouldsCase').selectpicker('refresh');
+        }
+
+        if (activities != null || activities.length != 0) {
+            for (var i = 0; i < activities.length; i++) {
+                var option = document.createElement("option");
+                option.setAttribute("value", activities[i]);
+                option.text = activities[i];
+                $('#activitiesCase').append(option);
+            }
+            $('#activitiesCase').selectpicker('refresh');
+        }
+
+        if (resources != null || resources.length != 0) {
+            for (var i = 0; i < resources.length; i++) {
+                var option = document.createElement("option");
+                option.setAttribute("value", resources[i]);
+                option.text = resources[i];
+                $('#resourcesCase').append(option);
+            }
+            $('#resourcesCase').selectpicker('refresh');
         }
     }
-
     function changeCards() {
         if (process.miner == 'alpha-miner') {
             $("#infoMiner").html("Alpha miner");
         } else {
-            $("#infoMiner").html("Heuristic miner | Treshold " + process.threshold);
+            $("#infoMiner").html("Heuristic miner | Treshold " + process.caseSelected.threshold);
         }
         $("#infoProcess").html(process.nameProcess);
-        if (process.compare == 'data') {
-            $("#infoCase").html("Casos de " + inputStartDate.value + " a " + inputEndDate.value);
-        } else {
-            $("#infoCase").html("Casos selecionados: " + process.mouldsSelected.toString());
+        caseText = "";
+        console.log(process);
+        if (process.caseSelected.startDate && process.caseSelected.endDate) {
+            caseText += "<strong>Data:</strong> " + process.caseSelected.startDate + " - " + process.caseSelected.endDate + "<br/>";
         }
+
+        if (process.caseSelected.activities) {
+            caseText += "<strong>Actividades:</strong> " + process.caseSelected.activities.toString() + "<br/>";
+        }
+        if (process.caseSelected.moulds) {
+            caseText += "<strong>Moldes:</strong> " + process.caseSelected.moulds.toString() + "<br/>";
+        }
+        if (process.caseSelected.resources) {
+            caseText += "<strong>Operadores:</strong> " + process.caseSelected.resources.toString() + "<br/>";
+        }
+        caseText += "<strong>Tempo estimado:</strong> " + process.caseSelected.estimatedEnd;
+
+        
+        $("#infoCase").html(caseText);
 
     }
 
@@ -538,13 +602,13 @@
                             'width': '350',
                             "height": "40",
                             "border-width": 4,
-                            "border-color": "#82EB71",
+                            "border-color": "#00b33c",
                             "font-size": "16px",
                             "text-valign": "center",
                             "text-halign": "center",
                             "text-wrap": "wrap",
                             "text-max-width": "1000px",
-                            "color": "#82EB71",
+                            "color": "#00b33c",
                             "text-outline-color": "#222222",
                             "text-outline-width": "0.15px"
                         }
@@ -557,13 +621,13 @@
                             "background-color": "#FFFFFF",
                             "label": "data(label)",
                             'width': '350',
-                            "height": "40",
+                            "height": "40", 
                             "border-width": 4,
-                            "border-color": "#FF4E4E",
+                            "border-color": "#ff0000",
                             "font-size": "16px",
                             "text-valign": "center",
                             "text-halign": "center",
-                            "color": "#82EB71"
+                            "color": "#00b33c"
                         }
                     },
                     {
@@ -576,13 +640,13 @@
                             'width': '350',
                             "height": "40",
                             "border-width": 4,
-                            "border-color": "#82EB71",
+                            "border-color": "#00b33c",
                             "font-size": "16px",
                             "text-valign": "center",
                             "text-halign": "center",
                             "text-wrap": "wrap",
                             "text-max-width": "1000px",
-                            "color": "#FF4E4E"
+                            "color": "#ff0000"
                         }
                     },
                     {
@@ -595,13 +659,13 @@
                             'width': '350',
                             "height": "40",
                             "border-width": 4,
-                            "border-color": "#FF4E4E",
+                            "border-color": "#ff0000",
                             "font-size": "16px",
                             "text-valign": "center",
                             "text-halign": "center",
                             "text-wrap": "wrap",
                             "text-max-width": "1000px",
-                            "color": "#FF4E4E"
+                            "color": "#ff0000"
                         }
                     },
                     {
@@ -649,11 +713,11 @@
                         style: {
                             'width': 5,
                             'curve-style': 'bezier',
-                            "line-color": "#82EB71",
-                            'target-arrow-color': '#82EB71',
+                            "line-color": "#00b33c",
+                            'target-arrow-color': '#00b33c',
                             "label": "data(label)",
                             "font-size": "32px",
-                            "color": "#82EB71",
+                            "color": "#00b33c",
                             "loop-direction": "0deg",
                             'target-arrow-shape': 'triangle',
                             "loop-sweep": "45deg",
@@ -669,11 +733,11 @@
                         style: {
                             'width': 5,
                             'curve-style': 'bezier',
-                            "line-color": "#FF4E4E",
-                            'target-arrow-color': '#FF4E4E',
+                            "line-color": "#ff0000",
+                            'target-arrow-color': '#ff0000',
                             "content": "data(label)",
                             "font-size": "32px",
-                            "color": "#82EB71",
+                            "color": "#00b33c",
                             "loop-direction": "0deg",
                             'target-arrow-shape': 'triangle',
                             "loop-sweep": "45deg",
@@ -690,11 +754,11 @@
                         style: {
                             'width': 5,
                             'curve-style': 'bezier',
-                            "line-color": "#FF4E4E",
-                            'target-arrow-color': '#FF4E4E',
+                            "line-color": "#ff0000",
+                            'target-arrow-color': '#ff0000',
                             "content": "data(label)",
                             "font-size": "32px",
-                            "color": "#FF4E4E",
+                            "color": "#ff0000",
                             "loop-direction": "0deg",
                             'target-arrow-shape': 'triangle',
                             "loop-sweep": "45deg",
@@ -711,11 +775,11 @@
                         style: {
                             'width': 5,
                             'curve-style': 'bezier',
-                            "line-color": "#82EB71",
-                            'target-arrow-color': '#82EB71',
+                            "line-color": "#00b33c",
+                            'target-arrow-color': '#00b33c',
                             "content": "data(label)",
                             "font-size": "32px",
-                            "color": "#FF4E4E",
+                            "color": "#ff0000",
                             "loop-direction": "0deg",
                             'target-arrow-shape': 'triangle',
                             "loop-sweep": "45deg",
@@ -733,11 +797,11 @@
                         style: {
                             'width': 5,
                             'curve-style': 'bezier',
-                            "line-color": "#82EB71",
-                            'target-arrow-color': '#82EB71',
+                            "line-color": "#00b33c",
+                            'target-arrow-color': '#00b33c',
                             "label": "data(label)",
                             "font-size": "32px",
-                            "color": "#82EB71",
+                            "color": "#00b33c",
                             "loop-direction": "0deg",
                             'target-arrow-shape': 'triangle',
                             "loop-sweep": "45deg",
@@ -820,6 +884,11 @@
                 typeValue = 3;
             }
 
+            let prevLabel = "\n Prev: " + durationToString(process.baseData.taskDurations[i].duration);
+
+            let realLabel = "Real: " + durationToString(maxDuration);
+
+            /*
             //format label acording to time value
             let prevLabel;
             if (process.baseData.taskDurations[i].duration.days !== 0) {
@@ -841,7 +910,7 @@
                 realLabel = " / Real: " + maxDuration.minutes + "M " + maxDuration.seconds + "S";
             } else {
                 realLabel = " / Real: " + maxDuration.seconds + "S";
-            }
+            }*/
             
             //se typevalue for 0 (não faz parte do caso em análise) formata texto de forma diferente
             if (typeValue === 0) {
@@ -857,7 +926,7 @@
                 cy.add({
                     data: {
                         id: i,
-                        label: process.baseData.nodes[i] + prevLabel + realLabel,
+                        label: process.baseData.nodes[i] + prevLabel + " / " +  realLabel,
                         type: typeValue
                     },
                 }
@@ -894,6 +963,10 @@
                     edgeTypeValue = 10;
                 }
 
+                let prevLabel = "\n Prev: " + durationToString(process.baseData.relations[i].to[j].duration);
+
+                let realLabel = "Real: " + durationToString(maxDuration);
+                /*
                 let prevLabel = 0;
                 if (process.baseData.relations[i].to[j].duration.days !== 0) {
                     prevLabel = "\n Prev: " + process.baseData.relations[i].to[j].duration.days + "D " + process.baseData.relations[i].to[j].duration.hours + "H " + process.baseData.relations[i].to[j].duration.minutes + "M ";
@@ -915,7 +988,7 @@
                 } else {
                     realLabel = "Real: " + maxDuration.seconds + "S";
                 }
-
+                */
                 cy.add({
                     data: {
                         id: 'edge' + process.baseData.relations[i].from + '-' + process.baseData.relations[i].to[j].node,
@@ -1050,6 +1123,16 @@
 
     function convertToSeconds(duration) {
         return duration.days * 86400 + duration.hours * 3600 + duration.minutes * 60 + duration.seconds;
+    }
+
+    function durationToString(duration) {
+        if (duration.days == 0 && duration.hours == 0 && duration.minutes == 0 && duration.seconds == 0) {
+            return "0S";
+        }
+        return ((duration.days !== 0) ? duration.days + "D " : "") +
+            ((duration.hours !== 0) ? duration.hours + "H " : "") +
+            ((duration.minutes !== 0) ? duration.minutes + "M " : "") +
+            ((duration.seconds !== 0) ? duration.seconds + "S" : "");
     }
 
     $("#centerButton").click(function () {
