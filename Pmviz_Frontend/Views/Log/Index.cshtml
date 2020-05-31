@@ -1,6 +1,6 @@
 ﻿@model IEnumerable<Pmviz_Frontend.Models.Log>
 @using Kendo.Mvc.UI
-@{ Layout = "_LayoutBoot"; ViewBag.Title = "All Processes";}
+@{ ViewBag.Title = "All Processes";}
 @using Microsoft.AspNetCore.Http;
 @{
     List<string> details = Context.Session.GetString("listDetails").Split(new char[] { ',' }).ToList();

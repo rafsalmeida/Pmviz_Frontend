@@ -2,7 +2,7 @@
     IEnumerable<Pmviz_Frontend.Models.Log> allProcesses = ViewData["processes"] as IEnumerable<Pmviz_Frontend.Models.Log>;
 }
 @using Kendo.Mvc.UI
-@{ Layout = "_LayoutBoot"; ViewBag.Title = "All Processes";}
+@{ ViewBag.Title = "All Processes";}
 
 <h4 style="text-align:center">All Processes</h4>
 @if (ViewBag.ErrorProcess != null)
