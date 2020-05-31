@@ -12,11 +12,11 @@
             <div id="divSelectCase">
                 <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio" name="miner" id="alphaRadio" value="alpha-miner" onclick="handleMiner(this);" checked>
-                    <label class="form-check-label" for="alphaRadio">Alpha Miner</label>
+                    <label class="form-check-label" for="alphaRadio">Algoritmo Alfa</label>
                 </div>
                 <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio" name="miner" id="heuristicRadio" onclick="handleMiner(this);" value="heuristic-miner">
-                    <label class="form-check-label" for="heuristicRadio">Heuristic Miner</label>
+                    <label class="form-check-label" for="heuristicRadio">Algoritmo Heuristico</label>
                 </div>
                 <div class="form-group" id="divTreshold">
                     <label for="thresholdInput">Threshold</label>
@@ -24,7 +24,7 @@
                     <small id="thresholdHelp" class="form-text text-muted">O threshold tem que estar entre 0 e 1</small>
                 </div>
                 <hr />
-                <h4 id="processSelected">Escolha o processo de referência</h4>
+                <h4 id="processSelected">Escolha o processo</h4>
                 <div class="row" style="height: 120px;">
                     <div class="col-sm-6">
                         <br />
@@ -42,14 +42,14 @@
         </div>
         <div class="clearActivities">
             <br />
-            <p class="text-dark">Não tem nenhum processo seleccionado/Processo sem Atividades</p>
+            <p class="text-dark">Não tem nenhum processo selecionado/Processo sem Atividades</p>
         </div>
     </div>-->
                 </div>
                 <hr />
                 <div id="clearActivities">
                     <br />
-                    <h5>Não tem nenhum processo seleccionado/Processo sem Atividades</h5>
+                    <h5>Não tem nenhum processo selecionado/Processo sem Atividades</h5>
                 </div>
                 <!--
     <div id="">
@@ -79,7 +79,7 @@
         <br />
     </div>-->
                 <div id="compareProcess">
-                    <h4>Escolha o caso </h4>
+                    <h4>Escolha o Modelo de Referência </h4>
                     <div class="row">
                         <div class="col">
                             <div class="form-group">
@@ -113,7 +113,7 @@
             <div id="divSelectFilter">
                 <div class="row">
                     <div class="col-md-8">
-                        <button id="refreshButton" class="btn btn-primary"> Escolher outro caso</button>
+                        <button id="refreshButton" class="btn btn-primary"> Escolher outro Processo</button>
                     </div>
                     <div class="col-md-2">
                         <button id="centerButton" class="btn pull-right"><i class="fas fa-project-diagram"></i>Centrar Grafo</button>
@@ -123,16 +123,16 @@
                 <br />
                 <div id="cardInfo" class="card" style="max-height: 275px; overflow: auto;">
                     <div class="card-body">
-                        <h6 class="card-subtitle mb-2 text-muted">Processo Referência</h6>
+                        <h6 class="card-subtitle mb-2 text-muted">Processo selecionado</h6>
                         <p id="infoProcess" class="card-text text-dark">ProcessoDemo etc</p>
-                        <h6 class="card-subtitle mb-2 text-muted">Caso Seleccionado</h6>
+                        <h6 class="card-subtitle mb-2 text-muted">Modelo de Referência</h6>
                         <p id="infoCase" class="card-text text-dark">Casos entre tal e tal</p>
                         <h6 class="card-subtitle mb-2 text-muted">Algoritmo</h6>
                         <p id="infoMiner" class="card-text text-dark">Alpha Miner</p>
                     </div>
                 </div>
                 <hr />
-                <h5 class="card-title">Filtros</h5>
+                <h5 class="card-title">Filtrar o processo</h5>
                 <div class="row">
                     <div class="col">
                         <div class="form-group">
@@ -155,7 +155,7 @@
                 <select id="resourcesFilter" class="form-control selectpicker" multiple title="Nenhum operador selecionado" data-size="4" data-dropup-auto="false"></select>
                 <br />
                 <br />
-                <button class="btn btn-block btn-dark" id="btnFilterGraph" type="button">Filtrar</button>
+                <button class="btn btn-block btn-dark" id="btnFilterGraph" type="button">Filtrar o processo selecionado</button>
             </div>
         </div>
         <div class="col-sm-7" style="height: 85vh;">
@@ -268,7 +268,7 @@
             success: function (response) {
                 if (response.success) {
                     $('#processSelected').empty();
-                    $('#processSelected').text('Processo Referência: ' + process.nameProcess);
+                    $('#processSelected').text('Processo Selecionado: ' + process.nameProcess);
                     
 
                     var information = JSON.parse(response.request);
@@ -304,7 +304,7 @@
         if (process.idProcess == '') {
             alert("Não há nenhum processo selecionado");
         } else if (!inputStartCase.value && !inputEndCase.value && moulds < 1 && activities < 1 && resources < 1) {
-            alert("Não há nada seleccionado");
+            alert("Não há nada selecionado");
         }else {
 
             if ((inputStartCase.value && !inputEndCase.value) || (!inputStartCase.value && inputEndCase.value)) {
@@ -389,13 +389,13 @@
     $("#btnFilterGraph").click(function () {
         if (process.compare == "data") {
             if (!$("#mouldsFilter option:selected").length && !$("#activitiesFilter option:selected").length && !$("#resourcesFilter option:selected").length && inputStartFilter.value == inputStartDate.value && inputEndFilter.value == inputEndDate.value) {
-                alert('Não há nada seleccionado');
+                alert('Não há nada selecionado');
                 return;
             }
         }
         
         if (!$("#mouldsFilter option:selected").length && !$("#activitiesFilter option:selected").length && !$("#resourcesFilter option:selected").length && !inputStartFilter.value && !inputEndFilter.value) {
-            alert('Não há nada seleccionado');
+            alert('Não há nada selecionado');
             return;
         }else if ((inputStartFilter.value && !inputEndFilter.value) || (!inputStartFilter.value && inputEndFilter.value)) {
                 alert("Só uma data é que está inserida");
@@ -549,7 +549,7 @@
         if (process.caseSelected.resources) {
             caseText += "<strong>Operadores:</strong> " + process.caseSelected.resources.toString() + "<br/>";
         }
-        caseText += "<strong>Tempo estimado:</strong> " + process.caseSelected.estimatedEnd;
+        //caseText += "<strong>Tempo estimado:</strong> " + process.caseSelected.estimatedEnd;
 
         
         $("#infoCase").html(caseText);

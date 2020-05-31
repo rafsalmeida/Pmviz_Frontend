@@ -44,11 +44,11 @@
             <hr />
             <div class="form-check form-check-inline">
                 <input class="form-check-input" type="radio" name="miner" id="alphaRadio" value="alpha-miner" onclick="handleMiner(this);" checked>
-                <label class="form-check-label" for="alphaRadio">Alpha Miner</label>
+                <label class="form-check-label" for="alphaRadio">Algoritmo Alfa</label>
             </div>
             <div class="form-check form-check-inline">
                 <input class="form-check-input" type="radio" name="miner" id="heuristicRadio" onclick="handleMiner(this);" value="heuristic-miner">
-                <label class="form-check-label" for="heuristicRadio">Heuristic Miner</label>
+                <label class="form-check-label" for="heuristicRadio">Algoritmo Heuristico</label>
             </div>
             <div class="form-group" id="divTreshold">
                 <label for="thresholdInput">Threshold</label>
@@ -56,7 +56,7 @@
                 <small id="thresholdHelp" class="form-text text-muted">O threshold tem que estar entre 0 e 1</small>
             </div>
             <hr />
-            <h4 id="processSelected">Seleccione o processo de referência</h4>
+            <h4 id="processSelected">Escolha o processo</h4>
             <div class="row" style="height: 120px; ">
                 <div class="col-sm-10">
                     <br />
@@ -77,10 +77,10 @@
             </div>
             <br />
             <div id="infoFrequency" class="alert alert-info" role="alert" style="width:95%;display: none;">
-                <strong>Informação!</strong> O grafo indica a frequência de cada atividade do processo seleccionado.
+                <strong>Informação!</strong> O grafo indica a frequência de cada atividade do processo selecionado.
             </div>
             <div id="infoPerformance" class="alert alert-info" role="alert" style="width:95%;display: none;">
-                <strong>Informação!</strong> O grafo indica a performance, <strong>em minutos</strong>, de cada atividade do processo seleccionado.
+                <strong>Informação!</strong> O grafo indica a performance, <strong>em minutos</strong>, de cada atividade do processo selecionado.
             </div>
             <!--<div id="cardInfo" class="card">
                 <div class="card-body">
@@ -287,7 +287,7 @@
             success: function (response) {
                 if (response.success) {
                     $('#processSelected').empty();
-                    $('#processSelected').text('Processo Seleccionado: ' + process.nameProcess);
+                    $('#processSelected').text('Processo selecionado: ' + process.nameProcess);
                     process.data = response.request;
                     loading(divLoader, divPage);
                     centerButton.style.display = "block";
