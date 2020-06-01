@@ -7,7 +7,7 @@
 @addTagHelper *, Kendo.Mvc
 
 
-<div class="container">
+<!--<div class="container">
     <div class="k-card">
 
         <div class="k-card-header">
@@ -82,7 +82,68 @@
             </form>
         </div>
     </div>
+</div>-->
+
+<div class="account-pages mt-5 mb-5">
+    <div class="container">
+        <div class="col-md-8 col-lg-6 col-xl-5">
+
+            <div class="card bg-pattern">
+                <div class="card-body p-4">
+                    <div class="text-center w-75 m-auto">
+                        <div class="auth-logo">
+                            <h4>PMVIZ</h4>
+                        </div>
+                        <p class="text-muted mb-4 mt-3">Create your account here.</p>
+                    </div>
+                    <form method="post">
+                        <div class="form-group">
+                            <label for="username">Username</label>
+                            <input class="form-control" type="text" name="username" placeholder="Enter your username" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="name">Name</label>
+                            <input class="form-control" type="text" name="name" placeholder="Enter your name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email address</label>
+                            <input class="form-control" type="email" name="email" required placeholder="Enter your email">
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <div class="input-group input-group-merge">
+                                <input type="password" name="password" class="form-control" placeholder="Enter your password">
+                                <div class="input-group-append" data-password="false">
+                                    <div class="input-group-text">
+                                        <span class="password-eye"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirmpassword">Confirm Password</label>
+                            <div class="input-group input-group-merge">
+                                <input type="password" name="confirmpassword" class="form-control" placeholder="Enter your password again">
+                                <div class="input-group-append" data-password="false">
+                                    <div class="input-group-text">
+                                        <span class="password-eye"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group mb-0 text-center">
+                            <button class="btn btn-success btn-block" type="submit"> Sign Up </button>
+                            <p>Already have account?  <a href="/login"><b>Sign In</b></a></p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+
+<!-- end page -->
 <style>
     #fieldlist {
         margin: 0;
