@@ -10,29 +10,27 @@
     ViewData["Title"] = "Manage Access";
 }
 
-<div class="container">
-    <form method="post" id="ticketsForm" kendo-validator="true">
-        <label for="role" class="required">Role to allow/restrict access to</label>
-        <br />
-        @(Html.Kendo().ComboBox()
-                    .Name("role")
-                    .Placeholder("Choose a role")
-                    .BindTo(roles)
-                    .HtmlAttributes(new { required = "required", @class = "inputfield" })
-        )
-
-        <button class="k-button k-primary" type="submit">Submit</button>
-    </form>
-</div>
-<br />
-@if (ViewBag.Success != null)
-{
-<div class="alert alert-success" role="alert">
-    @ViewBag.Success
-</div>
-}
-<div id="example" role="application">
-    <div class="demo-section k-content wide">
+<div class="row">
+    <div class="col-md-3">
+        <form method="post">
+            <label for="role" class="required">Role to allow/restrict access to</label>
+            <select name="role" class="btn-sm btn-light dropdown-toggle" required>
+                    @foreach (var r in roles)
+                    {
+                        <option value="@r">@r</option>                 
+                    }
+            </select>
+            <button class="btn-sm btn-primary" type="submit">Submit</button>
+        </form>
+    </div>
+    <br />
+    @if (ViewBag.Success != null)
+    {
+        <div class="alert alert-success" role="alert">
+            @ViewBag.Success
+        </div>
+    }
+    <div class="col">
         <form action='@Url.Action("Save","Authorization")' method="post">
             <input type="hidden" name="roleChosen" value="@role" />
             <label for="allowed" id="authorization">Allowed</label>
@@ -66,11 +64,11 @@
                     .Add("onAdd")
                 )
             )
-            <button class="k-button k-primary" type="submit">Save</button>
-
+            <button class="btn-sm btn-primary" type="submit">Save</button>
         </form>
     </div>
 </div>
+
 <script>
     function onAdd(e) {
     }
