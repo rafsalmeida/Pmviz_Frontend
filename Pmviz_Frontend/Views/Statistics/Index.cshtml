@@ -2,9 +2,8 @@
     IEnumerable<Pmviz_Frontend.Models.Log> allProcesses = ViewData["processes"] as IEnumerable<Pmviz_Frontend.Models.Log>;
 }
 @using Kendo.Mvc.UI
-@{ ViewBag.Title = "All Processes";}
+@{ ViewBag.Title = "My Stats";}
 
-<h4 style="text-align:center">All Processes</h4>
 @if (ViewBag.ErrorProcess != null)
 {
     <div class="alert alert-danger" role="alert">
@@ -16,7 +15,7 @@
 }
 @if (allProcesses != null)
 {
-    <div class="container k-content" style="height:auto">
+    <!--<div class="container k-content" style="height:auto">
         @(Html.Kendo().Grid(allProcesses)
             .Name("Grid")
             .Columns(columns =>
@@ -41,17 +40,54 @@
             .HtmlAttributes(new { style = "width:1000px" })
 
         )
+    </div>-->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="header-title">Processes</h4>
+                    <div class="table-responsive">
+                        <table id="scroll-horizontal-datatable" class="table table-dark dt-responsive nowrap w-100">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Description</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (Pmviz_Frontend.Models.Log log in allProcesses)
+                                {
+                                    <tr>
+                                        <td class="id">@log.Id</td>
+                                        <td>@log.Name</td>
+                                        <td>@log.Description</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-rounded btn-primary stats">Statistics</button>
+                                        </td>
+                                    </tr>
+
+                                }
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
 
 }
 
 <script>
+    $(".stats").click(function() {
+        var $row = $(this).closest("tr");    // Find the row
+        var $text = $row.find(".id").text(); // Find the text
 
-    function showStats(e) {
-        e.preventDefault();
-        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
-        window.location = '@Url.Action("Process","Statistics")?id=' + dataItem.Id
+        window.location = '@Url.Action("Process","Statistics")?id=' + $text
 
-    }
+    });
+
 </script>

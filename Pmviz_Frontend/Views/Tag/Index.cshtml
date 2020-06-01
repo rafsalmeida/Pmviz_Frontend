@@ -114,41 +114,43 @@
                     .ServerOperation(false)
                  )
                 )-->
-                <div class="table-responsive">
-                    <h5>Parts</h5>
-                    <table class="table table-dark dt-responsive nowrap w-100">
-                        <thead>
+            <div class="table-responsive">
+                <h5>Parts</h5>
+                <table id="scroll-horizontal-datatable" class="table table-dark dt-responsive nowrap w-100">
+                    <thead>
+                        <tr>
+                            <th>Code</th>
+                            <th>Description</th>
+                            <th>RFID</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (Pmviz_Frontend.Models.Part a in parts)
+                        {
                             <tr>
-                                <th>Code</th>
-                                <th>Description</th>
-                                <th>RFID</th>
-                        </thead>
-                        <tbody>
-                            @foreach (Pmviz_Frontend.Models.Part a in parts)
-                            {
-                                <tr>
-                                    <td class="id">@a.Code</td>
-                                    <td>@a.Description</td>
-                                    @if (a.TagRfid == null)
-                                    {
-                                        <td>-</td>
+                                <td class="id">@a.Code</td>
+                                <td>@a.Description</td>
+                                @if (a.TagRfid == null)
+                                {
+                                    <td>-</td>
 
-                                    }
-                                    else
-                                    {
-                                        <td>@a.TagRfid</td>
+                                }
+                                else
+                                {
+                                    <td>@a.TagRfid</td>
 
-                                    }
+                                }
                                 <td>
                                     <button class="btn btn-sm btn-rounded btn-primary tag">Tag</button>
                                 </td>
-                                </tr>
+                            </tr>
 
-                            }
+                        }
 
-                        </tbody>
-                    </table>
-                </div>
+                    </tbody>
+                </table>
+            </div>
 
             }
             else
