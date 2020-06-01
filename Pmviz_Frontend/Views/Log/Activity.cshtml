@@ -122,7 +122,7 @@ else
                         .Visible(true)
                         .Template("#= dataItem.MedianActivityFormatted #")
                     )
-            )
+                )
             }
             else
             {
@@ -146,7 +146,7 @@ else
                         .Visible(true)
                         .Template("#= dataItem.MedianActivityFormatted #")
                     )
-            )
+                )
             }
         </div>
         <div id="meanChart">
@@ -172,7 +172,7 @@ else
                         .Visible(true)
                         .Template("#= dataItem.MeanActivityFormatted #")
                     )
-            )
+                )
             }
             else
             {
@@ -196,12 +196,12 @@ else
                         .Visible(true)
                         .Template("#= dataItem.MeanActivityFormatted #")
                     )
-            )
+                )
             }
 
         </div>
 
-        <div class="container k-content" style="height:auto">
+        <!--<div class="container" style="height:auto">
 
             @(Html.Kendo().Grid(Model)
                     .Name("Grid")
@@ -230,12 +230,42 @@ else
                     .HtmlAttributes(new { style = "width:1000px" })
             )
 
-        </div>
+        </div>-->
+        <div class="table-responsive">
+            <table id="scroll-horizontal-datatable" class="table table-dark dt-responsive nowrap w-100">
+                <thead>
+                    <tr>
+                        <th>Frequency</th>
+                        <th>Mean Duration</th>
+                        <th>Median Duration</th>
+                        <th>Minimum Duration</th>
+                        <th>Maximum Duration</th>
+                        <th>Activity</th>
+                        <th>Relative Frequency</th>
+                </thead>
+                <tbody>
+                    @foreach (Pmviz_Frontend.Models.ActivityFreq a in Model)
+                    {
+                        <tr>
+                            <td>@a.Frequency</td>
+                            <td>@a.MeanActivityFormatted</td>
+                            <td>@a.MedianActivityFormatted</td>
+                            <td>@a.MinActivityFormatted</td>
+                            <td>@a.MaxActivityFormatted</td>
+                            <td>@a.Activity</td>
+                            <td>@a.RelativeFrequency</td>
+                        </tr>
 
+                    }
+
+                </tbody>
+            </table>
+        </div>
 
 
     }
 }
+
 
 <script>
     $(document).ready(function () {
