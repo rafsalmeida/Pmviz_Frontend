@@ -110,6 +110,15 @@
                             <input class="form-control" type="email" name="email" required placeholder="Enter your email">
                         </div>
                         <div class="form-group">
+                            <label for="role">Role</label>
+                            <br />
+                            <select name="activity" class="form-control btn-sm btn-light dropdown-toggle" required>
+                                @foreach (String m in Model){
+                                    <option value="@m"> @m</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="form-group">
                             <label for="password">Password</label>
                             <div class="input-group input-group-merge">
                                 <input type="password" name="password" class="form-control" placeholder="Enter your password">

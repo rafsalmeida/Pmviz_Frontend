@@ -17,229 +17,236 @@
 }
 
 <h4 style="text-align:center">Resources Statistics</h4>
-<div class="container" style="text-align:center">
-    <h6>Choose the type of statistics and the activity to see the results:</h6>
-</div>
-
-<div class="container" style="text-align:center">
-    @if (ViewBag.ErrorActivity != null)
-    {
-        <div class="alert alert-danger" role="alert">
-            @ViewBag.ErrorActivity
-        </div>
-    }
-    @if (activities != null)
-    {
-        <form method="post" action='@Url.Action("Resource", "Log", new { id = processId })'>
-            @if (type == "mean")
+<div class="row">
+    <div class="col-md-3 col-xl-3">
+        <div class="card-box">
+            <h4 class="text-dark my-1">Resources Statistics</h4>
+            @if (ViewBag.ErrorActivity != null)
             {
-                <input type="radio" name="type" value="mean" checked>
+                <div class="alert alert-danger" role="alert">
+                    @ViewBag.ErrorActivity
+                </div>
             }
-            else
+            @if (activities != null)
             {
-                <input type="radio" name="type" value="mean">
-
-            }
-            <label for="mean">Resources Mean Times</label>
-            &nbsp;&nbsp;&nbsp;
-            @if (type == "effort")
-            {
-                <input type="radio" name="type" value="effort" checked>
-            }
-            else
-            {
-                <input type="radio" name="type" value="effort">
-            }
-            <label for="effort">Resources Effort</label>
-            <br />
-
-            <select name="activity" class="inputfield" required>
-
-                @foreach (var act in activities)
+                <form method="post" action='@Url.Action("Resource", "Log", new { id = processId })'>
+                @if (type == "mean")
                 {
-                    if (activityChosen == act.Id.ToString())
+                    <input type="radio" name="type" value="mean" checked>
+                }
+                else
+                {
+                    <input type="radio" name="type" value="mean">
+
+                }
+                <label for="mean">Resources Mean Times</label>
+                <br />
+                @if (type == "effort")
+                {
+                    <input type="radio" name="type" value="effort" checked>
+                }
+                else
+                {
+                    <input type="radio" name="type" value="effort">
+                }
+                <label for="effort">Resources Effort</label>
+                <br />
+
+                <select name="activity" class="btn-sm btn-light dropdown-toggle" required>
+
+                    @foreach (var act in activities)
                     {
-                        <option value="@act.Id" selected>@act.Id - @act.Name</option>
+                        if (activityChosen == act.Id.ToString())
+                        {
+                            <option value="@act.Id" selected>@act.Id - @act.Name</option>
+                        }
+                        else
+                        {
+                            <option value="@act.Id">@act.Id - @act.Name</option>
+                        }
+                    }
+
+
+                </select>
+                <br />
+                <br />
+                <div>
+                    <button class="btn-xs btn-primary" type="submit">Submit</button>
+                </div>
+            </form>
+            }
+            else
+            {
+                <div>
+                    <a href='@Url.Action("Index","Log")' class="btn btn-danger">Go Back</a>
+                </div>
+            }
+        </div>
+    </div>
+    <div class="col">
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger" role="alert">
+                @ViewBag.Error
+            </div>
+            <div class="container" style="text-align:center">
+                <a href='@Url.Action("Index","Log")' class="btn btn-danger">Go Back</a>
+            </div>
+        }
+        else
+        {
+            @if ((type == "mean" || type == "effort") && (meanMinutesAll != null || totalEffort != null))
+            {
+                <div class="card-box">
+                    @if (type == "mean")
+                    {
+                        <div>
+                            @(Html.Kendo().Chart(allResources)
+                                .Name("chart")
+                                .Title("Mean time in minutes")
+                                .Legend(legend => legend
+                                    .Position(ChartLegendPosition.Top)
+                                )
+                                .Series(series =>
+                                {
+                                    series.Column(a => a.MeanMillis).Name("Mean in Minutes").CategoryField("Resource");
+                                    series.Line(a => a.GeneralMean).Name("General Mean in Minutes");
+                                })
+                                .CategoryAxis(axis => axis
+                                    .Name("series-axis")
+                                    .Line(line => line.Visible(true))
+                                )
+                                .Tooltip(tooltip => tooltip
+                                    .Visible(true)
+                                    .Format("{0}%")
+                                    .Template("#= series.name #: #= value # minutes")
+                                )
+                                .ChartArea(x => x.Height(210))
+                                .Pannable(pannable => pannable
+                                    .Lock(ChartAxisLock.Y)
+                                )
+                                .Zoomable(zoomable => zoomable
+                                    .Mousewheel(mousewheel => mousewheel.Lock(ChartAxisLock.Y))
+                                    .Selection(selection => selection.Lock(ChartAxisLock.Y))
+                                )
+
+
+                            )
+                        </div>
+
                     }
                     else
                     {
-                        <option value="@act.Id">@act.Id - @act.Name</option>
+                        <div>
+                            @(Html.Kendo().Chart(allResourcesEffort)
+                                .Name("chart")
+                                .Title("Effort time in minutes")
+                                .Legend(legend => legend
+                                    .Position(ChartLegendPosition.Top)
+                                )
+                                .Series(series =>
+                                {
+                                    series.Column(a => a.EffortMillis).Name("Effort time Minutes").CategoryField("Resource");
+                                })
+                                .CategoryAxis(axis => axis
+                                    .Name("series-axis")
+                                    .Line(line => line.Visible(true))
+                                )
+                                .Tooltip(tooltip => tooltip
+                                    .Visible(true)
+                                    .Format("{0}%")
+                                    .Template("#= series.name #: #= value # minutes")
+                                )
+                                .ChartArea(x => x.Height(210))
+                                .Pannable(pannable => pannable
+                                    .Lock(ChartAxisLock.Y)
+                                )
+                                .Zoomable(zoomable => zoomable
+                                    .Mousewheel(mousewheel => mousewheel.Lock(ChartAxisLock.Y))
+                                    .Selection(selection => selection.Lock(ChartAxisLock.Y))
+                                )
+
+
+                            )
+                        </div>
                     }
-                }
-
-
-            </select>
-
-            <br />
-            <br />
-            <div>
-                <button class="k-button k-primary" type="submit">Submit</button>
-            </div>
-        </form>
-    }
-    else
-    {
-        <div>
-            <a href='@Url.Action("Index","Log")' class="btn btn-danger">Go Back</a>
-        </div>
-    }
+                </div>
+            }
+        }
+    </div>
 </div>
 <br />
 
 
-@if (ViewBag.Error != null)
+@if ((type == "mean" || type == "effort") && (meanMinutesAll != null || totalEffort != null))
 {
-    <div class="alert alert-danger" role="alert">
-        @ViewBag.Error
-    </div>
-    <div class="container" style="text-align:center">
-        <a href='@Url.Action("Index","Log")' class="btn btn-danger">Go Back</a>
-    </div>
-}
-else
-{
-    @if ((type == "mean" || type == "effort") && (meanMinutesAll != null || totalEffort != null))
-    {
-        <div class="row">
-            <div class="col">
-                <div class="container">
-                    <div class="k-card">
-                        <div class="k-card-header">
-                            <h6 class="k-card-subtitle">Information</h6>
-                        </div>
-                        <div class="k-card-body">
-                            @if (type == "mean")
-                            {
-                                <h6>
-                                    General mean time: @meanMinutesAll minutes
-                                </h6>
-
-                            }
-                            else
-                            {
-                                <h6>
-                                    Total Effort: @totalEffort minutes
-                                </h6>
-                            }
-
-                            <h6>
-                                Activity Chosen: @activityChosen
-                            </h6>
-                        </div>
-                    </div>
+    <div class="row">
+        <div class="col">
+            <div class="card text-xs-center">
+                <div class="card-header">
+                    Information
+                </div>
+                <div class="card-body">
+                    @if (type == "mean")
+                    {
+                        <h5>
+                            General mean time: @meanMinutesAll minutes
+                        </h5>
+                    }
+                    else
+                    {
+                        <h5>
+                            Total Effort: @totalEffort minutes
+                        </h5>
+                    }
+                    <h5>
+                        Activity Chosen: @activityChosen
+                    </h5>
+                </div>
+            </div> <!-- end card-box-->
+        </div> <!-- end col -->
+        <div class="col">
+            <div class="card text-xs-center">
+                <div class="card-header">
+                    Parts
+                </div>
+                <div class="card-body">
+                    @if (parts == null)
+                    {
+                        <h5>No parts were involved.</h5>
+                    }
+                    else
+                    {
+                        foreach (var p in parts)
+                        {
+                            <h5>@p</h5>
+                        }
+                    }
+                </div>
                 </div>
             </div>
-            <div class="col">
-                <div class="container">
-                    <div class="k-card">
-                        <div class="k-card-header">
-                            <h6 class="k-card-subtitle">Parts</h6>
-                        </div>
-                        <div class="k-card-body">
-                            @if (parts == null)
-                            {
-                                <h6>No parts were involved.</h6>
-                            }
-                            else
-                            {
-                                foreach (var p in parts)
-                                {
-                                    <h6>@p</h6>
-                                }
-                            }
-                        </div>
-                    </div>
+        <div class="col">
+            <div class="card text-xs-center">
+                <div class="card-header">
+                    Moulds
                 </div>
-            </div>
-            <div class="col">
-                <div class="container">
-                    <div class="k-card">
-                        <div class="k-card-header">
-                            <h6 class="k-card-subtitle">Moulds</h6>
-                        </div>
-                        <div class="k-card-body">
-                            @if (moulds == null)
-                            {
-                                <h6>No moulds were involved.</h6>
-                            }
-                            else
-                            {
-                                foreach (var m in moulds)
-                                {
-                                    <h6>@m</h6>
-                                }
-                            }
-                        </div>
-                    </div>
+                <div class="card-body">
+                    @if (moulds == null)
+                    {
+                        <h5>No moulds were involved.</h5>
+                    }
+                    else
+                    {
+                        foreach (var m in moulds)
+                        {
+                            <h5>@m</h5>
+                        }
+                    }
                 </div>
             </div>
         </div>
-
-        @if (type == "mean")
-        {
-            <div class="demo-section k-content wide">
-                @(Html.Kendo().Chart(allResources)
-                    .Name("chart")
-                    .Title("Mean time in minutes")
-                    .Legend(legend => legend
-                        .Position(ChartLegendPosition.Top)
-                    )
-                    .ChartArea(chartArea => chartArea
-                        .Background("transparent")
-                    )
-                    .Series(series =>
-                    {
-                        series.Column(a => a.MeanMillis).Name("Mean in Minutes").CategoryField("Resource");
-                        series.Line(a => a.GeneralMean).Name("General Mean in Minutes");
-                    })
-                    .CategoryAxis(axis => axis
-                        .Name("series-axis")
-                        .Line(line => line.Visible(true))
-                    )
-                    .Tooltip(tooltip => tooltip
-                        .Visible(true)
-                        .Format("{0}%")
-                        .Template("#= series.name #: #= value # minutes")
-                    )
-
-
-                )
-            </div>
-
-        }
-        else
-        {
-            <div class="demo-section k-content wide">
-                @(Html.Kendo().Chart(allResourcesEffort)
-                    .Name("chart")
-                    .Title("Effort time in minutes")
-                    .Legend(legend => legend
-                        .Position(ChartLegendPosition.Top)
-                    )
-                    .ChartArea(chartArea => chartArea
-                        .Background("transparent")
-                    )
-                    .Series(series =>
-                    {
-                        series.Column(a => a.EffortMillis).Name("Effort time Minutes").CategoryField("Resource");
-                    })
-                    .CategoryAxis(axis => axis
-                        .Name("series-axis")
-                        .Line(line => line.Visible(true))
-                    )
-                    .Tooltip(tooltip => tooltip
-                        .Visible(true)
-                        .Format("{0}%")
-                        .Template("#= series.name #: #= value # minutes")
-                    )
-
-
-                )
-            </div>
-        }
-
-
-    }
-
+    </div>
 }
+
+
 
