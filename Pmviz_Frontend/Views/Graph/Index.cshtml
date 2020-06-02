@@ -256,7 +256,7 @@
             return current_datetime.getDate() + "-" + (current_datetime.getMonth() + 1) + "-" + current_datetime.getFullYear();
         }
     }
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////// response-true
     $("#inputProcesses").change(function () {
         process.idProcess = $(this).val();
         process.nameProcess = $('#inputProcesses option:selected').text();
@@ -295,7 +295,7 @@
 
         });
     });
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////// response-true
     $("#btnCompareGraph").click(function () {
         var moulds = Array.from(mouldsCase.selectedOptions).map(option => option.text);
         var activities = Array.from(activitiesCase.selectedOptions).map(option => option.text);
