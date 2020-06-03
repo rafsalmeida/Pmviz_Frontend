@@ -20,30 +20,26 @@
             <form method="post" action='@Url.Action("Activity","Log", new {id = processId})'>
                 @if (type == "frequency")
                 {
-                    <input type="radio" name="type" value="frequency" checked>
+                    <input type="submit" class="btn btn-primary" name="type" value="Frequency and duration" disabled>
                 }
                 else
                 {
-                    <input type="radio" id="freq" name="type" value="frequency">
+                    <input type="submit" class="btn btn-primary" name="type" value="Frequency and duration">
                 }
-                <label for="frequency">Frequency and Duration</label>
+                <br />
                 <br />
                 @if (type == "effort")
                 {
-                    <input type="radio" name="type" value="effort" checked>
+                    <input type="submit" class="btn btn-primary" name="type" value="Effort" disabled>
                 }
                 else
                 {
-                    <input type="radio" name="type" value="effort">
+                    <input type="submit" class="btn btn-primary" name="type" value="Effort">
                 }
-                <label for="effort">Effort</label>
-                <div>
-                    <button class="btn-xs btn-primary" type="submit">Submit</button>
-                </div>
             </form>
         </div>
     </div>
-    <div class="col">
+    <div class="col reload">
         @if (ViewBag.Error != null)
         {
             <div class="alert alert-danger" role="alert">
@@ -244,7 +240,7 @@
 
 
 <div class="row">
-    @if (type == "frequency" || type == "effort")
+    @if (type == "frequency" || type == "effort" && ViewBag.Error == null)
     {
         @if (Model != null)
         {
@@ -253,13 +249,26 @@
                     <thead>
                         <tr>
                             <th>Frequency</th>
-                            <th>Mean Duration</th>
-                            <th>Median Duration</th>
-                            <th>Minimum Duration</th>
-                            <th>Maximum Duration</th>
+                            @if (type == "frequency")
+                            {
+                                <th>Mean Duration</th>
+                                <th>Median Duration</th>
+                                <th>Minimum Duration</th>
+                                <th>Maximum Duration</th>
+
+                            }
+                            else
+                            {
+                                <th>Mean Effort</th>
+                                <th>Median Effort</th>
+                                <th>Minimum Effort</th>
+                                <th>Maximum Effort</th>
+
+                            }
+
                             <th>Activity</th>
                             <th>Relative Frequency</th>
-                    </thead>
+</thead>
                     <tbody>
 
                         @foreach (Pmviz_Frontend.Models.ActivityFreq a in Model)
@@ -287,6 +296,7 @@
 
 
 <script>
+
     
     $(document).ready(function () {
 

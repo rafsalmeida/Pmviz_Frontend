@@ -47,7 +47,7 @@ namespace PmvizFrontend.Controllers
         {
             ViewData["processId"] = processId;
 
-            if (type == "frequency")
+            if (type == "Frequency and duration")
             {
                 #region Frequency 
                 ViewData["type"] = "frequency";
@@ -127,7 +127,7 @@ namespace PmvizFrontend.Controllers
                 #endregion
 
             }
-            else if(type == "effort")
+            else if(type == "Effort")
             {
                 #region Effort 
                 ViewData["type"] = "effort";
