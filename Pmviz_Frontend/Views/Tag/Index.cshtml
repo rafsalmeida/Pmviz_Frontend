@@ -21,9 +21,11 @@
         <form method="post" id="ticketsForm" action='@Url.Action("Mould","Tag")' kendo-validator="true">
             <label for="mouldSelected" class="required">Choose the mould</label>
             <br />
-            <select name="mouldSelected" class="btn-sm btn-light dropdown-toggle" required>
+            <select name="mouldSelected" class="btn-sm btn-light dropdown-toggle" id="mouldsList" required onchange="handleMoulds(this)">
                 @if (moulds != null)
                 {
+                    <option value="" disabled selected>Choose a mould</option>
+
                     @foreach (var mould in moulds)
                     {
                         if (chosenMould == mould.Code)
@@ -39,7 +41,7 @@
                 }
 
             </select>
-            <button class="btn-sm btn-primary" type="submit">Submit</button>
+            <button class="btn-sm btn-primary" type="submit" id="send" hidden>Submit</button>
         </form>
         <br />
         @if (TempData["ErrorConn"] != null)
@@ -168,6 +170,13 @@
 
 
 <script type="text/javascript">
+    var processList = document.getElementById("mouldsList");
+    var btnSubmit = document.getElementById("send");
+
+    function handleMoulds(select) {
+        btnSubmit.click();
+    }
+
      $(".tag").click(function() {
         var $row = $(this).closest("tr");    // Find the row
         var $text = $row.find(".id").text(); // Find the text

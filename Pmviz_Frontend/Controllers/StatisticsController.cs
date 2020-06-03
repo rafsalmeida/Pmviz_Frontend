@@ -245,7 +245,6 @@ namespace Pmviz_Frontend.Controllers
         }
 
         [HttpPost]
-
         public async Task<IActionResult> GetActivities(string processId)
         {
 

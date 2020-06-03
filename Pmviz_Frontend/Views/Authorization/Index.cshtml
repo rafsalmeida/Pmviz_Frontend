@@ -15,17 +15,28 @@
         <div class="card-box">
             <form method="post">
                 <label for="role" class="required">Role to allow/restrict access to</label>
-                <select name="role" class="btn-sm btn-light dropdown-toggle" required>
+                <select name="role" class="btn-sm btn-light dropdown-toggle" required onchange="handleRole(this)">
+                    <option value="" disabled selected>Choose a role</option>
+
                     @foreach (var r in roles)
                     {
-                        <option value="@r">@r</option>
+                        if (role == r)
+                        {
+                            <option value="@r" selected>@r</option>
+
+                        }
+                        else
+                        {
+                            <option value="@r">@r</option>
+
+                        }
 
                     }
                 </select>
                 <br />
                 <br />
                 <div>
-                    <button class="btn-xs btn-primary" type="submit">Submit</button>
+                    <button class="btn-xs btn-primary" id="send" type="submit" hidden>Submit</button>
                 </div>
             </form>
         </div>
@@ -85,6 +96,12 @@
 <script>
     function onAdd(e) {
 
+    }
+
+    var btnSubmit = document.getElementById("send");
+
+    function handleRole(select) {
+        btnSubmit.click();
     }
 </script>
 <style>

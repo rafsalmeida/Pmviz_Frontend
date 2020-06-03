@@ -24,7 +24,14 @@ namespace Pmviz_Frontend.Controllers
                     if (status == true)
                     {
                         var roles = JsonConvert.DeserializeObject<List<String>>(apiResponse);
-                        roles.Remove("Administrator");
+                        string roleToDelete ="";
+                        foreach(var r in roles){
+                            if(r.Trim() == "Administrator")
+                            {
+                                roleToDelete = r;
+                            }
+                        }
+                        roles.Remove(roleToDelete);
                         ViewData["roles"] = roles;
                         return View();
                     }
@@ -99,6 +106,15 @@ namespace Pmviz_Frontend.Controllers
                     if (status == true)
                     {
                         var roles = JsonConvert.DeserializeObject<List<String>>(apiResponse);
+                        string roleToDelete = "";
+                        foreach (var r in roles)
+                        {
+                            if (r.Trim() == "Administrator")
+                            {
+                                roleToDelete = r;
+                            }
+                        }
+                        roles.Remove(roleToDelete);
                         ViewData["roles"] = roles;
                     }
                     else
