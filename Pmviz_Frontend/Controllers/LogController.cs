@@ -47,7 +47,7 @@ namespace PmvizFrontend.Controllers
         {
             ViewData["processId"] = processId;
 
-            if (type == "Frequency and duration")
+            if (type == "frequency")
             {
                 #region Frequency 
                 ViewData["type"] = "frequency";
@@ -127,7 +127,7 @@ namespace PmvizFrontend.Controllers
                 #endregion
 
             }
-            else if(type == "Effort")
+            else if(type == "effort")
             {
                 #region Effort 
                 ViewData["type"] = "effort";
@@ -230,7 +230,6 @@ namespace PmvizFrontend.Controllers
                     {
                         // get the list of activities
                         var activityList = JsonConvert.DeserializeObject<List<Activity>>(apiResponse);
-                        activityList.RemoveAt(6);
                         ViewData["activities"] = activityList;
                         ViewData["processId"] = processId;
                         return View();
@@ -270,7 +269,6 @@ namespace PmvizFrontend.Controllers
                         {
                             // get the list of activities
                             var activityList = JsonConvert.DeserializeObject<List<Activity>>(apiResponse);
-                            activityList.RemoveAt(6);
                             ViewData["activities"] = activityList;
                             ViewData["processId"] = processId;
                         }
@@ -401,7 +399,6 @@ namespace PmvizFrontend.Controllers
                         {
                             // get the list of activities
                             var activityList = JsonConvert.DeserializeObject<List<Activity>>(apiResponse);
-                            activityList.RemoveAt(6);
                             ViewData["activities"] = activityList;
                             ViewData["processId"] = processId;
                         }
@@ -529,7 +526,6 @@ namespace PmvizFrontend.Controllers
                         {
                             // get the list of activities
                             var activityList = JsonConvert.DeserializeObject<List<Activity>>(apiResponse);
-                            activityList.RemoveAt(6);
                             ViewData["activities"] = activityList;
                             ViewData["processId"] = processId;
                         }

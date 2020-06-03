@@ -28,51 +28,58 @@
             }
             @if (activities != null)
             {
+                <h6>Choose the type:</h6>
                 <form method="post" action='@Url.Action("Resource", "Log", new { id = processId })'>
-                @if (type == "mean")
-                {
-                    <input type="radio" name="type" value="mean" checked>
-                }
-                else
-                {
-                    <input type="radio" name="type" value="mean">
-
-                }
-                <label for="mean">Resources Mean Times</label>
-                <br />
-                @if (type == "effort")
-                {
-                    <input type="radio" name="type" value="effort" checked>
-                }
-                else
-                {
-                    <input type="radio" name="type" value="effort">
-                }
-                <label for="effort">Resources Effort</label>
-                <br />
-
-                <select name="activity" class="btn-sm btn-light dropdown-toggle" required>
-
-                    @foreach (var act in activities)
+                    @if (type == "mean")
                     {
-                        if (activityChosen == act.Id.ToString())
-                        {
-                            <option value="@act.Id" selected>@act.Id - @act.Name</option>
-                        }
-                        else
-                        {
-                            <option value="@act.Id">@act.Id - @act.Name</option>
-                        }
+                        <input type="radio" name="type" value="mean" checked>
                     }
+                    else
+                    {
+                        <input type="radio" name="type" value="mean" onclick="handleMiner(this);">
+
+                    }
+                    <label for="mean">Resources Mean Times</label>
+                    <br />
+                    @if (type == "effort")
+                    {
+                        <input type="radio" name="type" value="effort" checked>
+                    }
+                    else
+                    {
+                        <input type="radio" name="type" value="effort" onclick="handleMiner(this);">
+                    }
+                    <label for="effort">Resources Effort</label>
+                    <br />
+                    <div id="acts">
+                        <h6>Choose the activity:</h6>
+                        <select name="activity" class="btn-sm btn-light dropdown-toggle" id="actv" required onchange="handleAct(this)">
+                            <option value="" disabled selected>Choose an activity</option>
+
+                            @foreach (var act in activities)
+                            {
+                                if (activityChosen == act.Id.ToString())
+                                {
+                                    <option value="@act.Id" selected>@act.Id - @act.Name</option>
+                                }
+                                else
+                                {
+                                    <option value="@act.Id">@act.Id - @act.Name</option>
+                                }
+                            }
 
 
-                </select>
-                <br />
-                <br />
-                <div>
-                    <button class="btn-xs btn-primary" type="submit">Submit</button>
-                </div>
-            </form>
+                        </select>
+                    </div>
+
+
+
+                    <br />
+                    <br />
+                    <div>
+                        <button class="btn-xs btn-primary" type="submit" id="send" hidden>Submit</button>
+                    </div>
+                </form>
             }
             else
             {
@@ -246,6 +253,34 @@
         </div>
     </div>
 }
+
+<script>
+    var select = document.getElementById("acts");
+    var selectList = document.getElementById("actv");
+    var btnSubmit = document.getElementById("send");
+
+    if (selectList.value == "") {
+        select.style.display = "none";
+
+    }
+    
+
+    function handleAct(selectBox) {
+        btnSubmit.click()
+    }
+
+    function handleMiner(radio) {
+        if (radio.value != "mean" || radio.value != "effort") {
+            select.style.display = "block";
+        }
+        if (selectList.value != "") {
+            btnSubmit.click()
+
+        }
+    }
+
+
+</script>
 
 
 

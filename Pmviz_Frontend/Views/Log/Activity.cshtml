@@ -20,23 +20,27 @@
             <form method="post" action='@Url.Action("Activity","Log", new {id = processId})'>
                 @if (type == "frequency")
                 {
-                    <input type="submit" class="btn btn-primary" name="type" value="Frequency and duration" disabled>
+                    <input type="radio" class="btn btn-primary" name="type" value="frequency" checked>
                 }
                 else
                 {
-                    <input type="submit" class="btn btn-primary" name="type" value="Frequency and duration">
+                    <input type="radio" class="btn btn-primary" name="type" value="frequency" onclick="handle(this);">
                 }
+                <label for="frequency">Frequency and duration</label>
                 <br />
                 <br />
                 @if (type == "effort")
                 {
-                    <input type="submit" class="btn btn-primary" name="type" value="Effort" disabled>
+                    <input type="radio" class="btn btn-primary" name="type" value="effort" checked>
                 }
                 else
                 {
-                    <input type="submit" class="btn btn-primary" name="type" value="Effort">
+                    <input type="radio" class="btn btn-primary" name="type" value="effort" onclick="handle(this);">
                 }
+                <label for="effort">Effort</label>
+                <button type="submit" id="send" hidden></button>
             </form>
+
         </div>
     </div>
     <div class="col reload">
@@ -296,7 +300,11 @@
 
 
 <script>
+     var btnSubmit = document.getElementById("send");
 
+    function handle(radio) {
+        btnSubmit.click()
+    }
     
     $(document).ready(function () {
 
