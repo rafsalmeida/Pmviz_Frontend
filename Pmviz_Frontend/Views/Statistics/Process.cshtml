@@ -6,7 +6,7 @@
     var parts = ViewData["parts"] as List<String>;
     var meanMinutesAll = ViewData["meanMillis"];
     var meanMinutesUser = ViewData["meanMillisUser"];
-
+    IEnumerable<Pmviz_Frontend.Models.Log> allProcesses = ViewData["processes"] as IEnumerable<Pmviz_Frontend.Models.Log>;
 }
 @{
     ViewData["Title"] = "My Statistics";
@@ -18,31 +18,51 @@
             <h4 class="text-dark my-1">My Statistics</h4>
             @if (activities != null)
             {
-                <form action='@Url.Action("Process", "Statistics", new { id = processId })' method="post" id="ticketsForm" kendo-validator="true">
-                    <label for="role" class="required">Choose an activity to see your statistics:</label>
-                    <br />
-                    <select name="activity" class="btn-sm btn-light dropdown-toggle" required>
+        <form action='@Url.Action("Process", "Statistics", new { id = processId })' method="post" id="ticketsForm" kendo-validator="true">
+            <label for="processList" class="required">Choose another process:</label>
+            <br />
+            <select name="processId" id="processList" class="btn-sm btn-light dropdown-toggle" required">
+                <option value="" disabled selected>Choose another process</option>
 
-                        @foreach (var act in activities)
-                        {
-                            if (activityChosen == act.Id.ToString())
-                            {
-                                <option value="@act.Id" selected>@act.Id - @act.Name</option>
-                            }
-                            else
-                            {
-                                <option value="@act.Id">@act.Id - @act.Name</option>
-                            }
-                        }
+                @foreach (var p in allProcesses)
+                {
+                    if (processId == p.Id.ToString())
+                    {
+                        <option value="@p.Id" selected>@p.Id - @p.Name</option>
+                    }
+                    else
+                    {
+                        <option value="@p.Id">@p.Id - @p.Name</option>
+                    }
+                }
 
 
-                    </select>
-                    <br />
-                    <br />
-                    <div>
-                        <button class="btn-xs btn-primary" type="submit">Submit</button>
-                    </div>
-                </form>
+            </select>
+            <br />
+            <br />
+            <label for="selectList" class="required">Choose an activity:</label>
+            <br />
+            <select name="activity" id="selectList" class="btn-sm btn-light dropdown-toggle" required onchange="handleAct(this)">
+                <option value="" disabled selected>Choose an activity</option>
+
+                @foreach (var act in activities)
+                {
+                    if (activityChosen == act.Id.ToString())
+                    {
+                        <option value="@act.Id" selected>@act.Id - @act.Name</option>
+                    }
+                    else
+                    {
+                        <option value="@act.Id">@act.Id - @act.Name</option>
+                    }
+                }
+
+            </select>
+            <br />
+            <div>
+                <button class="btn-xs btn-primary" id="send" type="submit" hidden>Submit</button>
+            </div>
+        </form>
             }
         </div>
     </div>
@@ -118,9 +138,12 @@
                     </h5>
                     <h5>
                         User mean time: @meanMinutesUser minutes
-                    </h5>                   
+                    </h5>
                     <h5>
                         Activity Chosen: @activityChosen
+                    </h5>
+                    <h5>
+                        Process Chosen: @processId
                     </h5>
                 </div>
             </div> <!-- end card-box-->
@@ -167,5 +190,41 @@
         </div>
     </div>
 }
+
+<script>
+
+    var selectList = document.getElementById("selectList");
+    var processList = document.getElementById("processList");
+    var btnSubmit = document.getElementById("send");
+
+    var activitiesNew;
+
+    var processId = processList.options[processList.selectedIndex].value
+
+    function handleAct(selectBox) {
+        btnSubmit.click()
+    }
+
+    $("#processList").change(function () {
+        $.ajax({
+            type: "POST",
+            data: { processId: processId },
+            url: "/Statistics/GetActivities",
+            dataType: 'json',
+            success: function (response) {
+                if (response.success) {
+                    var information = JSON.parse(response.request);
+                    activitiesNew = information;
+                    selectList.value = information
+                } 
+            },
+            error: function (response) {
+                alert("error!");  //
+            }
+
+        });
+    });
+
+</script>
 
 
