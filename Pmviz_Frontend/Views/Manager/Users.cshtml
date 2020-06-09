@@ -1,6 +1,6 @@
 ﻿@model IEnumerable<Pmviz_Frontend.Models.User>
 @using Kendo.Mvc.UI
-@{ Layout = "_Layout"; ViewBag.Title = "All Users";}
+@{ ViewBag.Title = "All Users";}
 @(Html.Kendo().Grid(Model)
     .Name("Grid")
     .Columns(columns =>

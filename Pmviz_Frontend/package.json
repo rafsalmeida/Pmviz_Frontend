@@ -5,6 +5,7 @@
   "devDependencies": {
     "cytoscape": "3.14.0",
     "moment": "2.24.0",
-    "bootstrap-select": "1.13.17"
+    "bootstrap-select": "1.13.17",
+    "node-waves": "^0.7.6"
   }
 }

@@ -1,12 +1,11 @@
 ﻿@model IEnumerable<Pmviz_Frontend.Models.Log>
 @using Kendo.Mvc.UI
-@{ Layout = "_LayoutBoot"; ViewBag.Title = "All Processes";}
+@{ ViewBag.Title = "All Processes";}
 @using Microsoft.AspNetCore.Http;
 @{
     List<string> details = Context.Session.GetString("listDetails").Split(new char[] { ',' }).ToList();
 }
 
-<h4 style="text-align:center">All Processes</h4>
 
 @if (ViewBag.Error != null)
 {
@@ -24,54 +23,112 @@ else
     }
     else
     {
-<div class="container k-content" style="height:auto">
-    @(Html.Kendo().Grid(Model)
-        .Name("Grid")
-        .Columns(columns =>
-        {
-            columns.Bound(l => l.Id).Title("Id");
-            columns.Bound(l => l.Description).Title("Description").Width(200);
-            columns.Bound(l => l.NumberOfActivities).Title("Number of Activities");
-            columns.Bound(l => l.NumberOfCases).Title("Number of Cases");
-            columns.Bound(l => l.StartDate).Title("Start Date");
-            columns.Bound(l => l.EndDate).Title("End Date");
-            columns.Group(group => group
-                .Title("Statistics")
-                .Columns(info => { 
+        <!--<div class="container" style="height:auto">
+            @(Html.Kendo().Grid(Model)
+                .Name("Grid")
+                .Columns(columns =>
+                {
+                    columns.Bound(l => l.Id).Title("Id").HtmlAttributes(new { @class = "thead-dark" });
+                    columns.Bound(l => l.Description).Title("Description").Width(200);
+                    columns.Bound(l => l.NumberOfActivities).Title("Number of Activities");
+                    columns.Bound(l => l.NumberOfCases).Title("Number of Cases");
+                    columns.Bound(l => l.StartDate).Title("Start Date");
+                    columns.Bound(l => l.EndDate).Title("End Date");
                     if (!details.Contains("activityFrequency"))
                     {
-                        info.Command(command => command.Custom("Activities").Click("showDetails")).Width(110);
+                        columns.Command(command => command.Custom("Activities").Click("showDetails")).Width(110);
 
                     }
                     if (!details.Contains("resourcesStats"))
                     {
-                        info.Command(command => command.Custom("Resources").Click("showStats")).Width(130);
+                        columns.Command(command => command.Custom("Resources").Click("showStats")).Width(130);
                     }
-            
+
                 })
-            );
+                .Pageable()
+                .Navigatable()
+                .Sortable()
+                .Filterable()
+                .Scrollable(s => s.Height("auto"))
+                .DataSource(dataSource => dataSource
+                .Ajax()
+                .PageSize(20)
+                .ServerOperation(false)
+                )
+                .Resizable(resize => resize.Columns(true))
+                .HtmlAttributes(new { @class = "table table-dark table-responsive", style = "width:1000px" })
 
+            )
+        </div>-->
 
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="header-title">All Processes</h4>
+                        <div class="table-responsive">
+                            <table id="scroll-horizontal-datatable" class="table table-dark dt-responsive nowrap w-100">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Name</th>
+                                        <th>Number of cases</th>
+                                        <th>Number of activities</th>
+                                        <th>Start date</th>
+                                        <th>End date</th>
+                                        @if (!details.Contains("resourcesStats") && !details.Contains("activityFrequency"))
+                                        {
+                                            <th>Statistics</th>
+                                        }
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (Pmviz_Frontend.Models.Log log in Model)
+                                    {
+                                        <tr>
+                                            <td class="id">@log.Id</td>
+                                            <td>@log.Name</td>
+                                            <td>@log.NumberOfCases</td>
+                                            <td>@log.NumberOfActivities</td>
+                                            @if (log.StartDate == null)
+                                            {
+                                                <td>-</td>
+                                            }
+                                            else
+                                            {
+                                                <td>@log.StartDate</td>
+                                            }
+                                            @if (log.EndDate == null)
+                                            {
+                                                <td>-</td>
+                                            }
+                                            else
+                                            {
+                                                <td>@log.EndDate</td>
+                                            }
+                                        <td>
+                                            @if (!details.Contains("activityFrequency"))
+                                            {
+                                                <button class="btn btn-sm btn-rounded btn-primary activity"  >Activities</button>
+                                                <br />
+                                            }
+                                            @if (!details.Contains("resourcesStats"))
+                                            {
+                                                <button class="btn btn-sm btn-rounded btn-danger resource">Resources</button>
 
+                                            }
+                                        </td>
+                                        </tr>
 
-        })
-        .Pageable()
-        .Navigatable()
-        .Sortable()
-        .Groupable()
-        .Filterable()
-        .Scrollable(s => s.Height("auto"))
-        .DataSource(dataSource => dataSource
-        .Ajax()
-        .PageSize(20)
-        .ServerOperation(false)
-        )
-        .Resizable(resize => resize.Columns(true))
-        .HtmlAttributes(new { style = "width:1000px" })
+                                    }
 
-        )
-    </div>
-
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     }
 
 }
@@ -79,33 +136,22 @@ else
 
 <script type="text/javascript">
 
-    function showDetails(e) {
-        e.preventDefault();
-        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
-        window.location = '@Url.Action("Activity","Log")?id=' + dataItem.Id
+    $(".activity").click(function() {
+        var $row = $(this).closest("tr");    // Find the row
+        var $text = $row.find(".id").text(); // Find the text
 
-    }
+        window.location = '@Url.Action("Activity","Log")?id=' + $text
 
-    function showStats(e) {
-        e.preventDefault();
-        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
-        window.location = '@Url.Action("Resource","Log")?id=' + dataItem.Id
+    });
 
-    }
+    $(".resource").click(function() {
+        var $row = $(this).closest("tr");    // Find the row
+        var $text = $row.find(".id").text(); // Find the text
 
-    function showActivities(e) {
-        e.preventDefault();
-        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
-        window.location = '@Url.Action("Activities","Log")?id=' + dataItem.Id
+        window.location = '@Url.Action("Resource","Log")?id=' + $text
 
-    }
+    });
 
-    function showResources(e) {
-        e.preventDefault();
-        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
-        window.location = '@Url.Action("Resources","Log")?id=' + dataItem.Id
-
-    }
 
 </script>
 

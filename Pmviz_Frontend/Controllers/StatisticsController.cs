@@ -46,10 +46,34 @@ namespace Pmviz_Frontend.Controllers
             }
         }
 
-        public async Task<IActionResult> Process([FromQuery(Name ="id")] string processId)
+        public async Task<IActionResult> Process([FromQuery(Name = "id")]string processId)
         {
+            var obj = JObject.Parse(HttpContext.Session.GetString("userDetails"));
+            var username = obj["sub"];
+
             using (var httpClient = new HttpClient())
             {
+                using (var response = await httpClient.GetAsync("http://localhost:8080/api/users/" + username + "/processes"))
+                {
+                    string apiResponse = await response.Content.ReadAsStringAsync();
+                    var status = response.IsSuccessStatusCode;
+                    if (status == true)
+                    {
+                        // get the list of logs
+                        var logList = JsonConvert.DeserializeObject<List<Log>>(apiResponse);
+                        ViewData["processes"] = logList;
+                    }
+                    else
+                    {
+                        if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                        {
+                            ViewBag.ErrorProcess = await response.Content.ReadAsStringAsync();
+
+                        }
+                        ViewBag.ErrorProcess = "Error retrieving processes. Please try again later";
+                    }
+                }
+
                 using (var response = await httpClient.GetAsync("http://localhost:8080/api/processes/" + processId + "/activities"))
                 {
                     string apiResponse = await response.Content.ReadAsStringAsync();
@@ -58,7 +82,6 @@ namespace Pmviz_Frontend.Controllers
                     {
                         // get the list of activities
                         var activityList = JsonConvert.DeserializeObject<List<Activity>>(apiResponse);
-                        activityList.RemoveAt(6);
                         ViewData["activities"] = activityList;
                         ViewData["processId"] = processId;
                         return View("Process", "Statistics");
@@ -81,13 +104,34 @@ namespace Pmviz_Frontend.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Process([FromQuery(Name = "id")] string processId, string activity)
+        public async Task<IActionResult> Process(string processId, string activity)
         {
             var obj = JObject.Parse(HttpContext.Session.GetString("userDetails"));
             var username = obj["sub"];
 
             using (var httpClient = new HttpClient())
             {
+                using (var response = await httpClient.GetAsync("http://localhost:8080/api/users/" + username + "/processes"))
+                {
+                    string apiResponse = await response.Content.ReadAsStringAsync();
+                    var status = response.IsSuccessStatusCode;
+                    if (status == true)
+                    {
+                        // get the list of logs
+                        var logList = JsonConvert.DeserializeObject<List<Log>>(apiResponse);
+                        ViewData["processes"] = logList;
+                    }
+                    else
+                    {
+                        if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                        {
+                            ViewBag.ErrorProcess = await response.Content.ReadAsStringAsync();
+
+                        }
+                        ViewBag.ErrorProcess = "Error retrieving processes. Please try again later";
+                    }
+                }
+
                 using (var response = await httpClient.GetAsync("http://localhost:8080/api/processes/" + processId + "/activities"))
                 {
                     string apiResponse = await response.Content.ReadAsStringAsync();
@@ -96,7 +140,6 @@ namespace Pmviz_Frontend.Controllers
                     {
                         // get the list of logs
                         var activityList = JsonConvert.DeserializeObject<List<Activity>>(apiResponse);
-                        activityList.RemoveAt(6);
                         ViewData["activities"] = activityList;
                         ViewData["processId"] = processId;
                     }
@@ -199,6 +242,32 @@ namespace Pmviz_Frontend.Controllers
             }
 
 
+        }
+
+        [HttpPost]
+
+        public async Task<IActionResult> GetActivities(string processId)
+        {
+
+            using (var httpClient = new HttpClient())
+            {
+                using (var response = await httpClient.GetAsync("http://localhost:8080/api/processes/" + processId + "/activities"))
+                {
+                    string apiResponse = await response.Content.ReadAsStringAsync();
+                    var status = response.IsSuccessStatusCode;
+                    if (status == true)
+                    {
+                        return Json(new { success = true, request = response.Content.ReadAsStringAsync().Result });
+
+                    }
+                    else
+                    {
+                        return Json(new { success = false, request = response.Content.ReadAsStringAsync() });
+                    }
+                }
+
+
+            }
         }
 
 
