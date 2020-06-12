@@ -1,8 +1,11 @@
 ﻿@{
     var processId = ViewData["processId"];
     string type = ViewData["type"] as string;
+    string typeResource = ViewData["typeResource"] as string;
     IEnumerable<Pmviz_Frontend.Models.Activity> activities = ViewData["activities"] as IEnumerable<Pmviz_Frontend.Models.Activity>;
+    IEnumerable<Pmviz_Frontend.Models.Workstation> workstations = ViewData["workstations"] as IEnumerable<Pmviz_Frontend.Models.Workstation>;
     string activityChosen = ViewData["activity"] as string;
+    string workstationChosen = ViewData["workstation"] as string;
     var moulds = ViewData["moulds"] as List<String>;
     var parts = ViewData["parts"] as List<String>;
     var meanMinutesAll = ViewData["meanMillis"];
@@ -26,10 +29,39 @@
                     @ViewBag.ErrorActivity
                 </div>
             }
-            @if (activities != null)
+            @if (ViewBag.ErrorWorkstations != null)
             {
-                <h6>Choose the type:</h6>
+                <div class="alert alert-danger" role="alert">
+                    @ViewBag.ErrorWorkstations
+                </div>
+            }
+            @if (activities != null && workstations != null)
+            {
                 <form method="post" action='@Url.Action("Resource", "Log", new { id = processId })'>
+                    <h6>Choose the type of resource:</h6>
+                    @if (typeResource == "user")
+                    {
+                        <input type="radio" name="typeR" value="user" checked>
+                    }
+                    else
+                    {
+                        <input type="radio" name="typeR" value="user" onclick="handleRadio(this);">
+
+                    }
+                    <label for="user">Users</label>
+                    <br />
+                    @if (typeResource == "workstation")
+                    {
+                        <input type="radio" name="typeR" value="workstation" checked>
+                    }
+                    else
+                    {
+                        <input type="radio" name="typeR" value="workstation" onclick="handleRadio(this);">
+
+                    }
+                    <label for="workstation">Workstations</label>
+                    <br />
+                    <h6>Choose the type of statistics:</h6>
                     @if (type == "mean")
                     {
                         <input type="radio" name="type" value="mean" checked>
@@ -51,9 +83,19 @@
                     }
                     <label for="effort">Resources Work Time</label>
                     <br />
+                    @if (type == "effortWorkstation")
+                    {
+                        <input type="radio" name="type" value="effortWorkstation" checked>
+                    }
+                    else
+                    {
+                        <input type="radio" name="type" value="effortWorkstation" onclick="handleMiner(this);">
+                    }
+                    <label for="effort">Workstations Work Time</label>
+                    <br />
                     <div id="acts">
                         <h6>Choose the activity:</h6>
-                        <select name="activity" class="btn-sm btn-light dropdown-toggle" id="actv" required onchange="handleAct(this)">
+                        <select name="activity" class="btn-sm btn-light dropdown-toggle" id="actv" onchange="handleAct(this)">
                             <option value="" disabled selected>Choose an activity</option>
 
                             @foreach (var act in activities)
@@ -71,8 +113,26 @@
 
                         </select>
                     </div>
+                    <div id="stations">
+                        <h6>Choose the workstation:</h6>
+                        <select name="workstation" class="btn-sm btn-light dropdown-toggle" id="works" onchange="handleWork(this)">
+                            <option value="" disabled selected>Choose a workstation</option>
+
+                            @foreach (var w in workstations)
+                            {
+                                if (workstationChosen == w.Id.ToString())
+                                {
+                                    <option value="@w.Id" selected>@w.Id - @w.Name</option>
+                                }
+                                else
+                                {
+                                    <option value="@w.Id">@w.Id - @w.Name</option>
+                                }
+                            }
 
 
+                        </select>
+                    </div>
 
                     <br />
                     <br />
@@ -101,7 +161,7 @@
         }
         else
         {
-            @if ((type == "mean" || type == "effort") && (meanMinutesAll != null || totalEffort != null))
+            @if ((type == "mean" || type == "effort" || type=="effortWorkstation") && (meanMinutesAll != null || totalEffort != null))
             {
                 <div class="card-box">
                     @if (type == "mean")
@@ -184,7 +244,7 @@
 <br />
 
 
-@if ((type == "mean" || type == "effort") && (meanMinutesAll != null || totalEffort != null))
+@if ((type == "mean" || type == "effort" || type =="effortWorkstation") && (meanMinutesAll != null || totalEffort != null))
 {
     <div class="row">
         <div class="col">
@@ -256,24 +316,57 @@
 
 <script>
     var select = document.getElementById("acts");
+    var selectWork = document.getElementById("stations")
     var selectList = document.getElementById("actv");
+    var selectListWorkstations = document.getElementById("works");
+
     var btnSubmit = document.getElementById("send");
 
     if (selectList.value == "") {
         select.style.display = "none";
 
-    }
-    
+    }    
+
+
+    if (selectListWorkstations.value == "") {
+        selectWork.style.display = "none";
+
+    } 
 
     function handleAct(selectBox) {
         btnSubmit.click()
     }
 
+    function handleWork(selectBox) {
+        btnSubmit.click()
+    }
+
+
     function handleMiner(radio) {
-        if (radio.value != "mean" || radio.value != "effort") {
+        if (radio.value == "mean" || radio.value == "effort") {
+            selectWork.style.display = "none";
             select.style.display = "block";
+        } else if (radio.value == "effortWorkstation") {
+            select.style.display = "none";
+            selectWork.style.display = "block";
         }
+       
         if (selectList.value != "") {
+            btnSubmit.click()
+
+        }
+        if (selectListWorkstations.value != "") {
+            btnSubmit.click()
+
+        }
+    }
+    function handleRadio(radio) {
+        if (selectList.value != "") {
+            btnSubmit.click()
+
+        }
+
+        if (selectListWorkstations.value != "") {
             btnSubmit.click()
 
         }
