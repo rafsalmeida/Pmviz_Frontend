@@ -154,7 +154,7 @@ namespace Pmviz_Frontend.Controllers
                     }
                 }
 
-                using (var response = await httpClient.GetAsync("http://localhost:8080/api/resources/" + processId + "/resource/" + username + "?activity=" + activity))
+                using (var response = await httpClient.GetAsync("http://localhost:8080/api/resources/" + processId + "/users/" + username + "/performance?activity=" + activity))
                 {
                     string apiResponse = await response.Content.ReadAsStringAsync();
                     var status = response.IsSuccessStatusCode;

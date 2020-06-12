@@ -6,7 +6,7 @@
     var moulds = ViewData["moulds"] as List<String>;
     var parts = ViewData["parts"] as List<String>;
     var meanMinutesAll = ViewData["meanMillis"];
-    var totalEffort = ViewData["totalEffortMillis"];
+    var totalEffort = ViewData["totalWorkHoursMillis"];
     var allResources = ViewData["allResources"] as IEnumerable<Pmviz_Frontend.Models.ResourceStat>;
     var allResourcesEffort = ViewData["allResourcesEffort"] as IEnumerable<Pmviz_Frontend.Models.ResourceEffort>;
 
@@ -49,7 +49,7 @@
                     {
                         <input type="radio" name="type" value="effort" onclick="handleMiner(this);">
                     }
-                    <label for="effort">Resources Effort</label>
+                    <label for="effort">Resources Work Time</label>
                     <br />
                     <div id="acts">
                         <h6>Choose the activity:</h6>
@@ -146,13 +146,13 @@
                         <div>
                             @(Html.Kendo().Chart(allResourcesEffort)
                                 .Name("chart")
-                                .Title("Effort time in minutes")
+                                .Title("Work time in minutes")
                                 .Legend(legend => legend
                                     .Position(ChartLegendPosition.Top)
                                 )
                                 .Series(series =>
                                 {
-                                    series.Column(a => a.EffortMillis).Name("Effort time Minutes").CategoryField("Resource");
+                                    series.Column(a => a.WorkHoursMillis).Name("Work time in Minutes").CategoryField("Username");
                                 })
                                 .CategoryAxis(axis => axis
                                     .Name("series-axis")
@@ -202,7 +202,7 @@
                     else
                     {
                         <h5>
-                            Total Effort: @totalEffort minutes
+                            Total Work Time: @totalEffort minutes
                         </h5>
                     }
                     <h5>

@@ -4,6 +4,9 @@
     IEnumerable<Pmviz_Frontend.Models.ActivityFreq> frequency = ViewData["Frequency"] as IEnumerable<Pmviz_Frontend.Models.ActivityFreq>;
     IEnumerable<Pmviz_Frontend.Models.ActivityFreq> median = ViewData["Median"] as IEnumerable<Pmviz_Frontend.Models.ActivityFreq>;
     IEnumerable<Pmviz_Frontend.Models.ActivityFreq> mean = ViewData["Mean"] as IEnumerable<Pmviz_Frontend.Models.ActivityFreq>;
+    IEnumerable<Pmviz_Frontend.Models.ActivityEffort> workTime = ViewData["WorkTime"] as IEnumerable<Pmviz_Frontend.Models.ActivityEffort>;
+    IEnumerable<Pmviz_Frontend.Models.ActivityOperational> operationalTime = ViewData["OperationalTime"] as IEnumerable<Pmviz_Frontend.Models.ActivityOperational>;
+
 }
 
 @model IEnumerable<Pmviz_Frontend.Models.ActivityFreq>
@@ -28,7 +31,6 @@
                 }
                 <label for="frequency">Frequency and duration</label>
                 <br />
-                <br />
                 @if (type == "effort")
                 {
                     <input type="radio" class="btn btn-primary" name="type" value="effort" checked>
@@ -37,7 +39,17 @@
                 {
                     <input type="radio" class="btn btn-primary" name="type" value="effort" onclick="handle(this);">
                 }
-                <label for="effort">Effort</label>
+                <label for="effort">Work Time</label>
+                <br />
+                @if (type == "operational")
+                {
+                    <input type="radio" class="btn btn-primary" name="type" value="operational" checked>
+                }
+                else
+                {
+                    <input type="radio" class="btn btn-primary" name="type" value="operational" onclick="handle(this);">
+                }
+                <label for="effort">Operational Time</label>
                 <button type="submit" id="send" hidden></button>
             </form>
 
@@ -55,185 +67,189 @@
         }
         else
         {
-            @if (type == "frequency" || type == "effort")
+            @if (type == "frequency" || type == "effort" || type == "operational")
             {
 
-                <div class="card-box">
-                    <div class="container-fluid" style="text-align:center">
-                        <button class="btn btn-primary" id="frequencyButton" type="button">Frequency</button>
-                        <button class="btn btn-primary" id="medianButton" type="button">Median</button>
-                        <button class="btn btn-primary" id="meanButton" type="button">Mean</button>
-                    </div>
-                    <br />
-                    <div id="frequencyChart">
-                        @(Html.Kendo().Chart(frequency)
-                                .Name("chart")
-                                .Legend(legend => legend
-                                .Position(ChartLegendPosition.Top))
-                                .Series(series =>
-                                {
-                                    series.Column(a => a.Frequency).Name("Frequency").CategoryField("Activity");
-                                })
-                                .CategoryAxis(axis => axis
-                                    .Labels(labels => labels.Rotation(0))
-                                    .MajorGridLines(lines => lines.Visible(true))
-                                )
-                                .ValueAxis(axis => axis
-                                    .Labels(l => l.Visible(true))
-                                    .Title("Frequency")
-                                )
-                            .Tooltip(tooltip => tooltip
-                                .Visible(true)
-                                .Template("#= series.name #: #= value #")
-                            )
-                            .ChartArea(x => x.Height(210))
-                            .Pannable(pannable => pannable
-                                .Lock(ChartAxisLock.Y)
-                            )
-                            .Zoomable(zoomable => zoomable
-                                .Mousewheel(mousewheel => mousewheel.Lock(ChartAxisLock.Y))
-                                .Selection(selection => selection.Lock(ChartAxisLock.Y))
-                            )
+    <div class="card-box">
+        @if (type == "frequency")
+        {
+            <div class="container-fluid" style="text-align:center">
+                <button class="btn btn-primary" id="frequencyButton" type="button">Frequency</button>
+                <button class="btn btn-primary" id="medianButton" type="button">Median</button>
+                <button class="btn btn-primary" id="meanButton" type="button">Mean</button>
+            </div>
 
 
+            <br />
+            <div id="frequencyChart">
+                @(Html.Kendo().Chart(frequency)
+                            .Name("chart")
+                            .Legend(legend => legend
+                            .Position(ChartLegendPosition.Top))
+                            .Series(series =>
+                            {
+                                series.Column(a => a.Frequency).Name("Frequency").CategoryField("Activity");
+                            })
+                            .CategoryAxis(axis => axis
+                                .Labels(labels => labels.Rotation(0))
+                                .MajorGridLines(lines => lines.Visible(true))
+                            )
+                            .ValueAxis(axis => axis
+                                .Labels(l => l.Visible(true))
+                                .Title("Frequency")
+                            )
+                        .Tooltip(tooltip => tooltip
+                            .Visible(true)
+                            .Template("#= series.name #: #= value #")
                         )
-                    </div>
-                    <div id="medianChart">
+                        .ChartArea(x => x.Height(210))
+                        .Pannable(pannable => pannable
+                            .Lock(ChartAxisLock.Y)
+                        )
+                        .Zoomable(zoomable => zoomable
+                            .Mousewheel(mousewheel => mousewheel.Lock(ChartAxisLock.Y))
+                            .Selection(selection => selection.Lock(ChartAxisLock.Y))
+                        )
 
-                        @if (type == "effort")
-                        {
-                            @(Html.Kendo().Chart(median)
-                            .Name("chart_median")
-                            .Legend(legend => legend
-                                .Position(ChartLegendPosition.Top))
-                            .Series(series =>
-                            {
-                                series.Column(a => a.MedianInMinutes).Name("Median In Minutes").CategoryField("Activity");
-                            })
-                            .CategoryAxis(axis => axis
-                                .Labels(labels => labels.Rotation(0))
-                                .MajorGridLines(lines => lines.Visible(true))
-                            )
-                            .ValueAxis(axis => axis
-                                .Labels(l => l.Visible(true))
-                                .Title("Median Effort")
-                            )
-                            .Tooltip(tooltip => tooltip
-                                .Visible(true)
-                                .Template("#= dataItem.MedianActivityFormatted #")
-                            )
-                            .ChartArea(x => x.Height(210))
-                            .Pannable(pannable => pannable
-                                .Lock(ChartAxisLock.Y)
-                            )
-                            .Zoomable(zoomable => zoomable
-                                .Mousewheel(mousewheel => mousewheel.Lock(ChartAxisLock.Y))
-                                .Selection(selection => selection.Lock(ChartAxisLock.Y))
-                            )
-                            )
-                        }
-                        else
-                        {
-                            @(Html.Kendo().Chart(median)
-                            .Name("chart_median")
-                            .Legend(legend => legend
-                                .Position(ChartLegendPosition.Top))
-                            .Series(series =>
-                            {
-                                series.Column(a => a.MedianInMinutes).Name("Median In Minutes").CategoryField("Activity");
-                            })
-                            .CategoryAxis(axis => axis
-                                .Labels(labels => labels.Rotation(0))
-                                .MajorGridLines(lines => lines.Visible(true))
-                            )
-                            .ValueAxis(axis => axis
-                                .Labels(l => l.Visible(true))
-                                .Title("Median Duration")
-                            )
-                            .Tooltip(tooltip => tooltip
-                                .Visible(true)
-                                .Template("#= dataItem.MedianActivityFormatted #")
-                            )
-                            .ChartArea(x => x.Height(210))
-                            .Pannable(pannable => pannable
-                                .Lock(ChartAxisLock.Y)
-                            )
-                            .Zoomable(zoomable => zoomable
-                                .Mousewheel(mousewheel => mousewheel.Lock(ChartAxisLock.Y))
-                                .Selection(selection => selection.Lock(ChartAxisLock.Y))
-                            )
-                            )
-                        }
-                    </div>
-                    <div id="meanChart">
-                        @if (type == "effort")
-                        {
-                            @(Html.Kendo().Chart(mean)
-                            .Name("chart_mean")
-                            .Legend(legend => legend
-                                .Position(ChartLegendPosition.Top))
-                            .Series(series =>
-                            {
-                                series.Column(a => a.MeanInMinutes).Name("Mean In Minutes").CategoryField("Activity");
-                            })
-                            .CategoryAxis(axis => axis
-                                .Labels(labels => labels.Rotation(0))
-                                .MajorGridLines(lines => lines.Visible(true))
-                            )
-                            .ValueAxis(axis => axis
-                                .Labels(l => l.Visible(true))
-                                .Title("Mean Effort")
-                            )
-                            .Tooltip(tooltip => tooltip
-                                .Visible(true)
-                                .Template("#= dataItem.MeanActivityFormatted #")
-                            )
-                            .ChartArea(x => x.Height(210))
-                            .Pannable(pannable => pannable
-                                .Lock(ChartAxisLock.Y)
-                            )
-                            .Zoomable(zoomable => zoomable
-                                .Mousewheel(mousewheel => mousewheel.Lock(ChartAxisLock.Y))
-                                .Selection(selection => selection.Lock(ChartAxisLock.Y))
-                            )
-                            )
-                        }
-                        else
-                        {
-                            @(Html.Kendo().Chart(mean)
-                            .Name("chart_mean")
-                            .Legend(legend => legend
-                                .Position(ChartLegendPosition.Top))
-                            .Series(series =>
-                            {
-                                series.Column(a => a.MeanInMinutes).Name("Mean In Minutes").CategoryField("Activity");
-                            })
-                            .CategoryAxis(axis => axis
-                                .Labels(labels => labels.Rotation(0))
-                                .MajorGridLines(lines => lines.Visible(true))
-                            )
-                            .ValueAxis(axis => axis
-                                .Labels(l => l.Visible(true))
-                                .Title("Mean Duration")
-                            )
-                            .Tooltip(tooltip => tooltip
-                                .Visible(true)
-                                .Template("#= dataItem.MeanActivityFormatted #")
-                            )
-                            .ChartArea(x => x.Height(210))
-                            .Pannable(pannable => pannable
-                                .Lock(ChartAxisLock.Y)
-                            )
-                            .Zoomable(zoomable => zoomable
-                                .Mousewheel(mousewheel => mousewheel.Lock(ChartAxisLock.Y))
-                                .Selection(selection => selection.Lock(ChartAxisLock.Y))
-                            )
-                            )
-                        }
 
-                    </div>
+                )
+            </div>
+            <div id="medianChart">
+                @(Html.Kendo().Chart(median)
+                    .Name("chart_median")
+                    .Legend(legend => legend
+                        .Position(ChartLegendPosition.Top))
+                    .Series(series =>
+                    {
+                        series.Column(a => a.MedianInMinutes).Name("Median In Minutes").CategoryField("Activity");
+                    })
+                    .CategoryAxis(axis => axis
+                        .Labels(labels => labels.Rotation(0))
+                        .MajorGridLines(lines => lines.Visible(true))
+                    )
+                    .ValueAxis(axis => axis
+                        .Labels(l => l.Visible(true))
+                        .Title("Median Duration")
+                    )
+                    .Tooltip(tooltip => tooltip
+                        .Visible(true)
+                        .Template("#= dataItem.MedianActivityFormatted #")
+                    )
+                    .ChartArea(x => x.Height(210))
+                    .Pannable(pannable => pannable
+                        .Lock(ChartAxisLock.Y)
+                    )
+                    .Zoomable(zoomable => zoomable
+                        .Mousewheel(mousewheel => mousewheel.Lock(ChartAxisLock.Y))
+                        .Selection(selection => selection.Lock(ChartAxisLock.Y))
+                    )
+                )
 
-                </div>
+            </div>
+            <div id="meanChart">
+                @(Html.Kendo().Chart(mean)
+                .Name("chart_mean")
+                .Legend(legend => legend
+                    .Position(ChartLegendPosition.Top))
+                .Series(series =>
+                {
+                    series.Column(a => a.MeanInMinutes).Name("Mean In Minutes").CategoryField("Activity");
+                })
+                .CategoryAxis(axis => axis
+                    .Labels(labels => labels.Rotation(0))
+                    .MajorGridLines(lines => lines.Visible(true))
+                )
+                .ValueAxis(axis => axis
+                    .Labels(l => l.Visible(true))
+                    .Title("Mean Duration")
+                )
+                .Tooltip(tooltip => tooltip
+                    .Visible(true)
+                    .Template("#= dataItem.MeanActivityFormatted #")
+                )
+                .ChartArea(x => x.Height(210))
+                .Pannable(pannable => pannable
+                    .Lock(ChartAxisLock.Y)
+                )
+                .Zoomable(zoomable => zoomable
+                    .Mousewheel(mousewheel => mousewheel.Lock(ChartAxisLock.Y))
+                    .Selection(selection => selection.Lock(ChartAxisLock.Y))
+                )
+                )
+
+            </div>
+        }
+        @if (type == "effort")
+        {
+            <div>
+                @(Html.Kendo().Chart(workTime)
+                    .Name("chart_work")
+                    .Legend(legend => legend
+                        .Position(ChartLegendPosition.Top))
+                    .Series(series =>
+                    {
+                        series.Column(a => a.TotalWorkHoursMillis).Name("Work time in Minutes").CategoryField("Activity");
+                    })
+                    .CategoryAxis(axis => axis
+                        .Labels(labels => labels.Rotation(0))
+                        .MajorGridLines(lines => lines.Visible(true))
+                    )
+                    .ValueAxis(axis => axis
+                        .Labels(l => l.Visible(true))
+                        .Title("Work Time")
+                    )
+                    .Tooltip(tooltip => tooltip
+                        .Visible(true)
+                        .Template("#= series.name #: #= value # minutes")
+                    )
+                    .ChartArea(x => x.Height(210))
+                    .Pannable(pannable => pannable
+                        .Lock(ChartAxisLock.Y)
+                    )
+                    .Zoomable(zoomable => zoomable
+                        .Mousewheel(mousewheel => mousewheel.Lock(ChartAxisLock.Y))
+                        .Selection(selection => selection.Lock(ChartAxisLock.Y))
+                    )
+                )
+
+            </div>
+        }
+        @if (type == "operational")
+        {
+            <div>
+                @(Html.Kendo().Chart(operationalTime)
+                    .Name("chart_op")
+                    .Legend(legend => legend
+                        .Position(ChartLegendPosition.Top))
+                    .Series(series =>
+                    {
+                        series.Column(a => a.TotalOperationalHoursMillis).Name("Operational time in Minutes").CategoryField("Activity");
+                    })
+                    .CategoryAxis(axis => axis
+                        .Labels(labels => labels.Rotation(0))
+                        .MajorGridLines(lines => lines.Visible(true))
+                    )
+                    .ValueAxis(axis => axis
+                        .Labels(l => l.Visible(true))
+                        .Title("Operational Time")
+                    )
+                    .Tooltip(tooltip => tooltip
+                        .Visible(true)
+                        .Template("#= series.name #: #= value # minutes")
+                    )
+                    .ChartArea(x => x.Height(210))
+                    .Pannable(pannable => pannable
+                        .Lock(ChartAxisLock.Y)
+                    )
+                    .Zoomable(zoomable => zoomable
+                        .Mousewheel(mousewheel => mousewheel.Lock(ChartAxisLock.Y))
+                        .Selection(selection => selection.Lock(ChartAxisLock.Y))
+                    )
+                )
+
+            </div>
+        }
+    </div>
             }
         }
 
@@ -244,7 +260,7 @@
 
 
 <div class="row">
-    @if (type == "frequency" || type == "effort" && ViewBag.Error == null)
+    @if (type == "frequency" && ViewBag.Error == null)
     {
         @if (Model != null)
         {
@@ -253,26 +269,13 @@
                     <thead>
                         <tr>
                             <th>Frequency</th>
-                            @if (type == "frequency")
-                            {
-                                <th>Mean Duration</th>
-                                <th>Median Duration</th>
-                                <th>Minimum Duration</th>
-                                <th>Maximum Duration</th>
-
-                            }
-                            else
-                            {
-                                <th>Mean Effort</th>
-                                <th>Median Effort</th>
-                                <th>Minimum Effort</th>
-                                <th>Maximum Effort</th>
-
-                            }
-
+                            <th>Mean Duration</th>
+                            <th>Median Duration</th>
+                            <th>Minimum Duration</th>
+                            <th>Maximum Duration</th>
                             <th>Activity</th>
                             <th>Relative Frequency</th>
-</thead>
+                    </thead>
                     <tbody>
 
                         @foreach (Pmviz_Frontend.Models.ActivityFreq a in Model)
