@@ -1,5 +1,6 @@
-﻿@model IEnumerable<string>
-
+﻿@{ 
+    IEnumerable<String> roles = ViewData["roles"] as IEnumerable<String>;
+}
 @{
     ViewData["Title"] = "Register";
     Layout = "~/Views/Shared/_EmptyLayout.cshtml";
@@ -7,82 +8,7 @@
 @addTagHelper *, Kendo.Mvc
 
 
-<!--<div class="container">
-    <div class="k-card">
 
-        <div class="k-card-header">
-            <h4 class="k-card-title" id="title">Register</h4>
-        </div>
-        <br />
-        <div class="k-class-body" id="tickets">
-            @if (ViewBag.Error != null)
-            {
-                <div class="alert alert-danger" role="alert">
-                    @ViewBag.Error
-                </div>
-            }
-            <form method="post" id="ticketsForm" kendo-validator="true">
-                <ul id="fieldlist">
-                    <li class="divfield">
-                        <label for="username" class="required">Username</label>
-                        @(Html.Kendo().TextBox()
-                                  .Name("username")
-                                  .HtmlAttributes(new { placeholder = "Username", required = "required", @class = "inputfield" })
-                        )
-
-                    </li>
-                    <li class="divfield">
-                        <label for="name" class="required">Name</label>
-                        @(Html.Kendo().TextBox()
-                                  .Name("Name")
-                                  .HtmlAttributes(new { placeholder = "Name", required = "required", @class = "inputfield" })
-                        )
-
-                    </li>
-                    <li class="divfield">
-                        <label for="email" class="required">Email</label>
-                        @(Html.Kendo().TextBox()
-                                  .Name("email")
-                                  .HtmlAttributes(new { placeholder = "Email", type = "email", required = "required", @class = "inputfield" })
-                        )
-
-                    </li>
-                    <li class="divfield">
-                        <label for="role" class="required">Role</label>
-                        @(Html.Kendo().ComboBox()
-                                    .Name("role")
-                                    .Placeholder("Choose a role")
-                                    .BindTo(Model)
-                                    .HtmlAttributes(new { required = "required", @class = "inputfield" })
-                        )
-                    </li>
-                    <li>
-
-                        <label for="password" class="required">Password</label>
-                        @(Html.Kendo().TextBox()
-                                  .Name("password")
-                                  .HtmlAttributes(new { placeholder = "Password", required = "required", type = "password", @class = "inputfield" })
-                        )
-                    </li>
-                    <li>
-
-                        <label for="confirmpassword" class="required">Confirm Password</label>
-                        @(Html.Kendo().TextBox()
-                                  .Name("confirmpassword")
-                                  .HtmlAttributes(new { placeholder = "Confirm password", required = "required", type = "password", @class = "inputfield" })
-                        )
-                    </li>
-                    <li>
-                        <button class="k-button k-primary" type="submit">Register</button>
-                    </li>
-                    <li>
-                        <a href="/login">Already have an account? Login.</a>
-                    </li>
-                </ul>
-            </form>
-        </div>
-    </div>
-</div>-->
 
 <div class="account-pages mt-5 mb-5">
     <div class="container">
@@ -95,56 +21,63 @@
                             <h4>PMVIZ</h4>
                         </div>
                         <p class="text-muted mb-4 mt-3">Create your account here.</p>
+                        @if (ViewBag.Error != null)
+                        {
+                            <div class="alert alert-danger" role="alert">
+                                @ViewBag.Error
+                            </div>
+                        }
+                        <form method="post">
+                            <div class="form-group">
+                                <label for="username">Username</label>
+                                <input class="form-control" type="text" name="username" placeholder="Enter your username" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="name">Name</label>
+                                <input class="form-control" type="text" name="name" placeholder="Enter your name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email address</label>
+                                <input class="form-control" type="email" name="email" required placeholder="Enter your email">
+                            </div>
+                            <div class="form-group">
+                                <label for="role">Role</label>
+                                <br />
+                                <select name="activity" class="form-control btn-sm btn-light dropdown-toggle" required>
+                                    @foreach (String r in roles)
+                                    {
+                                        <option value="@r"> @r</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="password">Password</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="password" name="password" class="form-control" placeholder="Enter your password">
+                                    <div class="input-group-append" data-password="false">
+                                        <div class="input-group-text">
+                                            <span class="password-eye"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="confirmpassword">Confirm Password</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="password" name="confirmpassword" class="form-control" placeholder="Enter your password again">
+                                    <div class="input-group-append" data-password="false">
+                                        <div class="input-group-text">
+                                            <span class="password-eye"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group mb-0 text-center">
+                                <button class="btn btn-success btn-block" type="submit"> Sign Up </button>
+                                <p>Already have account?  <a href="/login"><b>Sign In</b></a></p>
+                            </div>
+                        </form>
                     </div>
-                    <form method="post">
-                        <div class="form-group">
-                            <label for="username">Username</label>
-                            <input class="form-control" type="text" name="username" placeholder="Enter your username" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="name">Name</label>
-                            <input class="form-control" type="text" name="name" placeholder="Enter your name" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="email">Email address</label>
-                            <input class="form-control" type="email" name="email" required placeholder="Enter your email">
-                        </div>
-                        <div class="form-group">
-                            <label for="role">Role</label>
-                            <br />
-                            <select name="activity" class="form-control btn-sm btn-light dropdown-toggle" required>
-                                @foreach (String m in Model){
-                                    <option value="@m"> @m</option>
-                                }
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="password">Password</label>
-                            <div class="input-group input-group-merge">
-                                <input type="password" name="password" class="form-control" placeholder="Enter your password">
-                                <div class="input-group-append" data-password="false">
-                                    <div class="input-group-text">
-                                        <span class="password-eye"></span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="confirmpassword">Confirm Password</label>
-                            <div class="input-group input-group-merge">
-                                <input type="password" name="confirmpassword" class="form-control" placeholder="Enter your password again">
-                                <div class="input-group-append" data-password="false">
-                                    <div class="input-group-text">
-                                        <span class="password-eye"></span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group mb-0 text-center">
-                            <button class="btn btn-success btn-block" type="submit"> Sign Up </button>
-                            <p>Already have account?  <a href="/login"><b>Sign In</b></a></p>
-                        </div>
-                    </form>
                 </div>
             </div>
         </div>

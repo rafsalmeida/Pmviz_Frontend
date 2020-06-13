@@ -24,9 +24,10 @@ namespace Pmviz_Frontend.Controllers
                     var status = response.IsSuccessStatusCode;
                     if (status == true)
                     {
-                        System.Diagnostics.Debug.WriteLine(apiResponse);
                         var roles = JsonConvert.DeserializeObject<List<String>>(apiResponse);
-                        return View(roles);
+                        ViewData["roles"] = roles;
+
+                        return View();
                     }
                     else
                     {
@@ -57,9 +58,23 @@ namespace Pmviz_Frontend.Controllers
 
             var content = new StringContent(JsonConvert.SerializeObject(user).ToString(), Encoding.UTF8, "application/json");
 
-            System.Diagnostics.Debug.WriteLine(content);
             using (var httpClient = new HttpClient())
             {
+                using (var response = await httpClient.GetAsync("http://localhost:8080/api/users/roles"))
+                {
+                    string apiResponse = await response.Content.ReadAsStringAsync();
+                    var status = response.IsSuccessStatusCode;
+                    if (status == true)
+                    {
+                        var roles = JsonConvert.DeserializeObject<List<String>>(apiResponse);
+                        ViewData["roles"] = roles;
+                    }
+                    else
+                    {
+                        ViewBag.Error = "Something went wrong. Please try again later.";
+                    }
+                }
+
                 using (var response = await httpClient.PostAsync("http://localhost:8080/api/users", content))
                 {
                     string apiResponse = await response.Content.ReadAsStringAsync();
