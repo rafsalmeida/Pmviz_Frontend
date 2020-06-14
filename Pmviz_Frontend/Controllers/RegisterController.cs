@@ -41,22 +41,6 @@ namespace Pmviz_Frontend.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(string username, string name, string email, string role, string password, string confirmpassword)
         {
-            if (!password.Equals(confirmpassword))
-            {
-                ViewBag.Error = "The password confirmation and the password don't match.";
-                return View();
-
-            }
-            User user = new User
-            {
-                Username = username,
-                Name = name,
-                Email = email,
-                Role = role,
-                Password = password
-            };
-
-            var content = new StringContent(JsonConvert.SerializeObject(user).ToString(), Encoding.UTF8, "application/json");
 
             using (var httpClient = new HttpClient())
             {
@@ -74,6 +58,24 @@ namespace Pmviz_Frontend.Controllers
                         ViewBag.Error = "Something went wrong. Please try again later.";
                     }
                 }
+                
+                if (!password.Equals(confirmpassword))
+                {
+                    ViewBag.Error = "The password confirmation and the password don't match.";
+                    return View();
+
+                }
+                User user = new User
+                {
+                    Username = username,
+                    Name = name,
+                    Email = email,
+                    Role = role,
+                    Password = password
+                };
+
+                var content = new StringContent(JsonConvert.SerializeObject(user).ToString(), Encoding.UTF8, "application/json");
+
 
                 using (var response = await httpClient.PostAsync("http://localhost:8080/api/users", content))
                 {
