@@ -1,68 +1,179 @@
-﻿#controlFlow {
-    display: grid;
+﻿.dropdown-menu {
+    overflow: auto !important;
+    max-height: none !important;
 }
 
-#options {
-    grid-area: 1 / 1 / span 2 / span 3;
+.bootstrap-select .dropdown-toggle:after {
+    padding: 0 !important;
+    content: "" !important;
 }
 
-#graphs {
-    grid-area: 1 / 4 / span 6 / span 5;
+.datepicker-btn {
+    max-height: 29.86px !important;
+}
+
+.rectangle {
+    width: 100px;
+    height: 30px;
+    background-color: white;
+    border-style: solid;
+    border-width: 3px;
+    font-size: 14px;
+    text-align: center;
+}
+
+.green {
+    color: #00b33c;
+    border-color: #00b33c;
+}
+
+.red {
+    color: #ff0000;
+    border-color: #ff0000;
+}
+
+.darkBlue {
+    background-color: #365eff;
+    color: #FFFFFF;
+    border-color: #365eff;
+}
+
+.softBlue {
+    background-color: #acbcff;
+    color: #222222;
+    border-color: #acbcff;
+}
+
+.darkRed {
+    background-color: #FF5C5C;
+    color: #FFFFFF;
+    border-color: #FF5C5C;
+}
+
+.softRed {
+    background-color: #FFB7B7;
+    color: #222222;
+    border-color: #FFB7B7;
+}
+
+.popover {
+    max-width: 500px !important;
+}
+
+.green-rectangle-shape {
+    left: 25px;
+    top: 6.7px;
+    height: 7px;
+    position: relative;
+    width: 50px;
+    background-color: #00b33c;
+}
+
+.green-triangle-shape {
+    position: relative;
+    left: 25px;
+    width: 0;
+    height: 0;
+    border-top: 10px solid transparent;
+    border-left: 20px solid #00b33c;
+    border-bottom: 10px solid transparent;
+}
+
+.red-rectangle-shape {
+    height: 7px;
+    position: relative;
+    left: 25px;
+    top: 6.7px;
+    width: 50px;
+    background-color: #ff0000;
 }
 
 
-/******** OPTIONS ********/
-
-#listLogsActive > .input-field.col > label {
-    left: 0;
-    margin-top: 1.5%;
+.red-triangle-shape {
+    width: 0;
+    height: 0;
+    position: relative;
+    left: 25px;
+    border-top: 10px solid transparent;
+    border-left: 20px solid #ff0000;
+    border-bottom: 10px solid transparent;
 }
 
-.range-field, .input-field {
-    margin-top: 2%;
-    margin-bottom: 0;
+.darkBlue-triangle-shape {
+    width: 0;
+    height: 0;
+    position: relative;
+    left: 25px;
+    border-top: 10px solid transparent;
+    border-left: 20px solid #365eff;
+    border-bottom: 10px solid transparent;
 }
 
-#logCompare, #logActive {
-    border-bottom: 1px solid #9e9e9e;
-    font-size: 16px;
-    line-height: 3rem;
-    margin-top: 0;
+.darkRed-rectangle-shape {
+    left: 25px;
+    top: 6.7px;
+    height: 7px;
+    position: relative;
+    width: 50px;
+    background-color: #FF5C5C;
 }
 
-#dropCompare {
-    width: 27.5%;
+.darkRed-triangle-shape {
+    width: 0;
+    height: 0;
+    position: relative;
+    left: 25px;
+    border-top: 10px solid transparent;
+    border-left: 20px solid #FF5C5C;
+    border-bottom: 10px solid transparent;
 }
 
-#filter1Compare > .chips, #filter2Compare > .chips, #filter5Compare > .chips {
-    margin-top: 0;
-    margin-bottom: 8px;
+.darkBlue-rectangle-shape {
+    left: 25px;
+    top: 6.7px;
+    height: 7px;
+    position: relative;
+    width: 50px;
+    background-color: #365eff;
 }
 
-#filter3Compare {
-    display: inline-block;
-    width: 40%;
-    margin-right: 7.5%;
+.softBlue-triangle-shape {
+    width: 0;
+    height: 0;
+    position: relative;
+    left: 25px;
+    border-top: 10px solid transparent;
+    border-left: 20px solid #acbcff;
+    border-bottom: 10px solid transparent;
 }
 
-#filter4Compare {
-    display: inline-block;
-    width: 40%;
-    margin-left: 7.5%;
+.softRed-rectangle-shape {
+    left: 25px;
+    top: 6.7px;
+    height: 7px;
+    position: relative;
+    width: 50px;
+    background-color: #FFB7B7;
 }
 
-    #filter3Compare > .input-field.col, #filter4Compare > .input-field.col,
-    #filter1Compare > .input-field.col, #filter2Compare > .input-field.col,
-    #filter5Compare > .input-field.col {
-        margin-top: 0;
-    }
+.softRed-triangle-shape {
+    width: 0;
+    height: 0;
+    position: relative;
+    left: 25px;
+    border-top: 10px solid transparent;
+    border-left: 20px solid #FFB7B7;
+    border-bottom: 10px solid transparent;
+}
 
-    #filter3Compare > .input-field .helper-text, #filter4Compare > .input-field .helper-text,
-    #filter1Compare > .input-field .helper-text, #filter2Compare > .input-field .helper-text,
-    #filter5Compare > .input-field .helper-text {
-        min-height: 0;
-        margin-bottom: 0;
-    }
+.softBlue-rectangle-shape {
+    left: 25px;
+    top: 6.7px;
+    height: 7px;
+    position: relative;
+    width: 50px;
+    background-color: #acbcff;
+}
 
 
 /******** BUTTONS ********/
@@ -72,17 +183,23 @@
     float: right;
 }
 
-
 /******** GRAFOS ********/
 #cy {
     position: absolute;
-    margin-top: 2%;
-    margin-bottom: 2%;
-    width: 100%;
-    height: 100%;
-    border: 2px solid #186860;
-    border-radius: 10px;
+    width: 95%;
+    height: 94.5%;
     background-color: white;
+    padding: 1.5rem;
+    box-shadow: 0 0.75rem 6rem rgba(56,65,74,.03);
+    margin-bottom: 24px;
+    border-radius: .25rem;
+}
+
+#tip {
+    margin-top: 25%;
+    text-align: center;
+    font-style: oblique;
+    font-size: 30px;
 }
 
 
