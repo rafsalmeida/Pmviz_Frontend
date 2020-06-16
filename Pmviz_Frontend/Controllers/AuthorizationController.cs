@@ -24,8 +24,16 @@ namespace Pmviz_Frontend.Controllers
                     if (status == true)
                     {
                         var roles = JsonConvert.DeserializeObject<List<String>>(apiResponse);
-                        roles.Remove("Administrator");
+                        string roleToDelete ="";
+                        foreach(var r in roles){
+                            if(r.Trim() == "Administrator")
+                            {
+                                roleToDelete = r;
+                            }
+                        }
+                        roles.Remove(roleToDelete);
                         ViewData["roles"] = roles;
+                        ViewData["Role"] = null;
                         return View();
                     }
                     else
@@ -38,13 +46,40 @@ namespace Pmviz_Frontend.Controllers
         }
 
         [HttpPost]
-        public IActionResult Save(string roleChosen, List<string> allowed, List<string> notAllowed)
+        public async Task<IActionResult> Save(string roleChosen, List<string> allowed, List<string> notAllowed)
         {
             var newRoutesNotAllowed = GetRouteFromNames(notAllowed);
 
             var hasLog = false;
             var hasActivity = false;
             var hasresource = false;
+            using (var httpClient = new HttpClient())
+            {
+                using (var response = await httpClient.GetAsync("http://localhost:8080/api/users/roles"))
+                {
+                    string apiResponse = await response.Content.ReadAsStringAsync();
+                    var status = response.IsSuccessStatusCode;
+                    if (status == true)
+                    {
+                        var roles = JsonConvert.DeserializeObject<List<String>>(apiResponse);
+                        string roleToDelete = "";
+                        foreach (var r in roles)
+                        {
+                            if (r.Trim() == "Administrator")
+                            {
+                                roleToDelete = r;
+                            }
+                        }
+                        roles.Remove(roleToDelete);
+                        ViewData["roles"] = roles;
+                        ViewData["Role"] = null;
+                    }
+                    else
+                    {
+                        ViewBag.Error = "Roles not available. Please try again later.";
+                    }
+                }
+            }
 
             foreach (var route in newRoutesNotAllowed)
             {
@@ -83,8 +118,10 @@ namespace Pmviz_Frontend.Controllers
 
             UpdateXmlFile(roleChosen, newRoutesNotAllowed);
 
-           // return View();
-            return RedirectToAction("Index","Home", new { @success = "1"});
+            TempData["success"] = "Changes successfully made!";
+            
+            return RedirectToAction("Index", "Authorization");
+
         }
 
         [HttpPost]
@@ -99,7 +136,18 @@ namespace Pmviz_Frontend.Controllers
                     if (status == true)
                     {
                         var roles = JsonConvert.DeserializeObject<List<String>>(apiResponse);
+                        string roleToDelete = "";
+                        foreach (var r in roles)
+                        {
+                            if (r.Trim() == "Administrator")
+                            {
+                                roleToDelete = r;
+                            }
+                        }
+                        roles.Remove(roleToDelete);
                         ViewData["roles"] = roles;
+                        TempData["success"] = null;
+
                     }
                     else
                     {

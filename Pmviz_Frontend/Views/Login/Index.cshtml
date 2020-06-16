@@ -61,6 +61,12 @@
                                 <h4>PMVIZ</h4>
                             </div>
                             <p class="text-muted mb-4 mt-3">Enter your email address and password to access.</p>
+                            @if (ViewBag.Error != null)
+                            {
+                                <div class="alert alert-danger" role="alert">
+                                    @ViewBag.Error
+                                </div>
+                            }
                         </div>
                         <form method="post">
                             <div class="form-group mb-3">

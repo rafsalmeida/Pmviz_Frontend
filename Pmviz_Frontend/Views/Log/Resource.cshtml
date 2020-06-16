@@ -1,17 +1,25 @@
 ﻿@{
     var processId = ViewData["processId"];
     string type = ViewData["type"] as string;
+    string typeResource = ViewData["typeResource"] as string;
     IEnumerable<Pmviz_Frontend.Models.Activity> activities = ViewData["activities"] as IEnumerable<Pmviz_Frontend.Models.Activity>;
+    IEnumerable<Pmviz_Frontend.Models.Workstation> workstations = ViewData["workstations"] as IEnumerable<Pmviz_Frontend.Models.Workstation>;
     string activityChosen = ViewData["activity"] as string;
+    string workstationChosen = ViewData["workstation"] as string;
     var moulds = ViewData["moulds"] as List<String>;
     var parts = ViewData["parts"] as List<String>;
+    string hasValues = ViewData["hasValues"] as string;
     var meanMinutesAll = ViewData["meanMillis"];
-    var totalEffort = ViewData["totalEffortMillis"];
+    var totalEffort = ViewData["totalWorkHoursMillis"];
     var allResources = ViewData["allResources"] as IEnumerable<Pmviz_Frontend.Models.ResourceStat>;
     var allResourcesEffort = ViewData["allResourcesEffort"] as IEnumerable<Pmviz_Frontend.Models.ResourceEffort>;
-
+    var operationalEffort = ViewData["allResourcesEffort"] as IEnumerable<Pmviz_Frontend.Models.WorkstationEffort>;
+    IEnumerable<Pmviz_Frontend.Models.WorkstationFreq> frequency = ViewData["Frequency"] as IEnumerable<Pmviz_Frontend.Models.WorkstationFreq>;
+    IEnumerable<Pmviz_Frontend.Models.WorkstationFreq> median = ViewData["Median"] as IEnumerable<Pmviz_Frontend.Models.WorkstationFreq>;
+    IEnumerable<Pmviz_Frontend.Models.WorkstationFreq> mean = ViewData["Mean"] as IEnumerable<Pmviz_Frontend.Models.WorkstationFreq>;
 
 }
+@model IEnumerable<Pmviz_Frontend.Models.WorkstationFreq>
 @{
     ViewData["Title"] = "Resources Statistics";
 }
@@ -26,34 +34,98 @@
                     @ViewBag.ErrorActivity
                 </div>
             }
-            @if (activities != null)
+            @if (ViewBag.ErrorWorkstations != null)
             {
-                <h6>Choose the type:</h6>
+                <div class="alert alert-danger" role="alert">
+                    @ViewBag.ErrorWorkstations
+                </div>
+            }
+            @if (activities != null && workstations != null)
+            {
                 <form method="post" action='@Url.Action("Resource", "Log", new { id = processId })'>
-                    @if (type == "mean")
+                    <h6>Choose the type of resource:</h6>
+                    @if (typeResource == "user")
                     {
-                        <input type="radio" name="type" value="mean" checked>
+                        <input type="radio" name="typeR" id="userCheck" value="user" checked>
                     }
                     else
                     {
-                        <input type="radio" name="type" value="mean" onclick="handleMiner(this);">
+                        <input type="radio" name="typeR" value="user" onclick="handleRadio(this);">
 
                     }
-                    <label for="mean">Resources Mean Times</label>
+                    <label for="user">Users</label>
                     <br />
-                    @if (type == "effort")
+                    @if (typeResource == "workstation")
                     {
-                        <input type="radio" name="type" value="effort" checked>
+                        <input type="radio" name="typeR" id="workCheck" value="workstation" checked>
                     }
                     else
                     {
-                        <input type="radio" name="type" value="effort" onclick="handleMiner(this);">
+                        <input type="radio" name="typeR" value="workstation" onclick="handleRadio(this);">
+
                     }
-                    <label for="effort">Resources Effort</label>
+                    <label for="workstation">Workstations</label>
+                    <br />
+                    <h6>Choose the type of statistics:</h6>
+                    <div id="option">
+                        @if (type == "mean")
+                        {
+                            <input type="radio" name="type" value="mean" checked>
+                        }
+                        else
+                        {
+                            <input type="radio" name="type" value="mean" id="typeWorkstation" onclick="handleMiner(this);">
+
+                        }
+                        <label for="mean">Performance</label>
+                        <br />
+                        @if (type == "effort")
+                        {
+                            <input type="radio" name="type" value="effort" checked>
+                        }
+                        else
+                        {
+                            <input type="radio" name="type" value="effort" onclick="handleMiner(this);">
+                        }
+                        <label for="effort">Work Time</label>
+                        <br />
+                        @if (type == "effortWorkstation")
+                        {
+                            <input type="radio" name="type" value="effortWorkstation" checked>
+                        }
+                        else
+                        {
+                            <input type="radio" name="type" value="effortWorkstation" onclick="handleMiner(this);">
+                        }
+                        <label for="effort">Workstations Work Time</label>
+                    </div>
+                    <div id="option2">
+                        @if (type == "meanWork")
+                        {
+                            <input type="radio" name="type" value="meanWork" checked>
+                        }
+                        else
+                        {
+                            <input type="radio" name="type" id="radioPerformanceWork" value="meanWork" onclick="handleMiner(this);">
+
+                        }
+                        <label for="mean">Workstations Performance</label>
+                        <br />
+                        @if (type == "effortWork")
+                        {
+                            <input type="radio" name="type" value="effortWork" checked>
+                        }
+                        else
+                        {
+                            <input type="radio" name="type" value="effortWork" onclick="handleMiner(this);">
+                        }
+                        <label for="effort">Operational Time</label>
+                    </div>
+
                     <br />
                     <div id="acts">
                         <h6>Choose the activity:</h6>
-                        <select name="activity" class="btn-sm btn-light dropdown-toggle" id="actv" required onchange="handleAct(this)">
+                        <select name="activity" class="btn-sm btn-light dropdown-toggle" id="actv" onchange="handleAct(this)">
                             <option value="" disabled selected>Choose an activity</option>
 
                             @foreach (var act in activities)
@@ -71,10 +143,26 @@
 
                         </select>
                     </div>
+                    <div id="stations">
+                        <h6>Choose the workstation:</h6>
+                        <select name="workstation" class="btn-sm btn-light dropdown-toggle" id="works" onchange="handleWork(this)">
+                            <option value="" disabled selected>Choose a workstation</option>
+
+                            @foreach (var w in workstations)
+                            {
+                                if (workstationChosen == w.Id.ToString())
+                                {
+                                    <option value="@w.Id" selected>@w.Id - @w.Name</option>
+                                }
+                                else
+                                {
+                                    <option value="@w.Id">@w.Id - @w.Name</option>
+                                }
+                            }
 
 
-
-                    <br />
+                        </select>
+                    </div>
                     <br />
                     <div>
                         <button class="btn-xs btn-primary" type="submit" id="send" hidden>Submit</button>
@@ -101,10 +189,120 @@
         }
         else
         {
-            @if ((type == "mean" || type == "effort") && (meanMinutesAll != null || totalEffort != null))
+            @if ((type == "mean" || type == "effort" || type == "effortWorkstation" || type == "effortWork" || type == "meanWork")
+               && (meanMinutesAll != null || totalEffort != null || hasValues == "true"))
             {
                 <div class="card-box">
-                    @if (type == "mean")
+                    @if (type == "meanWork")
+                    {
+                        <div class="col">
+                            <div class="container-fluid" style="text-align:center">
+                                <button class="btn btn-primary" id="frequencyButton" type="button">Frequency</button>
+                                <button class="btn btn-primary" id="medianButton" type="button">Median</button>
+                                <button class="btn btn-primary" id="meanButton" type="button">Mean</button>
+                            </div>
+                            <br />
+                            <div id="frequencyChart">
+                                @(Html.Kendo().Chart(frequency)
+                                            .Name("chart")
+                                            .Legend(legend => legend
+                                            .Position(ChartLegendPosition.Top))
+                                            .Series(series =>
+                                            {
+                                                series.Column(a => a.Frequency).Name("Frequency").CategoryField("Workstation");
+                                            })
+                                            .CategoryAxis(axis => axis
+                                                .Labels(labels => labels.Rotation(0))
+                                                .MajorGridLines(lines => lines.Visible(true))
+                                            )
+                                            .ValueAxis(axis => axis
+                                                .Labels(l => l.Visible(true))
+                                                .Title("Frequency")
+                                            )
+                                        .Tooltip(tooltip => tooltip
+                                            .Visible(true)
+                                            .Template("#= series.name #: #= value #")
+                                        )
+                                        .ChartArea(x => x.Height(210))
+                                        .Pannable(pannable => pannable
+                                            .Lock(ChartAxisLock.Y)
+                                        )
+                                        .Zoomable(zoomable => zoomable
+                                            .Mousewheel(mousewheel => mousewheel.Lock(ChartAxisLock.Y))
+                                            .Selection(selection => selection.Lock(ChartAxisLock.Y))
+                                        )
+
+
+                                )
+                            </div>
+                            <div id="medianChart">
+                                @(Html.Kendo().Chart(median)
+                                    .Name("chart_median")
+                                    .Legend(legend => legend
+                                        .Position(ChartLegendPosition.Top))
+                                    .Series(series =>
+                                    {
+                                        series.Column(a => a.MedianInMinutes).Name("Median In Minutes").CategoryField("Workstation");
+                                    })
+                                    .CategoryAxis(axis => axis
+                                        .Labels(labels => labels.Rotation(0))
+                                        .MajorGridLines(lines => lines.Visible(true))
+                                    )
+                                    .ValueAxis(axis => axis
+                                        .Labels(l => l.Visible(true))
+                                        .Title("Median Duration")
+                                    )
+                                    .Tooltip(tooltip => tooltip
+                                        .Visible(true)
+                                        .Template("#= dataItem.MedianActivityFormatted #")
+                                    )
+                                    .ChartArea(x => x.Height(210))
+                                    .Pannable(pannable => pannable
+                                        .Lock(ChartAxisLock.Y)
+                                    )
+                                    .Zoomable(zoomable => zoomable
+                                        .Mousewheel(mousewheel => mousewheel.Lock(ChartAxisLock.Y))
+                                        .Selection(selection => selection.Lock(ChartAxisLock.Y))
+                                    )
+                                )
+
+                            </div>
+                            <div id="meanChart">
+                                @(Html.Kendo().Chart(mean)
+                                .Name("chart_mean")
+                                .Legend(legend => legend
+                                    .Position(ChartLegendPosition.Top))
+                                .Series(series =>
+                                {
+                                    series.Column(a => a.MeanInMinutes).Name("Mean In Minutes").CategoryField("Workstation");
+                                })
+                                .CategoryAxis(axis => axis
+                                    .Labels(labels => labels.Rotation(0))
+                                    .MajorGridLines(lines => lines.Visible(true))
+                                )
+                                .ValueAxis(axis => axis
+                                    .Labels(l => l.Visible(true))
+                                    .Title("Mean Duration")
+                                )
+                                .Tooltip(tooltip => tooltip
+                                    .Visible(true)
+                                    .Template("#= dataItem.MeanActivityFormatted #")
+                                )
+                                .ChartArea(x => x.Height(210))
+                                .Pannable(pannable => pannable
+                                    .Lock(ChartAxisLock.Y)
+                                )
+                                .Zoomable(zoomable => zoomable
+                                    .Mousewheel(mousewheel => mousewheel.Lock(ChartAxisLock.Y))
+                                    .Selection(selection => selection.Lock(ChartAxisLock.Y))
+                                )
+                                )
+
+                            </div>
+                        </div>
+
+                    }
+                    else if (type == "mean")
                     {
                         <div>
                             @(Html.Kendo().Chart(allResources)
@@ -141,18 +339,18 @@
                         </div>
 
                     }
-                    else
+                    else if (type == "effort" || type == "effortWorkstation")
                     {
                         <div>
                             @(Html.Kendo().Chart(allResourcesEffort)
                                 .Name("chart")
-                                .Title("Effort time in minutes")
+                                .Title("Work time in minutes")
                                 .Legend(legend => legend
                                     .Position(ChartLegendPosition.Top)
                                 )
                                 .Series(series =>
                                 {
-                                    series.Column(a => a.EffortMillis).Name("Effort time Minutes").CategoryField("Resource");
+                                    series.Column(a => a.WorkHoursMillis).Name("Work time in Minutes").CategoryField("Username");
                                 })
                                 .CategoryAxis(axis => axis
                                     .Name("series-axis")
@@ -176,6 +374,43 @@
                             )
                         </div>
                     }
+                    else
+                    {
+                        <div>
+                            @(Html.Kendo().Chart(operationalEffort)
+                                .Name("chart")
+                                .Title("Operational time in minutes")
+                                .Legend(legend => legend
+                                    .Position(ChartLegendPosition.Top)
+                                )
+                                .Series(series =>
+                                {
+                                    series.Column(a => a.OperationalHoursMillis).Name("Operational time in Minutes").CategoryField("WorkstationName");
+                                })
+                                .CategoryAxis(axis => axis
+                                    .Name("series-axis")
+                                    .Line(line => line.Visible(true))
+                                )
+                                .Tooltip(tooltip => tooltip
+                                    .Visible(true)
+                                    .Format("{0}%")
+                                    .Template("#= series.name #: #= value # minutes")
+                                )
+                                .ChartArea(x => x.Height(210))
+                                .Pannable(pannable => pannable
+                                    .Lock(ChartAxisLock.Y)
+                                )
+                                .Zoomable(zoomable => zoomable
+                                    .Mousewheel(mousewheel => mousewheel.Lock(ChartAxisLock.Y))
+                                    .Selection(selection => selection.Lock(ChartAxisLock.Y))
+                                )
+
+
+                            )
+                        </div>
+                    }
+
+
                 </div>
             }
         }
@@ -184,99 +419,263 @@
 <br />
 
 
-@if ((type == "mean" || type == "effort") && (meanMinutesAll != null || totalEffort != null))
+@if ((type == "mean" || type == "effort" || type == "effortWorkstation" || type == "effortWork" || type == "meanWork")
+   && (meanMinutesAll != null || totalEffort != null || hasValues == "true"))
 {
     <div class="row">
-        <div class="col">
-            <div class="card text-xs-center">
-                <div class="card-header">
-                    Information
-                </div>
-                <div class="card-body">
-                    @if (type == "mean")
-                    {
-                        <h5>
-                            General mean time: @meanMinutesAll minutes
-                        </h5>
-                    }
-                    else
-                    {
-                        <h5>
-                            Total Effort: @totalEffort minutes
-                        </h5>
-                    }
-                    <h5>
-                        Activity Chosen: @activityChosen
-                    </h5>
-                </div>
-            </div> <!-- end card-box-->
-        </div> <!-- end col -->
-        <div class="col">
-            <div class="card text-xs-center">
-                <div class="card-header">
-                    Parts
-                </div>
-                <div class="card-body">
-                    @if (parts == null)
-                    {
-                        <h5>No parts were involved.</h5>
-                    }
-                    else
-                    {
-                        foreach (var p in parts)
+        @if (type == "meanWork")
+        {
+            <div class="col">
+                @if (Model != null)
+                {
+                    <div class="table-responsive">
+                        <table id="scroll-horizontal-datatable" class="table table-dark dt-responsive nowrap w-100">
+                            <thead>
+                                <tr>
+                                    <th>Frequency</th>
+                                    <th>Mean Duration</th>
+                                    <th>Median Duration</th>
+                                    <th>Minimum Duration</th>
+                                    <th>Maximum Duration</th>
+                                    <th>Workstation</th>
+                            </thead>
+                            <tbody>
+
+                                @foreach (Pmviz_Frontend.Models.WorkstationFreq a in Model)
+                                {
+                                    <tr>
+                                        <td>@a.Frequency</td>
+                                        <td>@a.MeanActivityFormatted</td>
+                                        <td>@a.MedianActivityFormatted</td>
+                                        <td>@a.MinActivityFormatted</td>
+                                        <td>@a.MaxActivityFormatted</td>
+                                        <td>@a.Workstation</td>
+                                    </tr>
+
+                                }
+
+                            </tbody>
+                        </table>
+                    </div>
+
+                }
+            </div>
+
+        }
+        else
+        {
+            <div class="col">
+                <div class="card text-xs-center">
+                    <div class="card-header">
+                        Information
+                    </div>
+                    <div class="card-body">
+                        @if (type == "mean")
                         {
-                            <h5>@p</h5>
+                            <h5>
+                                Mean performance time: @meanMinutesAll minutes
+                            </h5>
                         }
-                    }
-                </div>
+                        else if (type == "effort" || type == "effortWorkstation")
+                        {
+                            <h5>
+                                Total Work Time: @totalEffort minutes
+                            </h5>
+                        }
+                        else
+                        {
+                            <h5>
+                                Operational Work Time: @totalEffort minutes
+                            </h5>
+                        }
+                        <h5>
+                            Activity Chosen: @activityChosen
+                        </h5>
+                    </div>
+                </div> <!-- end card-box-->
+            </div> <!-- end col -->
+            <div class="col">
+                <div class="card text-xs-center">
+                    <div class="card-header">
+                        Parts
+                    </div>
+                    <div class="card-body">
+                        @if (parts == null)
+                        {
+                            <h5>No parts were involved.</h5>
+                        }
+                        else
+                        {
+                            foreach (var p in parts)
+                            {
+                                <h5>@p</h5>
+                            }
+                        }
+                    </div>
                 </div>
             </div>
-        <div class="col">
-            <div class="card text-xs-center">
-                <div class="card-header">
-                    Moulds
-                </div>
-                <div class="card-body">
-                    @if (moulds == null)
-                    {
-                        <h5>No moulds were involved.</h5>
-                    }
-                    else
-                    {
-                        foreach (var m in moulds)
+            <div class="col">
+                <div class="card text-xs-center">
+                    <div class="card-header">
+                        Moulds
+                    </div>
+                    <div class="card-body">
+                        @if (moulds == null)
                         {
-                            <h5>@m</h5>
+                            <h5>No moulds were involved.</h5>
                         }
-                    }
+                        else
+                        {
+                            foreach (var m in moulds)
+                            {
+                                <h5>@m</h5>
+                            }
+                        }
+                    </div>
                 </div>
             </div>
-        </div>
+        }
     </div>
 }
 
 <script>
     var select = document.getElementById("acts");
+    var selectWork = document.getElementById("stations")
     var selectList = document.getElementById("actv");
+    var selectListWorkstations = document.getElementById("works");
+    var userTypeDiv = document.getElementById("option");
+    var workstationTypeDiv = document.getElementById("option2");
     var btnSubmit = document.getElementById("send");
+    var radioPerformanceUser = document.getElementById("typeWorkstation");
+    var radioPerformanceWork = document.getElementById("radioPerformanceWork");
+    var userCheck = document.getElementById("userCheck");
+    var workCheck = document.getElementById("workCheck");
+
+
+    if (userCheck != null) {
+        userTypeDiv.style.display = "block"
+        workstationTypeDiv.style.display = "none"
+    }
+
+    if (workCheck != null) {
+        userTypeDiv.style.display = "none"
+        workstationTypeDiv.style.display = "block"
+    }
+
+    $(document).ready(function () {
+        var frequencyChart = document.getElementById("frequencyChart");
+        var medianChart = document.getElementById("medianChart");
+        var meanChart = document.getElementById("meanChart");
+        var frequencyButton = document.getElementById("frequencyButton");
+        var medianButton = document.getElementById("medianButton");
+        var meanButton = document.getElementById("meanButton");
+
+        medianChart.style.display = "none";
+        meanChart.style.display = "none";
+        frequencyButton.disabled = true;
+
+        $("#frequencyButton").click(function () {
+            frequencyButton.disabled = true;
+            medianButton.disabled = false;
+            meanButton.disabled = false;
+            frequencyChart.style.display = "block";
+            medianChart.style.display = "none";
+            meanChart.style.display = "none";
+        });
+
+        $("#medianButton").click(function () {
+            frequencyButton.disabled = false;
+            medianButton.disabled = true;
+            meanButton.disabled = false;
+            frequencyChart.style.display = "none";
+            medianChart.style.display = "block";
+            meanChart.style.display = "none";
+        });
+
+        $("#meanButton").click(function () {
+            frequencyButton.disabled = false;
+            medianButton.disabled = false;
+            meanButton.disabled = true;
+            frequencyChart.style.display = "none";
+            medianChart.style.display = "none";
+            meanChart.style.display = "block";
+        });
+    });
 
     if (selectList.value == "") {
         select.style.display = "none";
 
     }
-    
+
+    if (selectListWorkstations.value == "") {
+        selectWork.style.display = "none";
+
+    }
 
     function handleAct(selectBox) {
         btnSubmit.click()
     }
 
+    function handleWork(selectBox) {
+        btnSubmit.click()
+    }
+
+
     function handleMiner(radio) {
-        if (radio.value != "mean" || radio.value != "effort") {
+        if (radio.value == "mean" || radio.value == "effort") {
+            selectWork.style.display = "none";
             select.style.display = "block";
+        } else if (radio.value == "effortWorkstation") {
+            select.style.display = "none";
+            selectWork.style.display = "block";
         }
-        if (selectList.value != "") {
+
+        if (selectList.value == "") {
+
+        }
+        else if (selectList.value != "" && (radio.value == "mean" || radio.value == "effort" || radio.value == "effortWork" || radio.value == "meanWork")) {
             btnSubmit.click()
 
         }
+
+        if (selectListWorkstations.value == "") {
+
+        }
+        else if (selectListWorkstations.value != "" && radio.value == "effortWorkstation") {
+            btnSubmit.click()
+
+        }
+    }
+
+    function handleRadio(radio) {
+        if (radio.value == "user") {
+            radioPerformanceUser.checked = true
+            userTypeDiv.style.display = "block"
+            workstationTypeDiv.style.display = "none"
+            select.style.display = "block";
+            if (selectListWorkstations == "") {
+
+            }
+            else if (selectListWorkstations.value != "") {
+                btnSubmit.click()
+            }
+
+        } else if (radio.value == "workstation") {
+            radioPerformanceWork.checked = true
+            userTypeDiv.style.display = "none"
+            workstationTypeDiv.style.display = "block"
+            selectWork.style.display = "none";
+            select.style.display = "block";
+        }
+
+        if (selectList.value == "") {
+
+        }
+        else if (selectList.value != "") {
+            btnSubmit.click()
+        }
+
+
     }
 
 

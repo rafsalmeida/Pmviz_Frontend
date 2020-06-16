@@ -7,17 +7,15 @@ using System.Threading.Tasks;
 namespace Pmviz_Frontend.Models
 {
     [DataContract]
-    public class ResourceEffort
+    public class WorkstationEffort
     {
         [DataMember]
-        public string Username { get; set; }
+        public string WorkstationName { get; set; }
 
         [DataMember]
-        public double WorkHoursMillis { get; set; }
+        public double OperationalHoursMillis { get; set; }
 
         [DataMember]
-        public Mean WorkHours { get; set; }
-
+        public Mean OperationalHours { get; set; }
     }
-
 }

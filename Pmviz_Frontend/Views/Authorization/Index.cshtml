@@ -15,76 +15,97 @@
         <div class="card-box">
             <form method="post">
                 <label for="role" class="required">Role to allow/restrict access to</label>
-                <select name="role" class="btn-sm btn-light dropdown-toggle" required>
+                <select name="role" class="btn-sm btn-light dropdown-toggle" required onchange="handleRole(this)">
+                    <option value="" disabled selected>Choose a role</option>
+
                     @foreach (var r in roles)
                     {
-                        <option value="@r">@r</option>
+                        if (role == r)
+                        {
+                            <option value="@r" selected>@r</option>
+
+                        }
+                        else
+                        {
+                            <option value="@r">@r</option>
+
+                        }
 
                     }
                 </select>
                 <br />
                 <br />
                 <div>
-                    <button class="btn-xs btn-primary" type="submit">Submit</button>
+                    <button class="btn-xs btn-primary" id="send" type="submit" hidden>Submit</button>
                 </div>
             </form>
         </div>
     </div>
     <br />
     <div class="col">
-        @if (ViewBag.Success != null)
+        @if (TempData["success"] != null)
         {
             <div class="alert alert-success" role="alert">
-                @ViewBag.Success
+                @TempData["success"]
             </div>
         }
-        <div class="card-box">
-            <form action='@Url.Action("Save","Authorization")' method="post">
-                <input type="hidden" name="roleChosen" value="@role" />
-                <label for="allowed" id="authorization">Allowed</label>
-                <label for="notAllowed">Not Allowed</label>
-                <br />
-                @(Html.Kendo().ListBox()
-                    .Name("allowed")
-                    .Toolbar(toolbar =>
-                    {
-                        toolbar.Position(ListBoxToolbarPosition.Right);
-                        toolbar.Tools(tools => tools
-                            .TransferTo()
-                            .TransferFrom()
-                            .TransferAllTo()
-                            .TransferAllFrom()
-                        );
-                    })
-                    .Selectable(ListBoxSelectable.Multiple)
-                    .ConnectWith("notAllowed")
-                    .BindTo(routesAllowed)
-                    .Events(events => events
-                        .Add("onAdd")
-                    )
-                    
-                )
+        @if (role != null)
+        {   
+            <div class="card-box">
+                <form action='@Url.Action("Save","Authorization")' method="post">
+                    <input type="hidden" name="roleChosen" value="@role" />
+                    <label for="allowed" id="authorization">Allowed</label>
+                    <label for="notAllowed">Not Allowed</label>
+                    <br />
+                    @(Html.Kendo().ListBox()
+                        .Name("allowed")
+                        .Toolbar(toolbar =>
+                        {
+                            toolbar.Position(ListBoxToolbarPosition.Right);
+                            toolbar.Tools(tools => tools
+                                .TransferTo()
+                                .TransferFrom()
+                                .TransferAllTo()
+                                .TransferAllFrom()
+                            );
+                        })
+                        .Selectable(ListBoxSelectable.Multiple)
+                        .ConnectWith("notAllowed")
+                        .BindTo(routesAllowed)
+                        .Events(events => events
+                            .Add("onAdd")
+                        )
 
-                @(Html.Kendo().ListBox()
-                    .Name("notAllowed")
-                    .BindTo(routesNotAllowed)
-                    .Selectable(ListBoxSelectable.Multiple)
-                    .Events(events => events
-                        .Add("onAdd")
                     )
-                )
-                <br />
-                <br />
-                <div>
-                    <button class="btn btn-primary" type="submit">Save</button>
-                </div>
-            </form>
-        </div>
+
+                    @(Html.Kendo().ListBox()
+                        .Name("notAllowed")
+                        .BindTo(routesNotAllowed)
+                        .Selectable(ListBoxSelectable.Multiple)
+                        .Events(events => events
+                            .Add("onAdd")
+                        )
+                    )
+                    <br />
+                    <br />
+                    <div>
+                        <button class="btn btn-primary" type="submit">Save</button>
+                    </div>
+                </form>
+            </div>
+
+        }
     </div>
 </div>
 <script>
     function onAdd(e) {
 
+    }
+
+    var btnSubmit = document.getElementById("send");
+
+    function handleRole(select) {
+        btnSubmit.click();
     }
 </script>
 <style>
