@@ -1,4 +1,4 @@
-@charset "UTF-8";
+﻿@charset "UTF-8";
 /*
 Template Name: Ubold - Responsive Bootstrap 4 Admin Dashboard
 Author: CoderThemes
@@ -8146,7 +8146,7 @@ a.text-blue:hover, a.text-blue:focus {
     font-family: "Material Design Icons"; }
 
 .dropdown-icon-item {
-  display: block;
+  display: none;
   border-radius: 3px;
   line-height: 34px;
   text-align: center;

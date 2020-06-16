@@ -30,13 +30,36 @@ namespace Pmviz_Frontend.Controllers
             }
         }
 
-        public async Task<IActionResult> ConformanceGraph(string process, string miner, string moulds, string activities, string resources, string startDate, string endDate, string threshold, string estimatedEnd)
+        public async Task<IActionResult> FrequencyPerformanceGraph()
+        {
+            HttpResponseMessage response;
+            using (var httpClient = new HttpClient())
+            {
+                using (response = await httpClient.GetAsync("http://localhost:8080/api/processes"))
+                {
+                    ViewData["processes"] = response.Content.ReadAsStringAsync().Result;
+                    var status = response.IsSuccessStatusCode;
+                    if (status == false)
+                    {
+                        return RedirectToAction("Index", "Home", new { error = "1" });
+                    }
+                    return View();
+                }
+            }
+        }
+
+        public async Task<IActionResult> ConformanceGraph(string process, string miner, string moulds, string parts, string activities, string resources, string startDate, string endDate, 
+            string threshold, string estimatedEnd, string mouldsFilter, string partsFilter, string activitiesFilter, string resourcesFilter, string startDateFilter, string endDateFilter)
         {
             string json, url;
             json = "{ \"isEstimatedEnd\":" + estimatedEnd;
             if (moulds != null)
             {
                 json += ", \"moulds\":" + moulds.ToString();
+            }
+            if (parts != null)
+            {
+                json += ", \"parts\":" + parts.ToString();
             }
             if (resources != null)
             {
@@ -74,8 +97,28 @@ namespace Pmviz_Frontend.Controllers
                     else
                     {
                         var obj = JObject.Parse(response.Content.ReadAsStringAsync().Result);
-                        json = "{ \"nodes\":" + JsonConvert.SerializeObject(obj["nodes"]) + "}";
-
+                        json = "{ \"nodes\":" + JsonConvert.SerializeObject(obj["nodes"]) + ", \"isEstimatedEnd\":" + estimatedEnd;
+                        if (mouldsFilter != null)
+                        {
+                            json += ", \"moulds\":" + mouldsFilter.ToString();
+                        }
+                        if (partsFilter != null)
+                        {
+                            json += ", \"parts\":" + partsFilter.ToString();
+                        }
+                        if (resourcesFilter != null)
+                        {
+                            json += ", \"resources\":" + resourcesFilter.ToString();
+                        }
+                        if (activitiesFilter != null)
+                        {
+                            json += ", \"activities\":" + activitiesFilter.ToString();
+                        }
+                        if (startDateFilter != null && endDateFilter != null)
+                        {
+                            json += ", \"startDate\":\"" + startDateFilter + "\", \"endDate\":\"" + endDateFilter + "\"";
+                        }
+                        json += " }";
                         c = new StringContent(json, Encoding.UTF8, "application/json");
 
                         response = await httpClient.PostAsync("http://localhost:8080/api/conformance/process/" + process, c);
@@ -93,12 +136,16 @@ namespace Pmviz_Frontend.Controllers
             }
         }
 
-        public async Task<IActionResult> GetFilter(string process, string moulds, string resources, string activities, string startDate, string endDate, string estimatedEnd, string nodes)
+        public async Task<IActionResult> GetFilter(string process, string moulds, string parts, string resources, string activities, string startDate, string endDate, string estimatedEnd, string nodes)
         {
             string json = "{ \"nodes\":" + nodes.ToString() + ", \"isEstimatedEnd\":" + estimatedEnd;
             if (moulds != null)
             {
                 json += ", \"moulds\":" + moulds.ToString();
+            }
+            if (parts != null)
+            {
+                json += ", \"parts\":" + parts.ToString();
             }
             if (resources != null)
             {
