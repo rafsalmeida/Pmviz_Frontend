@@ -6,8 +6,8 @@
     </path>
   <path>/authorization
     </path>
-  <path>/manager/graph
-    </path>
+  <path>/graph/frequencyPerformanceGraph
+  </path>
   <path>/graph/index
     </path>
   <path>/log/resource

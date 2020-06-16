@@ -10,7 +10,7 @@
   <path name="Manage Access">/authorization
     <button>manageAccess</button>
   </path>  
-  <path name="See processes graphs">/manager/graph
+  <path name="See processes graphs">/graph/frequencyPerformanceGraph
     <button>frequencyGraph</button>
   </path>
   <path name="Compare processes graphs">/graph/index
