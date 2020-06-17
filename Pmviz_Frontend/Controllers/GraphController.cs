@@ -12,7 +12,7 @@ namespace Pmviz_Frontend.Controllers
 {
     public class GraphController : Controller
     {
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> ConformanceGraph()
         {
             HttpResponseMessage response;
             using (var httpClient = new HttpClient())
@@ -48,7 +48,7 @@ namespace Pmviz_Frontend.Controllers
             }
         }
 
-        public async Task<IActionResult> ConformanceGraph(string process, string miner, string moulds, string parts, string activities, string resources, string startDate, string endDate, 
+        public async Task<IActionResult> GetFullGraph(string process, string miner, string moulds, string parts, string activities, string resources, string startDate, string endDate, 
             string threshold, string estimatedEnd, string mouldsFilter, string partsFilter, string activitiesFilter, string resourcesFilter, string startDateFilter, string endDateFilter)
         {
             string json, url;

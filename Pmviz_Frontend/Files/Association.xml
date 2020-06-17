@@ -13,7 +13,7 @@
   <path name="See processes graphs">/graph/frequencyPerformanceGraph
     <button>frequencyGraph</button>
   </path>
-  <path name="Compare processes graphs">/graph/index
+  <path name="Compare processes graphs">/graph/conformanceGraph
     <button>compareGraphs</button>
   </path>
   <path name="Tag Parts">/tag
