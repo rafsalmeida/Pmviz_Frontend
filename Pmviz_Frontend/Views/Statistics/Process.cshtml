@@ -9,20 +9,20 @@
     IEnumerable<Pmviz_Frontend.Models.Log> allProcesses = ViewData["processes"] as IEnumerable<Pmviz_Frontend.Models.Log>;
 }
 @{
-    ViewData["Title"] = "My Statistics";
+    ViewData["Title"] = "Minhas Estatísticas";
 }
 
 <div class="row">
     <div class="col-md-3 col-xl-3">
         <div class="card-box">
-            <h4 class="text-dark my-1">My Statistics</h4>
+            <h4 class="text-dark my-1">Minhas Estatísticas</h4>
             @if (activities != null)
             {
         <form action='@Url.Action("Process", "Statistics", new { id = processId })' method="post" id="ticketsForm" kendo-validator="true">
-            <label for="processList" class="required">Choose another process:</label>
+            <label for="processList" class="required">Escolha outro processo:</label>
             <br />
             <select name="processId" id="processList" class="btn-sm btn-light dropdown-toggle" required">
-                <option value="" disabled selected>Choose another process</option>
+                <option value="" disabled selected>Escolha outro processo</option>
 
                 @foreach (var p in allProcesses)
                 {
@@ -40,10 +40,10 @@
             </select>
             <br />
             <br />
-            <label for="selectList" class="required">Choose an activity:</label>
+            <label for="selectList" class="required">Escolha uma atividade:</label>
             <br />
             <select name="activity" id="selectList" class="btn-sm btn-light dropdown-toggle" required onchange="handleAct(this)">
-                <option value="" disabled selected>Choose an activity</option>
+                <option value="" disabled selected>Escolha uma atividade:</option>
 
                 @foreach (var act in activities)
                 {
@@ -73,7 +73,7 @@
                 @ViewBag.ErrorActivity
             </div>
             <div class="container" style="text-align:center">
-                <a href='@Url.Action("Index","Statistics")' class="btn btn-danger">Go Back</a>
+                <a href='@Url.Action("Index","Statistics")' class="btn btn-danger">Voltar</a>
             </div>
             <br />
         }
@@ -84,14 +84,14 @@
                 <div class="card-box">
                     @(Html.Kendo().Chart()
                         .Name("chart")
-                        .Title("Mean time in minutes")
+                        .Title("Média em minutos")
                         .Legend(legend => legend
                             .Position(ChartLegendPosition.Top)
                         )
                         .Series(series =>
                         {
-                            series.Column(new double[] { Double.Parse(meanMinutesUser.ToString()) }).Name("User Mean");
-                            series.Column(new double[] { Double.Parse(meanMinutesAll.ToString()) }).Name("General Mean");
+                            series.Column(new double[] { Double.Parse(meanMinutesUser.ToString()) }).Name("Média Utilizador");
+                            series.Column(new double[] { Double.Parse(meanMinutesAll.ToString()) }).Name("Média Geral");
                         })
                         .CategoryAxis(axis => axis
                             .Name("series-axis")
@@ -100,7 +100,7 @@
                         .Tooltip(tooltip => tooltip
                             .Visible(true)
                             .Format("{0}%")
-                            .Template("#= series.name #: #= value # minutes")
+                            .Template("#= series.name #: #= value # minutos")
                         )
                         .ChartArea(x => x.Height(210))
                         .Pannable(pannable => pannable
@@ -134,16 +134,16 @@
                 </div>
                 <div class="card-body">
                     <h5>
-                        General mean time: @meanMinutesAll minutes
+                        Média Geral: @meanMinutesAll minutes
                     </h5>
                     <h5>
-                        User mean time: @meanMinutesUser minutes
+                        Média do Utilizador: @meanMinutesUser minutes
                     </h5>
                     <h5>
-                        Activity Chosen: @activityChosen
+                        Atividade Escolhida: @activityChosen
                     </h5>
                     <h5>
-                        Process Chosen: @processId
+                        Processo Escolhido: @processId
                     </h5>
                 </div>
             </div> <!-- end card-box-->
@@ -151,12 +151,12 @@
         <div class="col">
             <div class="card text-xs-center">
                 <div class="card-header">
-                    Parts
+                    Peças
                 </div>
                 <div class="card-body">
                     @if (parts == null)
                     {
-                        <h5>No parts were involved.</h5>
+                        <h5>Nenhuma peça.</h5>
                     }
                     else
                     {
@@ -171,12 +171,12 @@
         <div class="col">
             <div class="card text-xs-center">
                 <div class="card-header">
-                    Moulds
+                    Molde
                 </div>
                 <div class="card-body">
                     @if (moulds == null)
                     {
-                        <h5>No moulds were involved.</h5>
+                        <h5>Nenhum molde.</h5>
                     }
                     else
                     {

@@ -2,7 +2,7 @@
     IEnumerable<Pmviz_Frontend.Models.Log> allProcesses = ViewData["processes"] as IEnumerable<Pmviz_Frontend.Models.Log>;
 }
 @using Kendo.Mvc.UI
-@{ ViewBag.Title = "My Stats";}
+@{ ViewBag.Title = "Minhas Estatísticas";}
 
 @if (ViewBag.ErrorProcess != null)
 {
@@ -10,50 +10,25 @@
         @ViewBag.ErrorProcess
     </div>
     <div class="container" style="text-align:center">
-        <a href='@Url.Action("Index","Home")' class="btn btn-danger">Go Back</a>
+        <a href='@Url.Action("Index","Home")' class="btn btn-danger">Voltar</a>
     </div>
 }
 @if (allProcesses != null)
 {
-    <!--<div class="container k-content" style="height:auto">
-        @(Html.Kendo().Grid(allProcesses)
-            .Name("Grid")
-            .Columns(columns =>
-            {
-                columns.Bound(l => l.Name).Title("Name");
-                columns.Bound(l => l.Description).Title("Description");
-                columns.Command(command => command.Custom("My Statistics").Click("showStats"));
-
-            })
-            .Pageable()
-            .Navigatable()
-            .Sortable()
-            .Groupable()
-            .Filterable()
-            .Scrollable(s => s.Height("auto"))
-            .DataSource(dataSource => dataSource
-                .Ajax()
-                .PageSize(20)
-                .ServerOperation(false)
-             )
-            .Resizable(resize => resize.Columns(true))
-            .HtmlAttributes(new { style = "width:1000px" })
-
-        )
-    </div>-->
+    
     <div class="row">
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="header-title">Processes</h4>
+                    <h4 class="header-title">Processos</h4>
                     <div class="table-responsive">
                         <table id="scroll-horizontal-datatable" class="table table-dark dt-responsive nowrap w-100">
                             <thead>
                                 <tr>
                                     <th>ID</th>
-                                    <th>Name</th>
-                                    <th>Description</th>
-                                    <th>Actions</th>
+                                    <th>Nome</th>
+                                    <th>Descrição</th>
+                                    <th>Ações</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -64,7 +39,7 @@
                                         <td>@log.Name</td>
                                         <td>@log.Description</td>
                                         <td>
-                                            <button class="btn btn-sm btn-rounded btn-primary stats">Statistics</button>
+                                            <button class="btn btn-sm btn-rounded btn-primary stats">Estatísticas</button>
                                         </td>
                                     </tr>
 

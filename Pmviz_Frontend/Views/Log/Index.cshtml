@@ -1,6 +1,6 @@
 ﻿@model IEnumerable<Pmviz_Frontend.Models.Log>
 @using Kendo.Mvc.UI
-@{ ViewBag.Title = "All Processes";}
+@{ ViewBag.Title = "Todos os Processos";}
 @using Microsoft.AspNetCore.Http;
 @{
     List<string> details = Context.Session.GetString("listDetails").Split(new char[] { ',' }).ToList();
@@ -18,67 +18,30 @@ else
     @if (Model.Count() == 0)
     {
         <div class="alert alert-danger" role="alert">
-            There are no processes registered.
+            Não há processos registados.
         </div>
     }
     else
     {
-        <!--<div class="container" style="height:auto">
-            @(Html.Kendo().Grid(Model)
-                .Name("Grid")
-                .Columns(columns =>
-                {
-                    columns.Bound(l => l.Id).Title("Id").HtmlAttributes(new { @class = "thead-dark" });
-                    columns.Bound(l => l.Description).Title("Description").Width(200);
-                    columns.Bound(l => l.NumberOfActivities).Title("Number of Activities");
-                    columns.Bound(l => l.NumberOfCases).Title("Number of Cases");
-                    columns.Bound(l => l.StartDate).Title("Start Date");
-                    columns.Bound(l => l.EndDate).Title("End Date");
-                    if (!details.Contains("activityFrequency"))
-                    {
-                        columns.Command(command => command.Custom("Activities").Click("showDetails")).Width(110);
-
-                    }
-                    if (!details.Contains("resourcesStats"))
-                    {
-                        columns.Command(command => command.Custom("Resources").Click("showStats")).Width(130);
-                    }
-
-                })
-                .Pageable()
-                .Navigatable()
-                .Sortable()
-                .Filterable()
-                .Scrollable(s => s.Height("auto"))
-                .DataSource(dataSource => dataSource
-                .Ajax()
-                .PageSize(20)
-                .ServerOperation(false)
-                )
-                .Resizable(resize => resize.Columns(true))
-                .HtmlAttributes(new { @class = "table table-dark table-responsive", style = "width:1000px" })
-
-            )
-        </div>-->
 
         <div class="row">
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <h4 class="header-title">All Processes</h4>
+                        <h4 class="header-title">Processos</h4>
                         <div class="table-responsive">
                             <table id="scroll-horizontal-datatable" class="table table-dark dt-responsive nowrap w-100">
                                 <thead>
                                     <tr>
                                         <th>ID</th>
-                                        <th>Name</th>
-                                        <th>Number of cases</th>
-                                        <th>Number of activities</th>
-                                        <th>Start date</th>
-                                        <th>End date</th>
+                                        <th>Nome</th>
+                                        <th>Número de casos</th>
+                                        <th>Número de atividades</th>
+                                        <th>Data Inicial</th>
+                                        <th>Data Final</th>
                                         @if (!details.Contains("resourcesStats") && !details.Contains("activityFrequency"))
                                         {
-                                            <th>Statistics</th>
+                                            <th>Estatísticas</th>
                                         }
                                     </tr>
                                 </thead>
@@ -109,12 +72,12 @@ else
                                         <td>
                                             @if (!details.Contains("activityFrequency"))
                                             {
-                                                <button class="btn btn-sm btn-rounded btn-primary activity"  >Activities</button>
+                                                <button class="btn btn-sm btn-rounded btn-primary activity"  >Atividades</button>
                                                 <br />
                                             }
                                             @if (!details.Contains("resourcesStats"))
                                             {
-                                                <button class="btn btn-sm btn-rounded btn-danger resource">Resources</button>
+                                                <button class="btn btn-sm btn-rounded btn-danger resource">Recursos</button>
 
                                             }
                                         </td>

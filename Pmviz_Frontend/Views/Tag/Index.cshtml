@@ -19,12 +19,12 @@
     <div class="col-md-3">
         <br/>
         <form method="post" id="ticketsForm" action='@Url.Action("Mould","Tag")' kendo-validator="true">
-            <label for="mouldSelected" class="required">Choose the mould</label>
+            <label for="mouldSelected" class="required">Escolha um molde</label>
             <br />
             <select name="mouldSelected" class="btn-sm btn-light dropdown-toggle" id="mouldsList" required onchange="handleMoulds(this)">
                 @if (moulds != null)
                 {
-                    <option value="" disabled selected>Choose a mould</option>
+                <option value="" disabled selected>Escolha um molde</option>
 
                     @foreach (var mould in moulds)
                     {
@@ -93,38 +93,16 @@
 
             @if (parts.Count() > 0)
             {
-                <!--@(Html.Kendo().Grid(parts)
-                .Name("Grid")
-                .Columns(columns =>
-                {
-                    columns.Bound(p => p.Code).Title("Code");
-                    columns.Bound(p => p.Description).Title("Description");
-                    columns.Bound(p => p.TagRfid).Title("RFID");
-                    columns.Command(command => command.Custom("Tag").Click("tag")).Width(110);
-
-                })
-                .Pageable()
-                .Navigatable()
-                .Sortable()
-                .Groupable()
-                .Filterable()
-                .Resizable(resize => resize.Columns(true))
-                .Scrollable(s => s.Height("auto"))
-                .DataSource(dataSource => dataSource
-                    .Ajax()
-                    .PageSize(20)
-                    .ServerOperation(false)
-                 )
-                )-->
+                
             <div class="table-responsive">
                 <h5>Parts</h5>
                 <table id="scroll-horizontal-datatable" class="table table-dark dt-responsive nowrap w-100">
                     <thead>
                         <tr>
-                            <th>Code</th>
-                            <th>Description</th>
+                            <th>Código</th>
+                            <th>Descrição</th>
                             <th>RFID</th>
-                            <th>Actions</th>
+                            <th>Ações</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -158,7 +136,7 @@
             else
             {
                 <div class="alert alert-danger" role="alert">
-                    This mould has no parts associated!
+                    Este molde não tem partes associadas!
                 </div>
 
             }
@@ -182,7 +160,7 @@
         var $text = $row.find(".id").text(); // Find the text
 
          window.location = '@Url.Action("Tag","Tag")?id=' + $text
-        var r = confirm("Please wait while the part is being tagged! The page will reload when the part is correctly tagged. If you want to cancel, please click on the Cancel button. If not, click OK.");
+        var r = confirm("A página vai atualizar quando a peça for taggada. Se quiser cancelar, clique em Cancel. Se não, clique OK.");
         if (!r) {
             window.location = '@Url.Action("Cancel","Tag")?id=' + $text
         }

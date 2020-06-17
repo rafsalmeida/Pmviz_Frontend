@@ -21,13 +21,13 @@
 }
 @model IEnumerable<Pmviz_Frontend.Models.WorkstationFreq>
 @{
-    ViewData["Title"] = "Resources Statistics";
+    ViewData["Title"] = "Recursos";
 }
 
 <div class="row">
     <div class="col-md-3 col-xl-3">
         <div class="card-box">
-            <h4 class="text-dark my-1">Resources Statistics</h4>
+            <h4 class="text-dark my-1">Estatísticas de Recursos</h4>
             @if (ViewBag.ErrorActivity != null)
             {
                 <div class="alert alert-danger" role="alert">
@@ -43,7 +43,7 @@
             @if (activities != null && workstations != null)
             {
                 <form method="post" action='@Url.Action("Resource", "Log", new { id = processId })'>
-                    <h6>Choose the type of resource:</h6>
+                    <h6>Escolha um tipo de recurso:</h6>
                     @if (typeResource == "user")
                     {
                         <input type="radio" name="typeR" id="userCheck" value="user" checked>
@@ -53,7 +53,7 @@
                         <input type="radio" name="typeR" value="user" onclick="handleRadio(this);">
 
                     }
-                    <label for="user">Users</label>
+                    <label for="user">Utilizadores</label>
                     <br />
                     @if (typeResource == "workstation")
                     {
@@ -64,9 +64,9 @@
                         <input type="radio" name="typeR" value="workstation" onclick="handleRadio(this);">
 
                     }
-                    <label for="workstation">Workstations</label>
+                    <label for="workstation">Estações</label>
                     <br />
-                    <h6>Choose the type of statistics:</h6>
+                    <h6>Escolha um tipo de estatísticas:</h6>
                     <div id="option">
                         @if (type == "mean")
                         {
@@ -77,7 +77,7 @@
                             <input type="radio" name="type" value="mean" id="typeWorkstation" onclick="handleMiner(this);">
 
                         }
-                        <label for="mean">Performance</label>
+                        <label for="mean">Desempenho</label>
                         <br />
                         @if (type == "effort")
                         {
@@ -87,7 +87,7 @@
                         {
                             <input type="radio" name="type" value="effort" onclick="handleMiner(this);">
                         }
-                        <label for="effort">Work Time</label>
+                        <label for="effort">Tempo de Trabalho</label>
                         <br />
                         @if (type == "effortWorkstation")
                         {
@@ -97,7 +97,7 @@
                         {
                             <input type="radio" name="type" value="effortWorkstation" onclick="handleMiner(this);">
                         }
-                        <label for="effort">Workstations Work Time</label>
+                        <label for="effort">Tempo de Trabalho das Estações</label>
                     </div>
                     <div id="option2">
                         @if (type == "meanWork")
@@ -109,7 +109,7 @@
                             <input type="radio" name="type" id="radioPerformanceWork" value="meanWork" onclick="handleMiner(this);">
 
                         }
-                        <label for="mean">Workstations Performance</label>
+                        <label for="mean">Desempenho das Estações</label>
                         <br />
                         @if (type == "effortWork")
                         {
@@ -119,14 +119,14 @@
                         {
                             <input type="radio" name="type" value="effortWork" onclick="handleMiner(this);">
                         }
-                        <label for="effort">Operational Time</label>
+                        <label for="effort">Tempo Operacional</label>
                     </div>
 
                     <br />
                     <div id="acts">
-                        <h6>Choose the activity:</h6>
+                        <h6>Escolha uma atividade:</h6>
                         <select name="activity" class="btn-sm btn-light dropdown-toggle" id="actv" onchange="handleAct(this)">
-                            <option value="" disabled selected>Choose an activity</option>
+                            <option value="" disabled selected>Escolha uma atividade</option>
 
                             @foreach (var act in activities)
                             {
@@ -144,9 +144,9 @@
                         </select>
                     </div>
                     <div id="stations">
-                        <h6>Choose the workstation:</h6>
+                        <h6>Escolha uma Estação:</h6>
                         <select name="workstation" class="btn-sm btn-light dropdown-toggle" id="works" onchange="handleWork(this)">
-                            <option value="" disabled selected>Choose a workstation</option>
+                            <option value="" disabled selected>Escolha uma Estação</option>
 
                             @foreach (var w in workstations)
                             {
@@ -172,7 +172,7 @@
             else
             {
                 <div>
-                    <a href='@Url.Action("Index","Log")' class="btn btn-danger">Go Back</a>
+                    <a href='@Url.Action("Index","Log")' class="btn btn-danger">Voltar</a>
                 </div>
             }
         </div>
@@ -184,7 +184,7 @@
                 @ViewBag.Error
             </div>
             <div class="container" style="text-align:center">
-                <a href='@Url.Action("Index","Log")' class="btn btn-danger">Go Back</a>
+                <a href='@Url.Action("Index","Log")' class="btn btn-danger">Voltar</a>
             </div>
         }
         else
@@ -197,9 +197,9 @@
                     {
                         <div class="col">
                             <div class="container-fluid" style="text-align:center">
-                                <button class="btn btn-primary" id="frequencyButton" type="button">Frequency</button>
-                                <button class="btn btn-primary" id="medianButton" type="button">Median</button>
-                                <button class="btn btn-primary" id="meanButton" type="button">Mean</button>
+                                <button class="btn btn-primary" id="frequencyButton" type="button">Frequência</button>
+                                <button class="btn btn-primary" id="medianButton" type="button">Mediana</button>
+                                <button class="btn btn-primary" id="meanButton" type="button">Média</button>
                             </div>
                             <br />
                             <div id="frequencyChart">
@@ -209,7 +209,7 @@
                                             .Position(ChartLegendPosition.Top))
                                             .Series(series =>
                                             {
-                                                series.Column(a => a.Frequency).Name("Frequency").CategoryField("Workstation");
+                                                series.Column(a => a.Frequency).Name("Frequência").CategoryField("Workstation");
                                             })
                                             .CategoryAxis(axis => axis
                                                 .Labels(labels => labels.Rotation(0))
@@ -217,7 +217,7 @@
                                             )
                                             .ValueAxis(axis => axis
                                                 .Labels(l => l.Visible(true))
-                                                .Title("Frequency")
+                                                .Title("Frequência")
                                             )
                                         .Tooltip(tooltip => tooltip
                                             .Visible(true)
@@ -242,7 +242,7 @@
                                         .Position(ChartLegendPosition.Top))
                                     .Series(series =>
                                     {
-                                        series.Column(a => a.MedianInMinutes).Name("Median In Minutes").CategoryField("Workstation");
+                                        series.Column(a => a.MedianInMinutes).Name("Mediana em Minutos").CategoryField("Workstation");
                                     })
                                     .CategoryAxis(axis => axis
                                         .Labels(labels => labels.Rotation(0))
@@ -250,7 +250,7 @@
                                     )
                                     .ValueAxis(axis => axis
                                         .Labels(l => l.Visible(true))
-                                        .Title("Median Duration")
+                                        .Title("Mediana")
                                     )
                                     .Tooltip(tooltip => tooltip
                                         .Visible(true)
@@ -274,7 +274,7 @@
                                     .Position(ChartLegendPosition.Top))
                                 .Series(series =>
                                 {
-                                    series.Column(a => a.MeanInMinutes).Name("Mean In Minutes").CategoryField("Workstation");
+                                    series.Column(a => a.MeanInMinutes).Name("Média em Minutos").CategoryField("Workstation");
                                 })
                                 .CategoryAxis(axis => axis
                                     .Labels(labels => labels.Rotation(0))
@@ -282,7 +282,7 @@
                                 )
                                 .ValueAxis(axis => axis
                                     .Labels(l => l.Visible(true))
-                                    .Title("Mean Duration")
+                                    .Title("Média")
                                 )
                                 .Tooltip(tooltip => tooltip
                                     .Visible(true)
@@ -307,14 +307,13 @@
                         <div>
                             @(Html.Kendo().Chart(allResources)
                                 .Name("chart")
-                                .Title("Mean time in minutes")
+                                .Title("Média")
                                 .Legend(legend => legend
                                     .Position(ChartLegendPosition.Top)
                                 )
                                 .Series(series =>
                                 {
-                                    series.Column(a => a.MeanMillis).Name("Mean in Minutes").CategoryField("Resource");
-                                    series.Line(a => a.GeneralMean).Name("General Mean in Minutes");
+                                    series.Column(a => a.MeanMillis).Name("Média em Minutos").CategoryField("Resource");
                                 })
                                 .CategoryAxis(axis => axis
                                     .Name("series-axis")
@@ -323,7 +322,7 @@
                                 .Tooltip(tooltip => tooltip
                                     .Visible(true)
                                     .Format("{0}%")
-                                    .Template("#= series.name #: #= value # minutes")
+                                    .Template("#= series.name #: #= value # minutos")
                                 )
                                 .ChartArea(x => x.Height(210))
                                 .Pannable(pannable => pannable
@@ -344,13 +343,13 @@
                         <div>
                             @(Html.Kendo().Chart(allResourcesEffort)
                                 .Name("chart")
-                                .Title("Work time in minutes")
+                                .Title("Tempo de Trabalho")
                                 .Legend(legend => legend
                                     .Position(ChartLegendPosition.Top)
                                 )
                                 .Series(series =>
                                 {
-                                    series.Column(a => a.WorkHoursMillis).Name("Work time in Minutes").CategoryField("Username");
+                                    series.Column(a => a.WorkHoursMillis).Name("Tempo de Trabalho em Minutos").CategoryField("Username");
                                 })
                                 .CategoryAxis(axis => axis
                                     .Name("series-axis")
@@ -359,7 +358,7 @@
                                 .Tooltip(tooltip => tooltip
                                     .Visible(true)
                                     .Format("{0}%")
-                                    .Template("#= series.name #: #= value # minutes")
+                                    .Template("#= series.name #: #= value # minutos")
                                 )
                                 .ChartArea(x => x.Height(210))
                                 .Pannable(pannable => pannable
@@ -379,13 +378,13 @@
                         <div>
                             @(Html.Kendo().Chart(operationalEffort)
                                 .Name("chart")
-                                .Title("Operational time in minutes")
+                                .Title("Tempo Operacional")
                                 .Legend(legend => legend
                                     .Position(ChartLegendPosition.Top)
                                 )
                                 .Series(series =>
                                 {
-                                    series.Column(a => a.OperationalHoursMillis).Name("Operational time in Minutes").CategoryField("WorkstationName");
+                                    series.Column(a => a.OperationalHoursMillis).Name("Tempo Operacional em Minutos").CategoryField("WorkstationName");
                                 })
                                 .CategoryAxis(axis => axis
                                     .Name("series-axis")
@@ -394,7 +393,7 @@
                                 .Tooltip(tooltip => tooltip
                                     .Visible(true)
                                     .Format("{0}%")
-                                    .Template("#= series.name #: #= value # minutes")
+                                    .Template("#= series.name #: #= value # minutos")
                                 )
                                 .ChartArea(x => x.Height(210))
                                 .Pannable(pannable => pannable
@@ -432,11 +431,11 @@
                         <table id="scroll-horizontal-datatable" class="table table-dark dt-responsive nowrap w-100">
                             <thead>
                                 <tr>
-                                    <th>Frequency</th>
-                                    <th>Mean Duration</th>
-                                    <th>Median Duration</th>
-                                    <th>Minimum Duration</th>
-                                    <th>Maximum Duration</th>
+                                    <th>Frequência</th>
+                                    <th>Média</th>
+                                    <th>Mediana</th>
+                                    <th>Duração Mínima</th>
+                                    <th>Duração Máxima</th>
                                     <th>Workstation</th>
                             </thead>
                             <tbody>
@@ -473,23 +472,23 @@
                         @if (type == "mean")
                         {
                             <h5>
-                                Mean performance time: @meanMinutesAll minutes
+                                Desempenho médio: @meanMinutesAll minutos
                             </h5>
                         }
                         else if (type == "effort" || type == "effortWorkstation")
                         {
                             <h5>
-                                Total Work Time: @totalEffort minutes
+                                Tempo de Trabalho Total: @totalEffort minutos
                             </h5>
                         }
                         else
                         {
                             <h5>
-                                Operational Work Time: @totalEffort minutes
+                                Tempo Operacional: @totalEffort minutos
                             </h5>
                         }
                         <h5>
-                            Activity Chosen: @activityChosen
+                            Atividade Escolhida: @activityChosen
                         </h5>
                     </div>
                 </div> <!-- end card-box-->
@@ -497,12 +496,12 @@
             <div class="col">
                 <div class="card text-xs-center">
                     <div class="card-header">
-                        Parts
+                        Peças
                     </div>
                     <div class="card-body">
                         @if (parts == null)
                         {
-                            <h5>No parts were involved.</h5>
+                            <h5>Nenhuma peça.</h5>
                         }
                         else
                         {
@@ -517,12 +516,12 @@
             <div class="col">
                 <div class="card text-xs-center">
                     <div class="card-header">
-                        Moulds
+                        Molde
                     </div>
                     <div class="card-body">
                         @if (moulds == null)
                         {
-                            <h5>No moulds were involved.</h5>
+                            <h5>Nenhum molde.</h5>
                         }
                         else
                         {
