@@ -5,52 +5,62 @@
 <link href="@Url.Content("~/css/Loading.css")" rel="stylesheet" />
 <div class="row">
     <div class="col-md-5">
-        <div id="divSelectGraph" class="card-box">
-            <div class="row">
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="graph" id="frequencyRadio" value="frequency" onclick="handleGraph(this);" checked>
-                    <label class="form-check-label" for="frequencyRadio">Grafo frequência</label>
-                </div>
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="graph" id="performanceRadio" onclick="handleGraph(this);" value="performance">
-                    <label class="form-check-label" for="performanceRadio">Grafo performance</label>
-                </div>
-            </div>
+       <div id="divSelectGraph" class="card border-0">
+           <div class="card-body">
+               <h4>Escolha o tipo de grafo</h4>
+               <div class="collapse pt-3 show">
+                   <div class="col-sm-12 row">
+                       <div class="form-check form-check-inline">
+                           <input class="form-check-input" type="radio" name="graph" id="frequencyRadio" value="frequency" onclick="handleGraph(this);" checked>
+                           <label class="form-check-label" for="frequencyRadio">Grafo de frequência</label>
+                       </div>
+                       <div class="form-check form-check-inline">
+                           <input class="form-check-input" type="radio" name="graph" id="performanceRadio" onclick="handleGraph(this);" value="performance">
+                           <label class="form-check-label" for="performanceRadio">Grafo de desempenho</label>
+                       </div>
+                   </div>
+               </div>
+           </div>
         </div>
-        <div id="divSelectAlgorithm" class="card-box">
-            <div class="row">
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="miner" id="alphaRadio" value="alpha-miner" onclick="handleMiner(this);" checked>
-                    <label class="form-check-label" for="alphaRadio">Alpha miner</label>
-                </div>
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="miner" id="heuristicRadio" onclick="handleMiner(this);" value="heuristic-miner">
-                    <label class="form-check-label" for="heuristicRadio">Heuristic miner</label>
-                </div>
-                <div class="form-inline" id="divTreshold">
-                    <div class="form-group">
-                        <label for="thresholdInput">Threshold</label>
-                        <input type="number" class="form-control mx-sm-2" id="thresholdInput" value="0.1" step=".1" min="0" max="1" style="height: 20px">
-                        <small id="thresholdHelp" class="text-muted">Threshold must be between 0 and 1</small>
+        <div id="divSelectAlgorithm" class="card border-0">
+            <div class="card-body">
+                <h4>Escolha um algoritmo</h4>
+                <div class="collapse pt-3 show">
+                    <div class="col-sm-12 row">
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="miner" id="alphaRadio" value="alpha-miner" onclick="handleMiner(this);" checked>
+                            <label class="form-check-label" for="alphaRadio">Alpha</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="miner" id="heuristicRadio" onclick="handleMiner(this);" value="heuristic-miner">
+                            <label class="form-check-label" for="heuristicRadio">Heuristíco</label>
+                        </div>
+                        <div class="form-inline" id="divTreshold">
+                            <div class="form-group">
+                                <label for="thresholdInput">Threshold</label>
+                                <input type="number" class="form-control mx-sm-2" id="thresholdInput" value="0.1" step=".1" min="0" max="1" style="height: 20px">
+                                <small id="thresholdHelp" class="text-muted">O threshold têm que ser entre 0 e 1</small>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
         <div class="card border-0">
             <div class="card-body">
-                <h4 id="processSelected" class="header-title mb-0">Choose process</h4>
+                <h4 id="processSelected" class="header-title mb-0">Escolha um processo</h4>
                 <div class="collapse pt-3 show">
                     <div class="row">
                         <div class="col-sm-9">
                             <div class="form-group">
                                 <select id="inputProcesses" name="processes" class="selectpicker form-control" data-size="6">
-                                    <option value="" disabled selected>Choose one process</option>
+                                    <option value="" disabled selected>Escolha um processo</option>
                                 </select>
                             </div>
                         </div>
                         <div class="col">
                             <div class="form-group">
-                                <button id="centerButton" class="btn btn-secondary pull-right" disabled><i class="fas fa-project-diagram"></i>Center graph</button>
+                                <button id="centerButton" class="btn btn-secondary pull-right" disabled><i class="fas fa-project-diagram"></i>Centrar grafo</button>
                             </div>
                         </div>
                     </div>
@@ -58,25 +68,25 @@
             </div>
         </div>
         <div class="card border-0">
-            <div class="card-body">
+            <div class="card-body" style="height:380.1px">
                 <div id="infoFrequency">
-                    <h4>Information of Frequency graph</h4>
-                    <p>Graph showing the frequency with which each activity had a process</p>
+                    <h4>Informação do grafo de frequência</h4>
+                    <p>Grafo que representa a frequência que cada atividade teve no processo</p>
                     <div class="collapse pt-3 show">
                         <div class="row">
                             <div class="col-sm-3">
                                 <div class="rectangle darkBlue">Fresagem</div>
                             </div>
-                            <div class="col">
-                                <p class="text-dark align-middle" style="position: relative;top: 6px;">The more blue, the more frequent the activity in the process</p>
+                            <div class="col-sm-9">
+                                <p class="text-dark align-middle" style="position: relative;top: 6px;">Quanto mais azul, mais frequente é a atividade no processo</p>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-sm-3">
                                 <div class="rectangle softBlue">Fresagem</div>
                             </div>
-                            <div class="col">
-                                <p class="text-dark align-middle" style="position: relative;top: 6px;">The less blue, the less frequent the activity in the process</p>
+                            <div class="col-sm-9">
+                                <p class="text-dark align-middle" style="position: relative;top: 6px;">Quanto menos azul, menos frequente é a atividade no processo</p>
                             </div>
                         </div><br />
                         <div class="row">
@@ -84,8 +94,8 @@
                                 <div class="darkBlue-rectangle-shape"></div>
                                 <div class="darkBlue-triangle-shape"></div>
                             </div>
-                            <div class="col">
-                                <p class="text-dark align-middle" style="left: 25px;position: relative;">The more blue, the more frequent the link between these activities in the process</p>
+                            <div class="col-sm-9">
+                                <p class="text-dark align-middle" style="left: 25px;position: relative;">Quanto mais azul, mais frequente é a relação entre as atividades no processo</p>
                             </div>
                         </div>
                         <div class="row">
@@ -93,30 +103,30 @@
                                 <div class="softBlue-rectangle-shape"></div>
                                 <div class="softBlue-triangle-shape"></div>
                             </div>
-                            <div class="col">
-                                <p class="text-dark align-middle" style="left: 25px;position: relative;">The less blue, the less frequent the link between these activities in the process</p>
+                            <div class="col-sm-9">
+                                <p class="text-dark align-middle" style="left: 25px;position: relative;">Quanto menos azul, menos frequente é a relação entre as atividades no processo</p>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div id="infoPerformance" style="display: none">
-                    <h4>Information of Performance graph</h4>
-                    <p>Graph showing a performance that each activity had in the process</p>
+                    <h4>Informação do grafo de desempenho</h4>
+                    <p>Grafo que representa o desempenho que cada atividade teve no processo</p>
                     <div class="collapse pt-3 show">
                         <div class="row">
                             <div class="col-sm-3">
                                 <div class="rectangle darkRed">Fresagem</div>
                             </div>
-                            <div class="col">
-                                <p class="text-dark align-middle" style="position: relative;top: 6px;">The more red, the more (average) time spent on activity in the process</p>
+                            <div class="col-sm-9">
+                                <p class="text-dark align-middle" style="position: relative;top: 6px;">Quanto mais vermelho, mais tempo (médio) é gasto na execução da atividade no processo</p>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-sm-3">
                                 <div class="rectangle softRed">Fresagem</div>
                             </div>
-                            <div class="col">
-                                <p class="text-dark align-middle" style="position: relative;top: 6px;">The less red, the less (average) time spent on activity in the process</p>
+                            <div class="col-sm-9">
+                                <p class="text-dark align-middle" style="position: relative;top: 6px;">Quanto menos vermelho, menos tempo (médio) é gasto na execução da atividade no processo</p>
                             </div>
                         </div><br />
                         <div class="row">
@@ -124,8 +134,8 @@
                                 <div class="darkRed-rectangle-shape"></div>
                                 <div class="darkRed-triangle-shape"></div>
                             </div>
-                            <div class="col">
-                                <p class="text-dark align-middle" style="left: 25px;position: relative;">The more red, the more (average) time spent between these activities in the process</p>
+                            <div class="col-sm-9">
+                                <p class="text-dark align-middle" style="left: 25px;position: relative;">Quanto mais vermelho, mais tempo (médio) é gasto entre as atividades no processo</p>
                             </div>
                         </div>
                         <div class="row">
@@ -133,8 +143,8 @@
                                 <div class="softRed-rectangle-shape"></div>
                                 <div class="softRed-triangle-shape"></div>
                             </div>
-                            <div class="col">
-                                <p class="text-dark align-middle" style="left: 25px;position: relative;">The less red, the less (average) time spent between these activities in the process</p>
+                            <div class="col-sm-9">
+                                <p class="text-dark align-middle" style="left: 25px;position: relative;">Quanto menos vermelho, menos tempo (médio) é gasto entre as atividades no processo</p>
                             </div>
                         </div>
                     </div>
@@ -145,7 +155,7 @@
     <div class="col-sm-7 card-box" style="height: 88.5vh;">
         <div id="loaderCy" style="display: none;"></div>
         <div id="cy">
-            <div id="tip">Please select a Process</div>
+            <div id="tip">Escolha um processo</div>
         </div>
     </div>
 </div>
@@ -326,7 +336,7 @@
                 } else {
                     loading(divLoaderCy, divCy);
                     $('#processSelected').empty();
-                    $('#processSelected').text('Choose process with activities');
+                    $('#processSelected').text('Escolha um processo com atividades');
                     resetGraph();
                     centerButton.disabled = true;
                 }
@@ -354,7 +364,7 @@
         process.idProcess = $(this).val();
         process.nameProcess = $('#inputProcesses option:selected').text();
         $('#processSelected').empty();
-        $('#processSelected').text('Selected reference process: ' + process.nameProcess);
+        $('#processSelected').text('Processo escolhido: ' + process.nameProcess);
         if (!stillUpdating) {
             getData();
             return;
