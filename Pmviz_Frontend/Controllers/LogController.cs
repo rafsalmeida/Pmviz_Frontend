@@ -618,7 +618,7 @@ namespace PmvizFrontend.Controllers
                                     ViewBag.ErrorActivity = await response.Content.ReadAsStringAsync();
 
                                 }
-                                ViewBag.ErrorActivity = "Error retrieving activities. Please try again later";
+                                ViewBag.ErrorActivity = "Algo deu errado";
                             }
                         }
                         using (var response = await httpClient.GetAsync("http://localhost:8080/api/workstations"))
@@ -639,7 +639,7 @@ namespace PmvizFrontend.Controllers
                                     ViewBag.ErrorWorkstations = await response.Content.ReadAsStringAsync();
 
                                 }
-                                ViewBag.ErrorWorkstations = "Error retrieving workstations. Please try again later";
+                                ViewBag.ErrorWorkstations = "Algo deu errado.";
                             }
                         }
                         using (var response = await httpClient.GetAsync("http://localhost:8080/api/resources/" + processId + "/users/workhours/workstations?workstation=" + workstation))
@@ -696,7 +696,7 @@ namespace PmvizFrontend.Controllers
                                 var resources = JArray.Parse(data["users"].ToString());
                                 if (resources.Count == 0)
                                 {
-                                    ViewBag.ErrorActivity = "There are no records of any work in this activity.";
+                                    ViewBag.ErrorActivity = "Sem trabalho registado nessa estação.";
                                     return View();
                                 }
 
@@ -728,7 +728,7 @@ namespace PmvizFrontend.Controllers
                                     return View();
 
                                 }
-                                ViewBag.ErrorActivity = "Error retrieving statistics. Please try again later";
+                                ViewBag.ErrorActivity = "Algo deu errado";
                                 return View();
 
                             }
@@ -761,7 +761,7 @@ namespace PmvizFrontend.Controllers
                                     ViewBag.ErrorActivity = await response.Content.ReadAsStringAsync();
 
                                 }
-                                ViewBag.ErrorActivity = "Error retrieving activities. Please try again later";
+                                ViewBag.ErrorActivity = "Algo deu errado.";
                             }
                         }
 
@@ -783,13 +783,13 @@ namespace PmvizFrontend.Controllers
                                     ViewBag.ErrorWorkstations = await response.Content.ReadAsStringAsync();
 
                                 }
-                                ViewBag.ErrorWorkstations = "Error retrieving workstations. Please try again later";
+                                ViewBag.ErrorWorkstations = "Algo deu errado.";
                             }
                         }
                     }
 
 
-                    ViewBag.Error = "Select an option!";
+                    ViewBag.Error = "Selecione uma opção!";
                     return View();
 
                 }
@@ -823,7 +823,7 @@ namespace PmvizFrontend.Controllers
                                     ViewBag.ErrorActivity = await response.Content.ReadAsStringAsync();
 
                                 }
-                                ViewBag.ErrorActivity = "Error retrieving activities. Please try again later";
+                                ViewBag.ErrorActivity = "Algo deu errado.";
                             }
                         }
                         using (var response = await httpClient.GetAsync("http://localhost:8080/api/workstations"))
@@ -844,7 +844,7 @@ namespace PmvizFrontend.Controllers
                                     ViewBag.ErrorWorkstations = await response.Content.ReadAsStringAsync();
 
                                 }
-                                ViewBag.ErrorWorkstations = "Error retrieving workstations. Please try again later";
+                                ViewBag.ErrorWorkstations = "Algo deu errado.";
                             }
                         }
                         using (var response = await httpClient.GetAsync("http://localhost:8080/api/resources/" + processId + "/workstations/performance?activity="+activity))
@@ -919,7 +919,7 @@ namespace PmvizFrontend.Controllers
                                     return View();
 
                                 }
-                                ViewBag.Error = "Error retrieving statistics. Please, try again later.";
+                                ViewBag.Error = "Algo deu errado.";
                                 return View();
 
                             }
@@ -958,7 +958,7 @@ namespace PmvizFrontend.Controllers
                                     ViewBag.ErrorActivity = await response.Content.ReadAsStringAsync();
 
                                 }
-                                ViewBag.ErrorActivity = "Error retrieving activities. Please try again later";
+                                ViewBag.ErrorActivity = "Algo deu errado.";
                             }
                         }
 
@@ -980,7 +980,7 @@ namespace PmvizFrontend.Controllers
                                     ViewBag.ErrorWorkstations = await response.Content.ReadAsStringAsync();
 
                                 }
-                                ViewBag.ErrorWorkstations = "Error retrieving workstations. Please try again later";
+                                ViewBag.ErrorWorkstations = "Algo deu errado.";
                             }
                         }
                         using (var response = await httpClient.GetAsync("http://localhost:8080/api/resources/" + processId + "/workstations/operationalhours?activity=" + activity))
@@ -1039,7 +1039,7 @@ namespace PmvizFrontend.Controllers
                                 var resources = JArray.Parse(data["workstations"].ToString());
                                 if (resources.Count == 0)
                                 {
-                                    ViewBag.ErrorActivity = "There are no records of any work in this activity.";
+                                    ViewBag.ErrorActivity = "Sem trabalho registado nesta atividade.";
                                     return View();
                                 }
 
@@ -1071,7 +1071,7 @@ namespace PmvizFrontend.Controllers
                                     return View();
 
                                 }
-                                ViewBag.ErrorActivity = "Error retrieving statistics. Please try again later";
+                                ViewBag.ErrorActivity = "Algo deu errado.";
                                 return View();
 
                             }
@@ -1106,7 +1106,7 @@ namespace PmvizFrontend.Controllers
                                     ViewBag.ErrorActivity = await response.Content.ReadAsStringAsync();
 
                                 }
-                                ViewBag.ErrorActivity = "Error retrieving activities. Please try again later";
+                                ViewBag.ErrorActivity = "Algo deu errado";
                             }
                         }
 
