@@ -16,12 +16,12 @@ namespace Pmviz_Frontend.Controllers
         {
             if(error == "1")
             {
-                ViewBag.Error = "Something went wrong! Please try again later.";
+                ViewBag.Error = "Algo deu errado..";
             }
 
             if(success == "1")
             {
-                ViewBag.Success = "Changes made succesfully!";
+                ViewBag.Success = "Mudanças bem sucedidas!";
             }
             /*return RedirectToAction("Index","login");
             var obj = JObject.Parse(HttpContext.Session.GetString("userDetails"));

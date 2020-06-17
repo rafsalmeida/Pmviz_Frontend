@@ -1,28 +1,28 @@
 ﻿<root>
-  <path name="See the list of all Processes">/log
+  <path name="Ver a lista de todos os processos">/log
     <button>seeAllProcesses</button>
   </path>
   <!--<path name="Activities of a Log">/log/activities</path>
   <path name="Resources of a Log">/log/resources</path>-->
-  <path name="See the activities statistics of a process">/log/activity
+  <path name="Estatísticas de atividades de um processo">/log/activity
     <button>activityFrequency</button>
   </path>
-  <path name="Manage Access">/authorization
+  <path name="Controlo de Acesso">/authorization
     <button>manageAccess</button>
   </path>  
-  <path name="See processes graphs">/graph/frequencyPerformanceGraph
+  <path name="Ver grafos de desempenho e frequência">/graph/frequencyPerformanceGraph
     <button>frequencyGraph</button>
   </path>
-  <path name="Compare processes graphs">/graph/conformanceGraph
+  <path name="Comparar grafos">/graph/conformanceGraph
     <button>compareGraphs</button>
   </path>
-  <path name="Tag Parts">/tag
+  <path name="Tagging">/tag
     <button>tagParts</button>
   </path>
-  <path name="See personal statistics">/statistics
+  <path name="Ver estatísticas pessoals">/statistics
     <button>myStatistics</button>
   </path>
-  <path name="See all resources statistics">/log/resource
+  <path name="Estatísticas de recursos de um processo">/log/resource
     <button>resourcesStats</button>
   </path>
 </root>

@@ -31,7 +31,7 @@ namespace Pmviz_Frontend.Controllers
                     }
                     else
                     {
-                        ViewBag.Error = "Something went wrong. Please try again later.";
+                        ViewBag.Error = "Algo deu errado.";
                         return View();
                     }
                 }
@@ -55,13 +55,13 @@ namespace Pmviz_Frontend.Controllers
                     }
                     else
                     {
-                        ViewBag.Error = "Something went wrong. Please try again later.";
+                        ViewBag.Error = "Algo deu errado.";
                     }
                 }
                 
                 if (!password.Equals(confirmpassword))
                 {
-                    ViewBag.Error = "The password confirmation and the password don't match.";
+                    ViewBag.Error = "A password e a sua confirmação não correspondem.";
                     return View();
 
                 }
@@ -89,12 +89,12 @@ namespace Pmviz_Frontend.Controllers
                     {
                         if (response.StatusCode == HttpStatusCode.Conflict)
                         {
-                            ViewBag.Error = "Email and username must be unique!";
+                            ViewBag.Error = "Email e username devem ser únicos!";
                             return View();
                         }
                     }
 
-                    ViewBag.Error = "Something went wrong. Please try again later.";
+                    ViewBag.Error = "Algo deu errado.";
                     return View();
 
                 }

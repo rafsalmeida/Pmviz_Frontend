@@ -22,7 +22,7 @@ namespace Pmviz_Frontend.Controllers
         {
             if(error == "1")
             {
-                ViewBag.Error = "Invalid RFID!";
+                ViewBag.Error = "RFID Inválido.";
             }
             using (var httpClient = new HttpClient())
             {
@@ -39,7 +39,7 @@ namespace Pmviz_Frontend.Controllers
                     }
                     else
                     {
-                        ViewBag.Error = "Moulds not available. Please try again later.";
+                        ViewBag.Error = "Moldes não disponíveis. Tente mais tarde.";
                         return View();
                     }
                 }
@@ -65,7 +65,7 @@ namespace Pmviz_Frontend.Controllers
                     }
                     else
                     {
-                        ViewBag.Error = "Moulds not available. Please try again later.";
+                        ViewBag.Error = "Moldes indisponíveis. Tente mais tarde.";
                     }
                 }
                 // GET ALL PARTS FROM THAT MOULD
@@ -84,10 +84,10 @@ namespace Pmviz_Frontend.Controllers
                     {
                         if(response.StatusCode == System.Net.HttpStatusCode.NotFound)
                         {
-                            ViewBag.ErrorPart = "Mould not found or doesn't have any parts associated.";
+                            ViewBag.ErrorPart = "Molde não encontrado ou não tem peças associadas.";
                             return View("Index", "Tag");
                         }
-                        ViewBag.ErrorPart = "Parts not available. Please try again later.";
+                        ViewBag.ErrorPart = "Peças indisponíveis. Tente mais tarde.";
                         return View("Index", "Tag");
                     }
                 }
@@ -109,7 +109,7 @@ namespace Pmviz_Frontend.Controllers
 
             if (!mClient.IsConnected)
             {
-                TempData["ErrorConn"] = "Error connecting. Please try again later!";
+                TempData["ErrorConn"] = "Erro na conexão!";
                 return RedirectToAction("Index", "Tag");
             }
             else
@@ -150,7 +150,7 @@ namespace Pmviz_Frontend.Controllers
                             mClient.Unsubscribe(new string[] { topic });
                             mClient.Disconnect();
 
-                            TempData["SuccessRFID"] = "Part with the code " + codePart + " sucessfully tagged with the rfid: " +rfid ;
+                            TempData["SuccessRFID"] = "Peça " + codePart + " taggada com o rfid: " +rfid ;
 
                             return RedirectToAction("Index", "Tag");
                         }
@@ -163,11 +163,11 @@ namespace Pmviz_Frontend.Controllers
 
                             if(response.StatusCode == System.Net.HttpStatusCode.NotFound)
                             {
-                                TempData["ErrorRFID"] = "Tag not found. Use an available RFID.";
+                                TempData["ErrorRFID"] = "Tag não encontrada. Usar um RFID válido.";
                                 return RedirectToAction("Index", "Tag");
                             }
 
-                            TempData["ErrorRFID"] = "Error saving the RFID. Please try again later!";
+                            TempData["ErrorRFID"] = "Erro a guardar o RFID!";
                             return RedirectToAction("Index", "Tag");
 
                         }
@@ -193,7 +193,7 @@ namespace Pmviz_Frontend.Controllers
 
             if (!mClient.IsConnected)
             {
-                TempData["ErrorConn"] = "Error connecting. Please try again later!";
+                TempData["ErrorConn"] = "Erro na conexão!";
                 return RedirectToAction("Index", "Tag");
             } else
             {
@@ -202,7 +202,7 @@ namespace Pmviz_Frontend.Controllers
                 mClient.Publish(topic, Encoding.UTF8.GetBytes(codePart), MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE, true);
                 //mClient.Disconnect();
 
-                TempData["Cancel"] = "Cancelation of tagging part "+codePart +" successfull.";
+                TempData["Cancel"] = "Cancelamento do tagging da peça "+codePart +" .";
 
                 return RedirectToAction("Index", "Tag");
             }

@@ -39,7 +39,7 @@ namespace Pmviz_Frontend.Controllers
                             return View();
 
                         }
-                        ViewBag.ErrorProcess = "Error retrieving processes. Please try again later";
+                        ViewBag.ErrorProcess = "Erro ao buscar processos.";
                         return View();
                     }
                 }
@@ -70,7 +70,7 @@ namespace Pmviz_Frontend.Controllers
                             ViewBag.ErrorProcess = await response.Content.ReadAsStringAsync();
 
                         }
-                        ViewBag.ErrorProcess = "Error retrieving processes. Please try again later";
+                        ViewBag.ErrorProcess = "Erro ao buscar processos.";
                     }
                 }
 
@@ -94,7 +94,7 @@ namespace Pmviz_Frontend.Controllers
                             return View("Process", "Statistics");
 
                         }
-                        ViewBag.ErrorActivity = "Error retrieving activities. Please try again later";
+                        ViewBag.ErrorActivity = "Erro ao buscar atividades.";
                         return View("Process", "Statistics");
                     }
                 }
@@ -128,7 +128,7 @@ namespace Pmviz_Frontend.Controllers
                             ViewBag.ErrorProcess = await response.Content.ReadAsStringAsync();
 
                         }
-                        ViewBag.ErrorProcess = "Error retrieving processes. Please try again later";
+                        ViewBag.ErrorProcess = "Erro ao buscar processos.";
                     }
                 }
 
@@ -150,7 +150,7 @@ namespace Pmviz_Frontend.Controllers
                             ViewBag.ErrorActivity = await response.Content.ReadAsStringAsync();
 
                         }
-                        ViewBag.ErrorActivity = "Error retrieving activities. Please try again later";
+                        ViewBag.ErrorActivity = "Erro ao buscar processos.";
                     }
                 }
 
@@ -233,7 +233,7 @@ namespace Pmviz_Frontend.Controllers
                             return View("Process", "Statistics");
 
                         }
-                        ViewBag.ErrorActivity = "Error retrieving activities. Please try again later";
+                        ViewBag.ErrorActivity = "Erro ao buscar atividades.";
                         return View("Process", "Statistics");
 
                     }
