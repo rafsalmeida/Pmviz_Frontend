@@ -28,7 +28,6 @@ else
                 <div class="card">
                     <div class="card-body">
                         <h4 class="header-title">Processos</h4>
-                        <!--<div class="table-responsive" style="max-height: 790px !important; overflow-x: hidden">-->
                         <div class="table-responsive">
                             <table id="scroll-horizontal-datatable" class="table table-dark dt-responsive nowrap w-100">
                                 <thead>
@@ -48,27 +47,29 @@ else
                                 <tbody>
                                     @foreach (Pmviz_Frontend.Models.Log log in Model)
                                     {
-                                        <tr>
-                                            <td class="id">@log.Id</td>
-                                            <td>@log.Name</td>
-                                            <td>@log.NumberOfCases</td>
-                                            <td>@log.NumberOfActivities</td>
-                                            @if (log.StartDate == null)
-                                            {
-                                                <td>-</td>
-                                            }
-                                            else
-                                            {
-                                                <td>@log.StartDate</td>
-                                            }
-                                            @if (log.EndDate == null)
-                                            {
-                                                <td>-</td>
-                                            }
-                                            else
-                                            {
-                                                <td>@log.EndDate</td>
-                                            }
+                                    <tr>
+                                        <td class="id">@log.Id</td>
+                                        <td>@log.Name</td>
+                                        <td>@log.NumberOfCases</td>
+                                        <td>@log.NumberOfActivities</td>
+                                        @if (log.StartDate == null)
+                                        {
+                                            <td>-</td>
+                                        }
+                                        else
+                                        {
+                                            <td>@log.StartDate</td>
+                                        }
+                                        @if (log.EndDate == null)
+                                        {
+                                            <td>-</td>
+                                        }
+                                        else
+                                        {
+                                            <td>@log.EndDate</td>
+                                        }
+                                        @if (!details.Contains("resourcesStats") && !details.Contains("activityFrequency"))
+                                        {
                                             <td>
                                                 @if (!details.Contains("activityFrequency"))
                                                 {
@@ -81,7 +82,9 @@ else
 
                                                 }
                                             </td>
-                                        </tr>
+                                        }
+
+                                    </tr>
 
                                     }
 
