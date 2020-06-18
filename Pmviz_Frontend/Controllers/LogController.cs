@@ -936,7 +936,6 @@ namespace PmvizFrontend.Controllers
                     #region Effort
                     ViewData["type"] = "effortWork";
                     ViewData["activity"] = activity;
-                    ViewData["hasValues"] = "true";
 
                     using (var httpClient = new HttpClient())
                     {
@@ -992,6 +991,7 @@ namespace PmvizFrontend.Controllers
                                 var data = JObject.Parse(apiResponse);
 
                                 ViewData["activity"] = activity;
+                                ViewData["hasValues"] = "true";
 
                                 //Parse moulds
 
