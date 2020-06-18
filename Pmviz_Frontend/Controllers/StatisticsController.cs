@@ -209,7 +209,7 @@ namespace Pmviz_Frontend.Controllers
                         var resource = JArray.Parse(data["resources"].ToString());
                         if(resource.Count == 0)
                         {
-                            ViewBag.ErrorActivity = "There are no records of your mean times in this activity.";
+                            ViewBag.ErrorActivity = "Sem dados para esta atividade.";
                             return View("Process", "Statistics");
                         }
 
