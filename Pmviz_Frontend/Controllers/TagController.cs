@@ -84,7 +84,7 @@ namespace Pmviz_Frontend.Controllers
                     {
                         if(response.StatusCode == System.Net.HttpStatusCode.NotFound)
                         {
-                            ViewBag.ErrorPart = "Molde não encontrado ou não tem peças associadas.";
+                            ViewBag.ErrorPart = "Molde sem peças associadas.";
                             return View("Index", "Tag");
                         }
                         ViewBag.ErrorPart = "Peças indisponíveis. Tente mais tarde.";
