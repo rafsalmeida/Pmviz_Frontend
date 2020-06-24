@@ -225,6 +225,15 @@
                                 </a>
                             </li>
                         }
+                        @if (!details.Contains("createUsers"))
+                        {
+                            <li id="createUsers">
+                                <a href="/register" class="dropdown-item notify-item">
+                                    <i class="fas fa-user-plus"></i>
+                                    <span>Criar Utilizadores</span>
+                                </a>
+                            </li>
+                        }
 
                     </ul>
 

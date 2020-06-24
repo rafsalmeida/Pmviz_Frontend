@@ -83,7 +83,8 @@ namespace Pmviz_Frontend.Controllers
                     var status = response.IsSuccessStatusCode;
                     if (status == true)
                     {
-                        return RedirectToAction("Index", "Login");
+                        ViewBag.Success = "Utilizador "+ username + " criado!";
+                        return View();
                     }
                     else
                     {

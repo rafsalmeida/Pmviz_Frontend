@@ -12,4 +12,7 @@
     </path>
   <path>/log/resource
     </path>
+  <path>
+    /register
+    </path>
 </root>

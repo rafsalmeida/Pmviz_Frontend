@@ -25,4 +25,8 @@
   <path name="Estatísticas de recursos de um processo">/log/resource
     <button>resourcesStats</button>
   </path>
+  <path name="Criar utilizadores">
+    /register
+    <button>createUsers</button>
+  </path>
 </root>
