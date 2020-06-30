@@ -57,16 +57,16 @@
                 <h4 id="processSelected" class="header-title mb-0">Escolha um processo</h4>
                 <div class="collapse pt-3 show">
                     <div class="row">
-                        <div class="col-sm-9">
+                        <div class="col-md-9">
                             <div class="form-group">
                                 <select id="inputProcesses" name="processes" class="selectpicker form-control" data-size="6">
                                     <option value="" disabled selected>Escolha um processo</option>
                                 </select>
                             </div>
                         </div>
-                        <div class="col">
+                        <div class="col-md-3" style="padding-left: 0">
                             <div class="form-group">
-                                <button id="centerButton" class="btn btn-secondary pull-right" disabled><i class="fas fa-project-diagram"></i>Centrar grafo</button>
+                                <button id="centerButton" class="btn btn-secondary pull-right" disabled><i class="fas fa-project-diagram"></i>Centrar</button>
                             </div>
                         </div>
                     </div>
@@ -74,7 +74,7 @@
             </div>
         </div>
         <div class="card border-0">
-            <div class="card-body" style="height:380.1px">
+            <div class="card-body">
                 <div id="infoFrequency">
                     <h4>Informação do grafo de frequência</h4>
                     <p>Grafo que representa a frequência que cada atividade teve no processo</p>
@@ -84,33 +84,32 @@
                                 <div class="rectangle darkBlue">Fresagem</div>
                             </div>
                             <div class="col-sm-9">
-                                <p class="text-dark align-middle" style="position: relative;top: 6px;">Quanto mais azul, mais frequente é a atividade no processo</p>
+                                <p class="text-dark align-middle">Quanto mais azul, mais frequente é a atividade no processo</p>
                             </div>
-                        </div>
-                        <div class="row">
                             <div class="col-sm-3">
                                 <div class="rectangle softBlue">Fresagem</div>
                             </div>
                             <div class="col-sm-9">
-                                <p class="text-dark align-middle" style="position: relative;top: 6px;">Quanto menos azul, menos frequente é a atividade no processo</p>
+                                <p class="text-dark align-middle">Quanto menos azul, menos frequente é a atividade no processo</p>
                             </div>
-                        </div><br />
-                        <div class="row">
-                            <div class="col-sm-3 row">
-                                <div class="darkBlue-rectangle-shape"></div>
-                                <div class="darkBlue-triangle-shape"></div>
-                            </div>
-                            <div class="col-sm-9">
-                                <p class="text-dark align-middle" style="left: 25px;position: relative;">Quanto mais azul, mais frequente é a relação entre as atividades no processo</p>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-3 row">
-                                <div class="softBlue-rectangle-shape"></div>
-                                <div class="softBlue-triangle-shape"></div>
+                            <br />
+                            <div class="col-sm-3">
+                                <div class="row">
+                                    <div class="darkBlue-rectangle-shape"></div>
+                                    <div class="darkBlue-triangle-shape"></div>
+                                </div>
                             </div>
                             <div class="col-sm-9">
-                                <p class="text-dark align-middle" style="left: 25px;position: relative;">Quanto menos azul, menos frequente é a relação entre as atividades no processo</p>
+                                <p class="text-dark align-middle">Quanto mais azul, mais frequente é a relação entre as atividades no processo</p>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="row">
+                                    <div class="softBlue-rectangle-shape"></div>
+                                    <div class="softBlue-triangle-shape"></div>
+                                </div>
+                            </div>
+                            <div class="col-sm-9">
+                                <p class="text-dark align-middle">Quanto menos azul, menos frequente é a relação entre as atividades no processo</p>
                             </div>
                         </div>
                     </div>
@@ -120,37 +119,36 @@
                     <p>Grafo que representa o desempenho que cada atividade teve no processo</p>
                     <div class="collapse pt-3 show">
                         <div class="row">
-                            <div class="col-sm-3">
+                            <div class="col-md-3">
                                 <div class="rectangle darkRed">Fresagem</div>
                             </div>
-                            <div class="col-sm-9">
-                                <p class="text-dark align-middle" style="position: relative;top: 6px;">Quanto mais vermelho, mais tempo (médio) é gasto na execução da atividade no processo</p>
+                            <div class="col-md-9">
+                                <p class="text-dark align-text-top">Quanto mais vermelho, mais tempo (médio) é gasto na execução da atividade no processo</p>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-3">
+                            <div class="col-md-3">
                                 <div class="rectangle softRed">Fresagem</div>
                             </div>
-                            <div class="col-sm-9">
-                                <p class="text-dark align-middle" style="position: relative;top: 6px;">Quanto menos vermelho, menos tempo (médio) é gasto na execução da atividade no processo</p>
+                            <div class="col-md-9">
+                                <p class="text-dark align-text-top">Quanto menos vermelho, menos tempo (médio) é gasto na execução da atividade no processo</p>
                             </div>
-                        </div><br />
-                        <div class="row">
-                            <div class="col-sm-3 row">
-                                <div class="darkRed-rectangle-shape"></div>
-                                <div class="darkRed-triangle-shape"></div>
+                            <br />
+                            <div class="col-md-3">
+                                <div class="row">
+                                    <div class="darkRed-rectangle-shape"></div>
+                                    <div class="darkRed-triangle-shape"></div>
+                                </div>
                             </div>
-                            <div class="col-sm-9">
-                                <p class="text-dark align-middle" style="left: 25px;position: relative;">Quanto mais vermelho, mais tempo (médio) é gasto entre as atividades no processo</p>
+                            <div class="col-md-9">
+                                <p class="text-dark align-text-top">Quanto mais vermelho, mais tempo (médio) é gasto entre as atividades no processo</p>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-3 row">
-                                <div class="softRed-rectangle-shape"></div>
-                                <div class="softRed-triangle-shape"></div>
+                            <div class="col-md-3">
+                                <div class="row">
+                                    <div class="softRed-rectangle-shape"></div>
+                                    <div class="softRed-triangle-shape"></div>
+                                </div>
                             </div>
-                            <div class="col-sm-9">
-                                <p class="text-dark align-middle" style="left: 25px;position: relative;">Quanto menos vermelho, menos tempo (médio) é gasto entre as atividades no processo</p>
+                            <div class="col-md-9">
+                                <p class="text-dark align-text-top">Quanto menos vermelho, menos tempo (médio) é gasto entre as atividades no processo</p>
                             </div>
                         </div>
                     </div>
