@@ -22,7 +22,7 @@
         <div class="card-box">
             <div class="row">
                 <h4 class="text-dark my-1">Estatísticas de Atividades</h4>
-                <div class="col" style="padding-left: 5px;"><button onclick="location.href='https://localhost:44364/Log/Resource?id=@processId'" class="btn btn-sm btn-secondary">Recursos do processo</button></div>
+                <div class="col" style="padding-left: 5px;"><button onclick="location.href='/Log/Resource?id=@processId'" class="btn btn-sm btn-secondary">Recursos do processo</button></div>
             </div>
             <form method="post" action='@Url.Action("Activity","Log", new {id = processId})'>
                 @if (type == "frequency")
@@ -57,35 +57,29 @@
                 <button type="submit" id="send" hidden></button>
             </form>
         </div>
-        @if (type == "effort" || type == "operational")
+        @if ((type == "effort" || type == "operational") && ViewBag.Error == null)
         {
             <div class="card-box">
-                <div class="row">
-                    <div class="col-sm-7">
-                        <div class="form-group">
-                            <label class="text-dark">Data Inicial</label>
-                            <div class="input-group input-group-sm">
-                                <input class="form-control" type="date" id="inputStartFilter" onkeydown="event.preventDefault()">
-                                <div class="input-group-append">
-                                    <button class="btn btn-danger datepicker-btn" type="button" onclick="clearCalendar('inputStartFilter')"><i class="fas fa-times"></i></button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="text-dark">Data Final</label>
-                            <div class="input-group input-group-sm">
-                                <input class="form-control" type="date" id="inputEndFilter" onkeydown="event.preventDefault()">
-                                <div class="input-group-append">
-                                    <button class="btn btn-danger datepicker-btn" type="button" onclick="clearCalendar('inputEndFilter')"><i class="fas fa-times"></i></button>
-                                </div>
-                            </div>
+                <div class="form-group">
+                    <label class="text-dark">Data Inicial</label>
+                    <div class="input-group input-group-sm">
+                        <input class="form-control" type="date" id="inputStartFilter" onkeydown="event.preventDefault()">
+                        <div class="input-group-append">
+                            <button class="btn btn-danger datepicker-btn" type="button" onclick="clearCalendar('inputStartFilter')"><i class="fas fa-times"></i></button>
                         </div>
                     </div>
-                    <div class="col-sm-5">
-                        <div style="position: relative; top: 62px;">
-                            <button id="filterGraph" class="form-control btn-primary disabled" type="button" disabled>Filtrar Gráfico</button>
+                </div>
+                <div class="form-group">
+                    <label class="text-dark">Data Final</label>
+                    <div class="input-group input-group-sm">
+                        <input class="form-control" type="date" id="inputEndFilter" onkeydown="event.preventDefault()">
+                        <div class="input-group-append">
+                            <button class="btn btn-danger datepicker-btn" type="button" onclick="clearCalendar('inputEndFilter')"><i class="fas fa-times"></i></button>
                         </div>
                     </div>
+                </div>
+                <div class="col">
+                    <button id="filterGraph" class="form-control btn-primary disabled" type="button" disabled>Filtrar Gráfico</button>
                 </div>
             </div>
         }
@@ -105,7 +99,7 @@
             @if (type == "frequency" || type == "effort" || type == "operational")
             {
 
-            <div class="card-box" style="height: 390px">
+            <div class="card-box" style="height: 427px">
                 <div id="loader" style="display: none;"></div>
                 <div id="divGraph">
                     @if (type == "frequency")
@@ -139,7 +133,7 @@
                                     .Visible(true)
                                     .Template("#= series.name #: #= value #")
                                 )
-                                .ChartArea(x => x.Height(210))
+                                .ChartArea(x => x.Height(320))
                                 .Pannable(pannable => pannable
                                     .Lock(ChartAxisLock.Y)
                                 )
@@ -172,7 +166,7 @@
                                 .Visible(true)
                                 .Template("#= dataItem.MedianActivityFormatted #")
                             )
-                            .ChartArea(x => x.Height(210))
+                            .ChartArea(x => x.Height(320))
                             .Pannable(pannable => pannable
                                 .Lock(ChartAxisLock.Y)
                             )
@@ -204,7 +198,7 @@
                             .Visible(true)
                             .Template("#= dataItem.MeanActivityFormatted #")
                         )
-                        .ChartArea(x => x.Height(210))
+                        .ChartArea(x => x.Height(320))
                         .Pannable(pannable => pannable
                             .Lock(ChartAxisLock.Y)
                         )
@@ -239,7 +233,7 @@
                                 .Visible(true)
                                 .Template("#= series.name #: #= value # minutos")
                             )
-                            .ChartArea(x => x.Height(340))
+                            .ChartArea(x => x.Height(377))
                             .Pannable(pannable => pannable
                                 .Lock(ChartAxisLock.Y)
                             )
@@ -274,7 +268,7 @@
                                 .Visible(true)
                                 .Template("#= series.name #: #= value # minutos")
                             )
-                            .ChartArea(x => x.Height(340))
+                            .ChartArea(x => x.Height(377))
                             .Pannable(pannable => pannable
                                 .Lock(ChartAxisLock.Y)
                             )
