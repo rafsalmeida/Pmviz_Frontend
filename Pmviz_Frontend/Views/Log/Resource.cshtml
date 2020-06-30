@@ -26,10 +26,11 @@
 <link href="@Url.Content("~/css/Loading.css")" rel="stylesheet" />
 <div class="row">
     <div class="col-md-3 col-xl-3">
-        <div class="card-box" style="height: 367.94px">
-            <div class="row">
+        <div class="card-box" style="height: 421px">
+            <div class="row col"><button onclick="location.href='/Log/Activity?id=@processId'" class="btn btn-sm btn-secondary">Estatísticas das atividades</button></div>
+            <br />
+            <div class="row col">
                 <h4 class="text-dark my-1">Estatísticas de Recursos</h4>
-                <div class="col" style="padding-left: 8px;"><button onclick="location.href='/Log/Activity?id=@processId'" class="btn btn-sm btn-secondary">Atividades do processo</button></div>
             </div>
             @if (activities != null && workstations != null)
             {
@@ -223,7 +224,7 @@
             @if ((type == "mean" || type == "effort" || type == "effortWorkstation" || type == "effortWork" || type == "meanWork")
      && (meanMinutesAll != null || totalEffort != null || hasValues == "true"))
             {
-                <div class="card-box" style="height: 367.94px">
+                <div class="card-box" style="height: 421px">
                     <div id="loader" style="display: none; position: relative;"></div>
                     <div id="divGraph">
                         @if (type == "meanWork")
@@ -256,7 +257,7 @@
                                             .Visible(true)
                                             .Template("#= series.name #: #= value #")
                                         )
-                                        .ChartArea(x => x.Height(210))
+                                        .ChartArea(x => x.Height(265))
                                         .Pannable(pannable => pannable
                                             .Lock(ChartAxisLock.Y)
                                         )
@@ -289,7 +290,7 @@
                                         .Visible(true)
                                         .Template("#= dataItem.MedianActivityFormatted #")
                                     )
-                                    .ChartArea(x => x.Height(210))
+                                    .ChartArea(x => x.Height(265))
                                     .Pannable(pannable => pannable
                                         .Lock(ChartAxisLock.Y)
                                     )
@@ -321,7 +322,7 @@
                                     .Visible(true)
                                     .Template("#= dataItem.MeanActivityFormatted #")
                                 )
-                                .ChartArea(x => x.Height(210))
+                                .ChartArea(x => x.Height(265))
                                 .Pannable(pannable => pannable
                                     .Lock(ChartAxisLock.Y)
                                 )
@@ -357,7 +358,7 @@
                                     .Format("{0}%")
                                     .Template("#= series.name #: #= value # minutos")
                                 )
-                                .ChartArea(x => x.Height(320))
+                                .ChartArea(x => x.Height(375))
                                 .Pannable(pannable => pannable
                                     .Lock(ChartAxisLock.Y)
                                 )
@@ -393,7 +394,7 @@
                                     .Format("{0}%")
                                     .Template("#= series.name #: #= value # minutos")
                                 )
-                                .ChartArea(x => x.Height(320))
+                                .ChartArea(x => x.Height(375))
                                 .Pannable(pannable => pannable
                                     .Lock(ChartAxisLock.Y)
                                 )
@@ -428,7 +429,7 @@
                                     .Format("{0}%")
                                     .Template("#= series.name #: #= value # minutos")
                                 )
-                                .ChartArea(x => x.Height(320))
+                                .ChartArea(x => x.Height(375))
                                 .Pannable(pannable => pannable
                                     .Lock(ChartAxisLock.Y)
                                 )
