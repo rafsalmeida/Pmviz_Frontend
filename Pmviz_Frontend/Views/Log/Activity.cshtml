@@ -14,12 +14,16 @@
 @{
     ViewData["Title"] = "Atividades";
 }
+<link href="@Url.Content("~/css/Loading.css")" rel="stylesheet" />
 
-
+
 <div class="row">
     <div class="col-md-3 col-xl-3">
         <div class="card-box">
-            <h4 class="text-dark my-1">Estatísticas de Atividades</h4>
+            <div class="row">
+                <h4 class="text-dark my-1">Estatísticas de Atividades</h4>
+                <div class="col" style="padding-left: 5px;"><button onclick="location.href='https://localhost:44364/Log/Resource?id=@processId'" class="btn btn-sm btn-secondary">Recursos do processo</button></div>
+            </div>
             <form method="post" action='@Url.Action("Activity","Log", new {id = processId})'>
                 @if (type == "frequency")
                 {
@@ -52,8 +56,39 @@
                 <label for="effort">Tempo Operacional</label>
                 <button type="submit" id="send" hidden></button>
             </form>
-
         </div>
+        @if (type == "effort" || type == "operational")
+        {
+            <div class="card-box">
+                <div class="row">
+                    <div class="col-sm-7">
+                        <div class="form-group">
+                            <label class="text-dark">Data Inicial</label>
+                            <div class="input-group input-group-sm">
+                                <input class="form-control" type="date" id="inputStartFilter" onkeydown="event.preventDefault()">
+                                <div class="input-group-append">
+                                    <button class="btn btn-danger datepicker-btn" type="button" onclick="clearCalendar('inputStartFilter')"><i class="fas fa-times"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="text-dark">Data Final</label>
+                            <div class="input-group input-group-sm">
+                                <input class="form-control" type="date" id="inputEndFilter" onkeydown="event.preventDefault()">
+                                <div class="input-group-append">
+                                    <button class="btn btn-danger datepicker-btn" type="button" onclick="clearCalendar('inputEndFilter')"><i class="fas fa-times"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-5">
+                        <div style="position: relative; top: 62px;">
+                            <button id="filterGraph" class="form-control btn-primary disabled" type="button" disabled>Filtrar Gráfico</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
     </div>
     <div class="col reload">
         @if (ViewBag.Error != null)
@@ -70,25 +105,60 @@
             @if (type == "frequency" || type == "effort" || type == "operational")
             {
 
-    <div class="card-box">
-        @if (type == "frequency")
-        {
-            <div class="container-fluid" style="text-align:center">
-                <button class="btn btn-primary" id="frequencyButton" type="button">Frequência</button>
-                <button class="btn btn-primary" id="medianButton" type="button">Mediana</button>
-                <button class="btn btn-primary" id="meanButton" type="button">Média</button>
-            </div>
+            <div class="card-box" style="height: 390px">
+                <div id="loader" style="display: none;"></div>
+                <div id="divGraph">
+                    @if (type == "frequency")
+                    {
+                        <div class="container-fluid" style="text-align:center">
+                            <button class="btn btn-primary" id="frequencyButton" type="button">Frequência</button>
+                            <button class="btn btn-primary" id="medianButton" type="button">Mediana</button>
+                            <button class="btn btn-primary" id="meanButton" type="button">Média</button>
+                        </div>
 
 
-            <br />
-            <div id="frequencyChart">
-                @(Html.Kendo().Chart(frequency)
-                            .Name("chart")
+                        <br />
+                        <div id="frequencyChart">
+                            @(Html.Kendo().Chart(frequency)
+                                    .Name("chart")
+                                    .Legend(legend => legend
+                                    .Position(ChartLegendPosition.Top))
+                                    .Series(series =>
+                                    {
+                                        series.Column(a => a.Frequency).Name("Frequência").CategoryField("Activity");
+                                    })
+                                    .CategoryAxis(axis => axis
+                                        .Labels(labels => labels.Rotation(0))
+                                        .MajorGridLines(lines => lines.Visible(true))
+                                    )
+                                    .ValueAxis(axis => axis
+                                        .Labels(l => l.Visible(true))
+                                        .Title("Frequência")
+                                    )
+                                .Tooltip(tooltip => tooltip
+                                    .Visible(true)
+                                    .Template("#= series.name #: #= value #")
+                                )
+                                .ChartArea(x => x.Height(210))
+                                .Pannable(pannable => pannable
+                                    .Lock(ChartAxisLock.Y)
+                                )
+                                .Zoomable(zoomable => zoomable
+                                    .Mousewheel(mousewheel => mousewheel.Lock(ChartAxisLock.Y))
+                                    .Selection(selection => selection.Lock(ChartAxisLock.Y))
+                                )
+
+
+                        )
+                        </div>
+                        <div id="medianChart">
+                            @(Html.Kendo().Chart(median)
+                            .Name("chart_median")
                             .Legend(legend => legend
-                            .Position(ChartLegendPosition.Top))
+                                .Position(ChartLegendPosition.Top))
                             .Series(series =>
                             {
-                                series.Column(a => a.Frequency).Name("Frequência").CategoryField("Activity");
+                                series.Column(a => a.MedianInMinutes).Name("Mediana em Minutos").CategoryField("Activity");
                             })
                             .CategoryAxis(axis => axis
                                 .Labels(labels => labels.Rotation(0))
@@ -96,11 +166,43 @@
                             )
                             .ValueAxis(axis => axis
                                 .Labels(l => l.Visible(true))
-                                .Title("Frequência")
+                                .Title("Mediana")
                             )
+                            .Tooltip(tooltip => tooltip
+                                .Visible(true)
+                                .Template("#= dataItem.MedianActivityFormatted #")
+                            )
+                            .ChartArea(x => x.Height(210))
+                            .Pannable(pannable => pannable
+                                .Lock(ChartAxisLock.Y)
+                            )
+                            .Zoomable(zoomable => zoomable
+                                .Mousewheel(mousewheel => mousewheel.Lock(ChartAxisLock.Y))
+                                .Selection(selection => selection.Lock(ChartAxisLock.Y))
+                            )
+                        )
+
+                        </div>
+                        <div id="meanChart">
+                            @(Html.Kendo().Chart(mean)
+                        .Name("chart_mean")
+                        .Legend(legend => legend
+                            .Position(ChartLegendPosition.Top))
+                        .Series(series =>
+                        {
+                            series.Column(a => a.MeanInMinutes).Name("Média em Minutos").CategoryField("Activity");
+                        })
+                        .CategoryAxis(axis => axis
+                            .Labels(labels => labels.Rotation(0))
+                            .MajorGridLines(lines => lines.Visible(true))
+                        )
+                        .ValueAxis(axis => axis
+                            .Labels(l => l.Visible(true))
+                            .Title("Média")
+                        )
                         .Tooltip(tooltip => tooltip
                             .Visible(true)
-                            .Template("#= series.name #: #= value #")
+                            .Template("#= dataItem.MeanActivityFormatted #")
                         )
                         .ChartArea(x => x.Height(210))
                         .Pannable(pannable => pannable
@@ -110,152 +212,94 @@
                             .Mousewheel(mousewheel => mousewheel.Lock(ChartAxisLock.Y))
                             .Selection(selection => selection.Lock(ChartAxisLock.Y))
                         )
+                        )
 
-
-                )
-            </div>
-            <div id="medianChart">
-                @(Html.Kendo().Chart(median)
-                    .Name("chart_median")
-                    .Legend(legend => legend
-                        .Position(ChartLegendPosition.Top))
-                    .Series(series =>
+                        </div>
+                    }
+                    @if (type == "effort")
                     {
-                        series.Column(a => a.MedianInMinutes).Name("Mediana em Minutos").CategoryField("Activity");
-                    })
-                    .CategoryAxis(axis => axis
-                        .Labels(labels => labels.Rotation(0))
-                        .MajorGridLines(lines => lines.Visible(true))
-                    )
-                    .ValueAxis(axis => axis
-                        .Labels(l => l.Visible(true))
-                        .Title("Mediana")
-                    )
-                    .Tooltip(tooltip => tooltip
-                        .Visible(true)
-                        .Template("#= dataItem.MedianActivityFormatted #")
-                    )
-                    .ChartArea(x => x.Height(210))
-                    .Pannable(pannable => pannable
-                        .Lock(ChartAxisLock.Y)
-                    )
-                    .Zoomable(zoomable => zoomable
-                        .Mousewheel(mousewheel => mousewheel.Lock(ChartAxisLock.Y))
-                        .Selection(selection => selection.Lock(ChartAxisLock.Y))
-                    )
-                )
+                        <div id="divEffort">
+                            @(Html.Kendo().Chart(workTime)
+                            .Name("chart_work")
+                            .Legend(legend => legend
+                                .Position(ChartLegendPosition.Top))
+                            .Series(series =>
+                            {
+                                series.Column(a => a.TotalWorkHoursMillis).Name("Tempo de Trabalho em Minutos").CategoryField("Activity");
+                            })
+                            .CategoryAxis(axis => axis
+                                .Labels(labels => labels.Rotation(0))
+                                .MajorGridLines(lines => lines.Visible(true))
+                            )
+                            .ValueAxis(axis => axis
+                                .Labels(l => l.Visible(true))
+                                .Title("Tempo de Trabalho")
+                            )
+                            .Tooltip(tooltip => tooltip
+                                .Visible(true)
+                                .Template("#= series.name #: #= value # minutos")
+                            )
+                            .ChartArea(x => x.Height(340))
+                            .Pannable(pannable => pannable
+                                .Lock(ChartAxisLock.Y)
+                            )
+                            .Zoomable(zoomable => zoomable
+                                .Mousewheel(mousewheel => mousewheel.Lock(ChartAxisLock.Y))
+                                .Selection(selection => selection.Lock(ChartAxisLock.Y))
+                            )
+                        )
 
-            </div>
-            <div id="meanChart">
-                @(Html.Kendo().Chart(mean)
-                .Name("chart_mean")
-                .Legend(legend => legend
-                    .Position(ChartLegendPosition.Top))
-                .Series(series =>
-                {
-                    series.Column(a => a.MeanInMinutes).Name("Média em Minutos").CategoryField("Activity");
-                })
-                .CategoryAxis(axis => axis
-                    .Labels(labels => labels.Rotation(0))
-                    .MajorGridLines(lines => lines.Visible(true))
-                )
-                .ValueAxis(axis => axis
-                    .Labels(l => l.Visible(true))
-                    .Title("Média")
-                )
-                .Tooltip(tooltip => tooltip
-                    .Visible(true)
-                    .Template("#= dataItem.MeanActivityFormatted #")
-                )
-                .ChartArea(x => x.Height(210))
-                .Pannable(pannable => pannable
-                    .Lock(ChartAxisLock.Y)
-                )
-                .Zoomable(zoomable => zoomable
-                    .Mousewheel(mousewheel => mousewheel.Lock(ChartAxisLock.Y))
-                    .Selection(selection => selection.Lock(ChartAxisLock.Y))
-                )
-                )
-
-            </div>
-        }
-        @if (type == "effort")
-        {
-            <div>
-                @(Html.Kendo().Chart(workTime)
-                    .Name("chart_work")
-                    .Legend(legend => legend
-                        .Position(ChartLegendPosition.Top))
-                    .Series(series =>
+                        </div>
+                    }
+                    @if (type == "operational")
                     {
-                        series.Column(a => a.TotalWorkHoursMillis).Name("Tempo de Trabalho em Minutos").CategoryField("Activity");
-                    })
-                    .CategoryAxis(axis => axis
-                        .Labels(labels => labels.Rotation(0))
-                        .MajorGridLines(lines => lines.Visible(true))
-                    )
-                    .ValueAxis(axis => axis
-                        .Labels(l => l.Visible(true))
-                        .Title("Tempo de Trabalho")
-                    )
-                    .Tooltip(tooltip => tooltip
-                        .Visible(true)
-                        .Template("#= series.name #: #= value # minutos")
-                    )
-                    .ChartArea(x => x.Height(210))
-                    .Pannable(pannable => pannable
-                        .Lock(ChartAxisLock.Y)
-                    )
-                    .Zoomable(zoomable => zoomable
-                        .Mousewheel(mousewheel => mousewheel.Lock(ChartAxisLock.Y))
-                        .Selection(selection => selection.Lock(ChartAxisLock.Y))
-                    )
-                )
-
-            </div>
-        }
-        @if (type == "operational")
-        {
-            <div>
-                @(Html.Kendo().Chart(operationalTime)
-                    .Name("chart_op")
-                    .Legend(legend => legend
-                        .Position(ChartLegendPosition.Top))
-                    .Series(series =>
+                        <div id="divOperational">
+                            @(Html.Kendo().Chart(operationalTime)
+                            .Name("chart_op")
+                            .Legend(legend => legend
+                                .Position(ChartLegendPosition.Top))
+                            .Series(series =>
+                            {
+                                series.Column(a => a.TotalOperationalHoursMillis).Name("Tempo Operacional em Minutos").CategoryField("Activity");
+                            })
+                            .CategoryAxis(axis => axis
+                                .Labels(labels => labels.Rotation(0))
+                                .MajorGridLines(lines => lines.Visible(true))
+                            )
+                            .ValueAxis(axis => axis
+                                .Labels(l => l.Visible(true))
+                                .Title("Tempo Operacional")
+                            )
+                            .Tooltip(tooltip => tooltip
+                                .Visible(true)
+                                .Template("#= series.name #: #= value # minutos")
+                            )
+                            .ChartArea(x => x.Height(340))
+                            .Pannable(pannable => pannable
+                                .Lock(ChartAxisLock.Y)
+                            )
+                            .Zoomable(zoomable => zoomable
+                                .Mousewheel(mousewheel => mousewheel.Lock(ChartAxisLock.Y))
+                                .Selection(selection => selection.Lock(ChartAxisLock.Y))
+                            )
+                        )
+                        </div>
+                    }
+                    @if (type == "operational" || type == "effort")
                     {
-                        series.Column(a => a.TotalOperationalHoursMillis).Name("Tempo Operacional em Minutos").CategoryField("Activity");
-                    })
-                    .CategoryAxis(axis => axis
-                        .Labels(labels => labels.Rotation(0))
-                        .MajorGridLines(lines => lines.Visible(true))
-                    )
-                    .ValueAxis(axis => axis
-                        .Labels(l => l.Visible(true))
-                        .Title("Tempo Operacional")
-                    )
-                    .Tooltip(tooltip => tooltip
-                        .Visible(true)
-                        .Template("#= series.name #: #= value # minutos")
-                    )
-                    .ChartArea(x => x.Height(210))
-                    .Pannable(pannable => pannable
-                        .Lock(ChartAxisLock.Y)
-                    )
-                    .Zoomable(zoomable => zoomable
-                        .Mousewheel(mousewheel => mousewheel.Lock(ChartAxisLock.Y))
-                        .Selection(selection => selection.Lock(ChartAxisLock.Y))
-                    )
-                )
-
+                        <div id="infoGraph" style="max-height: 2px;display: none;">
+                            <p class="text-danger">Grafo não atualizado, com os filtros selecionados</p>
+                        </div>
+                    }
+                </div>
             </div>
-        }
-    </div>
             }
         }
-
     </div>
-</div>    
-<br />
+</div>
+<div id="error" class="alert alert-danger" data-alert="alert" style="display:none;">
+    Não existem dados nas datas inseridas
+</div>
 
 
 
@@ -275,7 +319,7 @@
                             <th>Duração Máxima</th>
                             <th>Atividade</th>
                             <th>Frequência Relativa</th>
-</thead>
+                    </thead>
                     <tbody>
 
                         @foreach (Pmviz_Frontend.Models.ActivityFreq a in Model)
@@ -297,63 +341,201 @@
             </div>
 
         }
-     }
-    </div>
+    }
+</div>
 
 
 
 <script>
-     var btnSubmit = document.getElementById("send");
-
+    var btnSubmit = document.getElementById("send");
+    var divLoader = document.getElementById("loader"); 
+    var divGraph = document.getElementById("divGraph"); 
     function handle(radio) {
         btnSubmit.click()
     }
-    
-    $(document).ready(function () {
+    var type = "@type";
+    var chart = null;
+    var startDate = ''; var endDate = '';
+    if (type == "operational") {
+        type = "operationalhours";
+    } else if (type == "effort"){
+        type = "workhours";
+    }
 
+    $('#inputStartFilter, #inputEndFilter').change(function () {
+        if (startDate != $('#inputStartFilter').val() || endDate != $('#inputEndFilter').val()) {
+            $("#infoGraph").css("display", "block");
+            $("#filterGraph").prop("disabled", false);
+        } else {
+            $("#infoGraph").css("display", "none");
+            $("#filterGraph").prop("disabled", true);
+        }
+    });
+    if (type == "frequency") {
+        $(document).ready(function () {
 
-        var frequencyChart = document.getElementById("frequencyChart");
-        var medianChart = document.getElementById("medianChart");
-        var meanChart = document.getElementById("meanChart");
-        var frequencyButton = document.getElementById("frequencyButton");
-        var medianButton = document.getElementById("medianButton");
-        var meanButton = document.getElementById("meanButton");
+            var frequencyChart = document.getElementById("frequencyChart");
+            var medianChart = document.getElementById("medianChart");
+            var meanChart = document.getElementById("meanChart");
+            var frequencyButton = document.getElementById("frequencyButton");
+            var medianButton = document.getElementById("medianButton");
+            var meanButton = document.getElementById("meanButton");
 
-        medianChart.style.display = "none";
-        meanChart.style.display = "none";
-        frequencyButton.disabled = true;
-
-        $("#frequencyButton").click(function () {
+            medianChart.style.display = "none";
+            meanChart.style.display = "none";
             frequencyButton.disabled = true;
-            medianButton.disabled = false;
-            meanButton.disabled = false;
-            frequencyChart.style.display = "block";
-            medianChart.style.display = "none";
-            meanChart.style.display = "none";
-        });
 
-        $("#medianButton").click(function () {
-            frequencyButton.disabled = false;
-            medianButton.disabled = true;
-            meanButton.disabled = false;
-            frequencyChart.style.display = "none";
-            medianChart.style.display = "block";
-            meanChart.style.display = "none";
-        });
+            $("#frequencyButton").click(function () {
+                frequencyButton.disabled = true;
+                medianButton.disabled = false;
+                meanButton.disabled = false;
+                frequencyChart.style.display = "block";
+                medianChart.style.display = "none";
+                meanChart.style.display = "none";
+            });
 
-        $("#meanButton").click(function () {
-            frequencyButton.disabled = false;
-            medianButton.disabled = false;
-            meanButton.disabled = true;
-            frequencyChart.style.display = "none";
-            medianChart.style.display = "none";
-            meanChart.style.display = "block";
+            $("#medianButton").click(function () {
+                frequencyButton.disabled = false;
+                medianButton.disabled = true;
+                meanButton.disabled = false;
+                frequencyChart.style.display = "none";
+                medianChart.style.display = "block";
+                meanChart.style.display = "none";
+            });
+
+            $("#meanButton").click(function () {
+                frequencyButton.disabled = false;
+                medianButton.disabled = false;
+                meanButton.disabled = true;
+                frequencyChart.style.display = "none";
+                medianChart.style.display = "none";
+                meanChart.style.display = "block";
+            });
+
+        });
+    }
+
+    $("#filterGraph").click(function () {
+        if (new Date($('#inputStartFilter').val()) > new Date($('#inputEndFilter').val())) {
+            $("#error").html("As datas no filtro não estão inseridas corretamente");
+            $("#error").fadeIn();
+            closeAlertBox();
+            return;
+        }
+        loading(divGraph, divLoader);
+        $.ajax({
+            type: "POST",
+            data: {
+                process: @processId,
+                startDate: convertDate($('#inputStartFilter').val()),
+                endDate: convertDate($('#inputEndFilter').val()),
+                type: "activities",
+                categoryType: type,
+                categoryResource: null,
+                activity: null,
+                workstation: null
+            },
+            url: "/Log/GetFilter",
+            dataType: 'json',
+            success: function (response) {
+                if (response.success) {
+                    loading(divLoader, divGraph);
+                    if (!response.request) {
+                        $("#error").html("Não existem dados nas datas inseridas");
+                        $("#error").fadeIn();
+                        closeAlertBox();
+                        return;
+                    }
+                    startDate = $('#inputStartFilter').val();
+                    endDate = $('#inputEndFilter').val();
+                    $("#infoGraph").css("display", "none");
+                    $("#filterGraph").prop("disabled", true);
+                    var data = changeArrayToChart(JSON.parse(response.request));
+                    if (type == "operationalhours") {
+                        chart = $("#chart_op").data("kendoChart");
+                    } else {
+                        chart = $("#chart_work").data("kendoChart");
+                    }
+                    var dataSource = new kendo.data.DataSource({
+                        data: data
+                    });
+                    if (chart != null) {
+                        chart.setDataSource(dataSource);
+                    }
+                } else {
+                    loading(divLoader, divGraph);
+                    $("#error").fadeIn();
+                    closeAlertBox();
+                }
+            },
+            error: function (response) {
+                loading(divLoader, divGraph);
+                alert("Erro a realizar o pedido");
+            }
         });
     });
+
+    function closeAlertBox() {
+        window.setTimeout(function () {
+            $("#error").fadeOut(300)
+        }, 3000);
+    } 
+
+    function clearCalendar(x) {
+        $('#' + x).val('');
+        if (startDate != $('#inputStartFilter').val() || endDate != $('#inputEndFilter').val()) {
+            $("#infoGraph").css("display", "block");
+            $("#filterGraph").prop("disabled", false);
+        } else {
+            $("#infoGraph").css("display", "none");
+            $("#filterGraph").prop("disabled", true);
+        }
+    }
+    function convertDate(field) {
+        if (field) {
+            let current_datetime = new Date(field);
+            return current_datetime.getFullYear() + "-" + (current_datetime.getMonth() + 1) + "-" + current_datetime.getDate();
+        }
+        return null;
+    }
+
+    function changeArrayToChart(s) {
+        if (type == "operationalhours") {
+            for (i = 0; i < s.length; i++) {
+                s[i].TotalOperationalHoursMillis = millisToMinutesAndSeconds(s[i].TotalOperationalHoursMillis);
+            }
+            s.sort(function (a, b) {
+                return b.TotalOperationalHoursMillis - a.TotalOperationalHoursMillis;
+            });
+            return s;
+        }
+        for (i = 0; i < s.length; i++) {
+            s[i].TotalWorkHoursMillis = millisToMinutesAndSeconds(s[i].TotalWorkHoursMillis);
+        }
+        s.sort(function (a, b) {
+            return b.TotalWorkHoursMillis - a.TotalWorkHoursMillis;
+        });
+        return s;
+    }
+
+    function millisToMinutesAndSeconds(millis) {
+        var minutes = Math.floor(millis / 60000);
+        var seconds = ((millis % 60000) / 1000).toFixed(0);
+
+        return minutes + seconds/100;
+    }
+
+    function loading(x, y) {
+        if (x.style.display != "none" || y.style.display != "block") {
+            x.style.display = "none";
+            y.style.display = "block";
+        }
+    }
 
 
 </script>
 
+<script src="@Url.Content("~/vendor/moment/min/moment.min.js")"></script>
 <style>
     .demo-section {
         text-align: center;
@@ -363,8 +545,4 @@
         margin: 0;
         width: 80px;
     }
-
-
-
-
 </style>

@@ -8,8 +8,19 @@
         position: relative !important;
         overflow: hidden !important;
     }
-    
+    #error {
+        position: absolute;
+        z-index: 1400;
+        top: 10%;
+        right: 40%;
+        margin: 0px auto;
+        text-align: center;
+        display: none;
+    }
 </style>
+<div id="error" class="alert alert-danger" data-alert="alert">
+    Erro a gerar o grafo, por favor verifique a informação selecionada
+</div>
 <div id="loader" style="display: none;"></div>
 <div id="fullPage">
     <div class="row">
@@ -168,7 +179,7 @@
                             </div>
                         </div>
                         <div id="clearActivities">
-                            <h5>Não há nenhum processo com eventos seleccionado</h5>
+                            <h5>Não há nenhum processo com eventos selecionado</h5>
                         </div>
                     </div> 
                 </div>
@@ -236,7 +247,7 @@
         <div class="col-sm-7 card-box" style="height: 88.5vh;">
             <div id="loaderCy" style="display: none;"></div>
             <div id="cy">
-                <div id="tip">Seleccione um Processo e um Modelo a comparar</div>
+                <div id="tip">Selecione um Processo e um Modelo a comparar</div>
             </div>
         </div>
     </div>
@@ -269,7 +280,6 @@
     var inputEndFilter = document.getElementById("inputEndFilter");
     var centerButton = document.getElementById("centerButton");
     var processes = JSON.parse(@Html.Raw(Json.Serialize(ViewData["processes"])));
-    console.log(processes);
     var isUpdating = 0;
     var cy = null;
     var data = {
@@ -346,7 +356,7 @@
 
             var element = document.createElement("div");
             element.setAttribute("id", "tip");
-            element.appendChild(document.createTextNode('Seleccione um Processo e um Modelo a comparar'));
+            element.appendChild(document.createTextNode('Selecione um Processo e um Modelo a comparar'));
             document.getElementById("cy").appendChild(element);
             return;
         }
@@ -354,7 +364,7 @@
     }
 
     function clearCalendar(x) {
-        $('#' + x).val('').datepicker('update');
+        $('#' + x).val('').change();
     }
 
     $('#estimatedEnd').change(function () {
@@ -409,7 +419,6 @@
 
     $('#divSelectFilter input, #divSelectFilter select, #modelCompare input, #modelCompare select').change(function () {
         if (!verifyChangesRunning) {
-            console.log('verifyChanges');
             verifyChanges();
             return;
         }
@@ -529,7 +538,9 @@
             },
             error: function (response) {
                 loading(divLoader, divFullPage);
-                alert("Erro no pedido");  //
+                $("#error").html("Erro no pedido");
+                $("#error").fadeIn();
+                closeAlertBox();
             }
 
         });
@@ -543,7 +554,9 @@
 
         if (JSON.stringify(auxProcess) != JSON.stringify(process)) {
             if (process.threshold < 0 || process.threshold > 1) {
-                alert("O threshold têm que estar entre 0 e 1");
+                $("#error").html("O threshold têm que estar entre 0 e 1");
+                $("#error").fadeIn();
+                closeAlertBox();
                 return;
             }
             /*
@@ -568,15 +581,19 @@
                 }
             }*/
             if (process.filter.startDate && process.filter.endDate) {
-                if (new Date(inputStartFilter.value) > new Date(inputStartFilter.value)) {
-                    alert('As datas no filtro do processo não estão inseridas corretamente');
+                if (new Date(process.filter.startDate) > new Date(process.filter.endDate)) {
+                    $("#error").html("As datas no filtro não estão inseridas corretamente");
+                    $("#error").fadeIn();
+                    closeAlertBox();
                     return;
                 }
             }
             if (process.modelCompare.startDate && process.modelCompare.endDate) {
 
-                if (new Date(inputStartCase.value) > new Date(inputEndCase.value)) {
-                    alert('As datas no modelo a comparar não estão inseridas corretamente');
+                if (new Date(process.modelCompare.startDate) > new Date(process.modelCompare.endDate)) {
+                    $("#error").html("As datas no modelo a comparar não estão inseridas corretamente");
+                    $("#error").fadeIn();
+                    closeAlertBox();
                     return;
                 }
             }
@@ -653,8 +670,14 @@
             success: function (response) {
                 if (processWithoutActivities) {return;}
                 if (response.success) {
-                    data.baseData = response.request.baseData;
-                    data.caseData = response.request.caseData;
+                    if (!response.request) {
+                        $("#error").html("Os filtros escolhidos não tem dados");
+                        $("#error").fadeIn();
+                        closeAlertBox();
+                    } else {
+                        data.baseData = response.request.baseData;
+                        data.caseData = response.request.caseData;
+                    }
                     if (auxProcess.idProcess != process.idProcess) {
                         isUpdating = 0;
                         if (!verifyChangesRunning) {
@@ -670,12 +693,16 @@
                 } else {
                     resetGraph();
                     loading(divLoaderCy, divCy);
-                    alert("Erro a gerar o grafo, por favor verifique a informação selecionada");
+                    $("#error").html("Erro a gerar o grafo, por favor verifique a informação selecionada");
+                    $("#error").fadeIn();
+                    closeAlertBox();
                 }
             },
             error: function (response) {
                 loading(divLoaderCy, divCy);
-                alert("Erro no pedido");  //
+                $("#error").html("Erro no pedido");
+                $("#error").fadeIn();
+                closeAlertBox();
             }
 
         });
@@ -704,7 +731,13 @@
             success: function (response) {
                 if (processWithoutActivities) { return; }
                 if (response.success) {
-                    data.caseData = response.request;
+                    if (!response.request) {
+                        $("#error").html("Os filtros escolhidos não tem dados");
+                        $("#error").fadeIn();
+                        closeAlertBox();
+                    } else {
+                        data.caseData = response.request;
+                    }
                     if (auxProcess.idProcess != process.idProcess) {
                         isUpdating = 0;
                         if (!verifyChangesRunning) {
@@ -720,12 +753,16 @@
                 } else {
                     resetGraph();
                     loading(divLoaderCy, divCy);
-                    alert("Erro a gerar o grafo, por favor verifique a informação selecionada");
+                    $("#error").html("Erro a gerar o grafo, por favor verifique a informação selecionada");
+                    $("#error").fadeIn();
+                    closeAlertBox();
                 }
             },
             error: function (response) {
                 loading(divLoaderCy, divCy);
-                alert("Erro no pedido");  //
+                $("#error").html("Erro no pedido");
+                $("#error").fadeIn();
+                closeAlertBox();
             }
         });
     }
@@ -1009,7 +1046,6 @@
         }
         $("#infoProcess").html(process.nameProcess);
         caseText = "";
-        console.log(process);
         if (process.modelCompare.startDate && process.modelCompare.endDate) {
             caseText += "<strong>Data:</strong> " + process.modelCompare.startDate + " - " + process.modelCompare.endDate + "<br/>";
         }
@@ -1364,9 +1400,9 @@
                 typeValue = 3;
             }
 
-            let prevLabel = "\n Model: " + durationToString(data.baseData.taskDurations[i].duration);
+            let prevLabel = "\n Modelo: " + durationToString(data.baseData.taskDurations[i].duration);
 
-            let realLabel = "Process: " + durationToString(maxDuration);
+            let realLabel = "Processo: " + durationToString(maxDuration);
 
             /*
             //format label acording to time value
@@ -1443,9 +1479,9 @@
                     edgeTypeValue = 10;
                 }
 
-                let prevLabel = "\n Model: " + durationToString(data.baseData.relations[i].to[j].duration);
+                let prevLabel = "\n Modelo: " + durationToString(data.baseData.relations[i].to[j].duration);
 
-                let realLabel = "Process: " + durationToString(maxDuration);
+                let realLabel = "Processo: " + durationToString(maxDuration);
                 /*
                 let prevLabel = 0;
                 if (data.baseData.relations[i].to[j].duration.days !== 0) {
@@ -1606,7 +1642,6 @@
     }
 
     function durationToString(duration) {
-        console.log(duration);
         if (duration.days == 0 && duration.hours == 0 && duration.minutes == 0 && duration.seconds == 0) {
             return "0S";
         }
@@ -1621,6 +1656,12 @@
             cy.fit();
         }
     });
+
+    function closeAlertBox() {
+        window.setTimeout(function () {
+            $("#error").fadeOut(300)
+        }, 3000);
+    } 
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 </script>

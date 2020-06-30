@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -71,7 +72,7 @@ namespace PmvizFrontend.Controllers
 
                                 var tsMean = new TimeSpan(a.MeanDuration.Days, a.MeanDuration.Hours, a.MeanDuration.Minutes, a.MeanDuration.Seconds, a.MeanDuration.Millis);
 
-                                a.MeanInMinutes = tsMean.TotalMinutes;
+                                a.MeanInMinutes = Math.Round(tsMean.TotalMinutes, 0);
 
                                 var medianTime = a.MedianDuration.Days != 0 ? a.MedianDuration.Days + "d " : "";
                                 medianTime += a.MedianDuration.Hours != 0 ? a.MedianDuration.Hours + "h " : "";
@@ -82,7 +83,7 @@ namespace PmvizFrontend.Controllers
 
                                 var tsMedian = new TimeSpan(a.MedianDuration.Days, a.MedianDuration.Hours, a.MedianDuration.Minutes, a.MedianDuration.Seconds, a.MedianDuration.Millis);
 
-                                a.MedianInMinutes = tsMedian.TotalMinutes;
+                                a.MedianInMinutes = Math.Round(tsMedian.TotalMinutes, 0);
 
                                 var minTime = a.MinDuration.Days != 0 ? a.MinDuration.Days + "d " : "";
                                 minTime += a.MinDuration.Hours != 0 ? a.MinDuration.Hours + "h " : "";
@@ -145,7 +146,12 @@ namespace PmvizFrontend.Controllers
                             {
                                 var timeSpan = TimeSpan.FromMilliseconds(a.TotalWorkHoursMillis);
 
-                                a.TotalWorkHoursMillis = timeSpan.TotalMinutes;
+                                a.TotalWorkHoursMillis = Math.Round(timeSpan.TotalMinutes, 0);
+                                a.FullDate = a.TotalWorkHours.Days != 0 ? a.TotalWorkHours.Days + "d " : "";
+                                a.FullDate += a.TotalWorkHours.Hours != 0 ? a.TotalWorkHours.Hours + "h " : "";
+                                a.FullDate += a.TotalWorkHours.Minutes != 0 ? a.TotalWorkHours.Minutes + "m " : "";
+                                a.FullDate += a.TotalWorkHours.Seconds != 0 ? a.TotalWorkHours.Seconds + "s " : "";
+                                a.FullDate += a.TotalWorkHours.Millis != 0 ? a.TotalWorkHours.Millis + "ms " : " 0ms";
                             }
 
                             IEnumerable<ActivityEffort>  al = activityList.OrderByDescending(x => x.TotalWorkHoursMillis).ThenBy(x => x.Activity).ToList();
@@ -192,7 +198,12 @@ namespace PmvizFrontend.Controllers
                             {
                                 var timeSpan = TimeSpan.FromMilliseconds(a.TotalOperationalHoursMillis);
 
-                                a.TotalOperationalHoursMillis = timeSpan.TotalMinutes;
+                                a.TotalOperationalHoursMillis = Math.Round(timeSpan.TotalMinutes, 0);
+                                a.FullDate = a.TotalOperationalHours.Days != 0 ? a.TotalOperationalHours.Days + "d " : "";
+                                a.FullDate += a.TotalOperationalHours.Hours != 0 ? a.TotalOperationalHours.Hours + "h " : "";
+                                a.FullDate += a.TotalOperationalHours.Minutes != 0 ? a.TotalOperationalHours.Minutes + "m " : "";
+                                a.FullDate += a.TotalOperationalHours.Seconds != 0 ? a.TotalOperationalHours.Seconds + "s " : "";
+                                a.FullDate += a.TotalOperationalHours.Millis != 0 ? a.TotalOperationalHours.Millis + "ms " : " 0ms";
                             }
 
                             IEnumerable<ActivityOperational> al = activityList.OrderByDescending(x => x.TotalOperationalHoursMillis).ThenBy(x => x.Activity).ToList();
@@ -403,15 +414,15 @@ namespace PmvizFrontend.Controllers
 
 
                                 var timeSpan = TimeSpan.FromMilliseconds(Double.Parse(data["meanMillis"].ToString()));
-                                ViewData["meanMillis"] = timeSpan.TotalMinutes;
+                                ViewData["meanMillis"] = Math.Round(timeSpan.TotalMinutes, 0);
 
                                 var allResources = JsonConvert.DeserializeObject<List<ResourceStat>>(data["resources"].ToString());
                                 foreach (var r in allResources)
                                 {
                                     var timeSpanR = TimeSpan.FromMilliseconds(r.MeanMillis);
 
-                                    r.MeanMillis = timeSpanR.TotalMinutes;
-                                    r.GeneralMean = timeSpan.TotalMinutes;
+                                    r.MeanMillis = Math.Round(timeSpanR.TotalMinutes, 0);
+                                    r.GeneralMean = Math.Round(timeSpanR.TotalMinutes, 0);
                                 }
 
                                 allResources = allResources.OrderByDescending(x => x.MeanMillis).ThenBy(x => x.Resource).ToList();
@@ -553,14 +564,14 @@ namespace PmvizFrontend.Controllers
 
 
                                 var timeSpan = TimeSpan.FromMilliseconds(Double.Parse(data["totalWorkHoursMillis"].ToString()));
-                                ViewData["totalWorkHoursMillis"] = timeSpan.TotalMinutes;
+                                ViewData["totalWorkHoursMillis"] = Math.Round(timeSpan.TotalMinutes, 0);
 
                                 var allResources = JsonConvert.DeserializeObject<List<ResourceEffort>>(data["users"].ToString());
                                 foreach (var r in allResources)
                                 {
                                     var timeSpanR = TimeSpan.FromMilliseconds(r.WorkHoursMillis);
 
-                                    r.WorkHoursMillis = timeSpanR.TotalMinutes;
+                                    r.WorkHoursMillis = Math.Round(timeSpanR.TotalMinutes, 0);
                                 }
 
                                 allResources = allResources.OrderByDescending(x => x.WorkHoursMillis).ThenBy(x => x.Username).ToList();
@@ -702,14 +713,14 @@ namespace PmvizFrontend.Controllers
 
 
                                 var timeSpan = TimeSpan.FromMilliseconds(Double.Parse(data["totalWorkHoursMillis"].ToString()));
-                                ViewData["totalWorkHoursMillis"] = timeSpan.TotalMinutes;
+                                ViewData["totalWorkHoursMillis"] = Math.Round(timeSpan.TotalMinutes, 0);
 
                                 var allResources = JsonConvert.DeserializeObject<List<ResourceEffort>>(data["users"].ToString());
                                 foreach (var r in allResources)
                                 {
                                     var timeSpanR = TimeSpan.FromMilliseconds(r.WorkHoursMillis);
 
-                                    r.WorkHoursMillis = timeSpanR.TotalMinutes;
+                                    r.WorkHoursMillis = Math.Round(timeSpanR.TotalMinutes, 0);
                                 }
 
                                 allResources = allResources.OrderByDescending(x => x.WorkHoursMillis).ThenBy(x => x.Username).ToList();
@@ -865,7 +876,7 @@ namespace PmvizFrontend.Controllers
 
                                     var tsMean = new TimeSpan(a.MeanDuration.Days, a.MeanDuration.Hours, a.MeanDuration.Minutes, a.MeanDuration.Seconds, a.MeanDuration.Millis);
 
-                                    a.MeanInMinutes = tsMean.TotalMinutes;
+                                    a.MeanInMinutes = Math.Round(tsMean.TotalMinutes, 0);
 
                                     var medianTime = a.MedianDuration.Days != 0 ? a.MedianDuration.Days + "d " : "";
                                     medianTime += a.MedianDuration.Hours != 0 ? a.MedianDuration.Hours + "h " : "";
@@ -876,7 +887,7 @@ namespace PmvizFrontend.Controllers
 
                                     var tsMedian = new TimeSpan(a.MedianDuration.Days, a.MedianDuration.Hours, a.MedianDuration.Minutes, a.MedianDuration.Seconds, a.MedianDuration.Millis);
 
-                                    a.MedianInMinutes = tsMedian.TotalMinutes;
+                                    a.MedianInMinutes = Math.Round(tsMedian.TotalMinutes, 0);
 
                                     var minTime = a.MinDuration.Days != 0 ? a.MinDuration.Days + "d " : "";
                                     minTime += a.MinDuration.Hours != 0 ? a.MinDuration.Hours + "h " : "";
@@ -1052,7 +1063,7 @@ namespace PmvizFrontend.Controllers
                                 {
                                     var timeSpanR = TimeSpan.FromMilliseconds(r.OperationalHoursMillis);
 
-                                    r.OperationalHoursMillis = timeSpanR.TotalMinutes;
+                                    r.OperationalHoursMillis = Math.Round(timeSpanR.TotalMinutes, 0);
                                 }
 
                                 allResources = allResources.OrderByDescending(x => x.OperationalHoursMillis).ThenBy(x => x.WorkstationName).ToList();
@@ -1199,5 +1210,74 @@ namespace PmvizFrontend.Controllers
             return RedirectToAction("Index", role.ToString());
         }
 
+        public async Task<IActionResult> GetFilter(string process, string startDate, string endDate, string type, string categoryType, string categoryResource, string activity, string workstation)
+        {
+            string json = "{ \"isEstimatedEnd\": true";
+            string s;
+            if (startDate != null)
+            {
+                json += ", \"startDate\":\"" + startDate + "\"";
+            }
+            if (endDate != null)
+            {
+                json += ", \"endDate\":\"" + endDate + "\"";
+            }
+            json += " }";
+            HttpResponseMessage response;
+            HttpContent c = new StringContent(json, Encoding.UTF8, "application/json");
+            string url = "http://localhost:8080/api/" + type + "/" + process;
+            url += "/" + categoryType;
+            if (categoryResource != null)
+            {
+                url += "/" + categoryResource;
+            }
+            if (activity != null)
+            {
+                url += "?activity=" + activity;
+            }
+            else
+            {
+                url += "?workstation=" + workstation;
+            }
+            using (var httpClient = new HttpClient())
+            {
+                using (response = await httpClient.PostAsync(url, c))
+                {
+                    var status = response.IsSuccessStatusCode;
+                    if (response.ReasonPhrase == "No Content")
+                    {
+                        return Json(new { success = true, request = "" });
+                    }
+                    if (status == false)
+                    {
+                        return Json(new { success = false, request = response.Content.ReadAsStringAsync().Result });
+                    }
+                    else
+                    {
+                        if (categoryResource != null)
+                        {
+                            if (categoryResource == "performance")
+                            {
+                                s = response.Content.ReadAsStringAsync().Result.Replace("resource", "Resource").Replace("meanMillis", "MeanMillis");
+                                return Json(new { success = true, request = s });
+                            }
+                            if(categoryResource == "workhours/activities" || categoryResource == "workhours/workstations")
+                            {
+                                s = response.Content.ReadAsStringAsync().Result.Replace("username", "Username").Replace("workHoursMillis", "WorkHoursMillis").Replace("users", "Users");
+                                return Json(new { success = true, request = s });
+                            }
+                            if (categoryResource == "workstations/operationalhours")
+                            {
+                                s = response.Content.ReadAsStringAsync().Result.Replace("workstationName", "WorkstationName").Replace("operationalHoursMillis", "OperationalHoursMillis").Replace("workstations", "Workstations"); ;
+                                return Json(new { success = true, request = s });
+                            }
+                        }
+
+                        s = response.Content.ReadAsStringAsync().Result.Replace("activity", "Activity").Replace("totalOperationalHoursMillis", "TotalOperationalHoursMillis").Replace("totalWorkHoursMillis", "TotalWorkHoursMillis");
+                        return Json(new { success = true, request = s });
+                    }
+                }
+            }
+        }
     }
 }

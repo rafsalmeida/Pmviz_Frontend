@@ -23,11 +23,14 @@
 @{
     ViewData["Title"] = "Recursos";
 }
-
+<link href="@Url.Content("~/css/Loading.css")" rel="stylesheet" />
 <div class="row">
     <div class="col-md-3 col-xl-3">
-        <div class="card-box">
-            <h4 class="text-dark my-1">Estatísticas de Recursos</h4>
+        <div class="card-box" style="height: 367.94px">
+            <div class="row">
+                <h4 class="text-dark my-1">Estatísticas de Recursos</h4>
+                <div class="col" style="padding-left: 8px;"><button onclick="location.href='https://localhost:44364/Log/Activity?id=@processId'" class="btn btn-sm btn-secondary">Atividades do processo</button></div>
+            </div>
             @if (ViewBag.ErrorActivity != null)
             {
                 <div class="alert alert-danger" role="alert">
@@ -163,7 +166,6 @@
 
                         </select>
                     </div>
-                    <br />
                     <div>
                         <button class="btn-xs btn-primary" type="submit" id="send" hidden>Submit</button>
                     </div>
@@ -176,6 +178,38 @@
                 </div>
             }
         </div>
+        @if (type != "meanWork" && (meanMinutesAll != null || totalEffort != null || hasValues == "true"))
+        {
+            <div class="card-box">
+                <div class="row">
+                    <div class="col-sm-7">
+                        <div class="form-group">
+                            <label class="text-dark">Data Inicial</label>
+                            <div class="input-group input-group-sm">
+                                <input class="form-control" type="date" id="inputStartFilter" onkeydown="event.preventDefault()">
+                                <div class="input-group-append">
+                                    <button class="btn btn-danger datepicker-btn" type="button" onclick="clearCalendar('inputStartFilter')"><i class="fas fa-times"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="text-dark">Data Final</label>
+                            <div class="input-group input-group-sm">
+                                <input class="form-control" type="date" id="inputEndFilter" onkeydown="event.preventDefault()">
+                                <div class="input-group-append">
+                                    <button class="btn btn-danger datepicker-btn" type="button" onclick="clearCalendar('inputEndFilter')"><i class="fas fa-times"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-5">
+                        <div style="position: relative; top: 62px;">
+                            <button id="filterGraph" class="form-control btn-primary disabled" type="button" disabled>Filtrar Gráfico</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
     </div>
     <div class="col">
         @if (ViewBag.Error != null)
@@ -190,20 +224,22 @@
         else
         {
             @if ((type == "mean" || type == "effort" || type == "effortWorkstation" || type == "effortWork" || type == "meanWork")
-               && (meanMinutesAll != null || totalEffort != null || hasValues == "true"))
+              && (meanMinutesAll != null || totalEffort != null || hasValues == "true"))
             {
-                <div class="card-box">
-                    @if (type == "meanWork")
-                    {
-                        <div class="col">
-                            <div class="container-fluid" style="text-align:center">
-                                <button class="btn btn-primary" id="frequencyButton" type="button">Frequência</button>
-                                <button class="btn btn-primary" id="medianButton" type="button">Mediana</button>
-                                <button class="btn btn-primary" id="meanButton" type="button">Média</button>
-                            </div>
-                            <br />
-                            <div id="frequencyChart">
-                                @(Html.Kendo().Chart(frequency)
+                <div class="card-box" style="height: 367.94px">
+                    <div id="loader" style="display: none; position: relative;"></div>
+                    <div id="divGraph">
+                        @if (type == "meanWork")
+                        {
+                            <div class="col">
+                                <div class="container-fluid" style="text-align:center">
+                                    <button class="btn btn-primary" id="frequencyButton" type="button">Frequência</button>
+                                    <button class="btn btn-primary" id="medianButton" type="button">Mediana</button>
+                                    <button class="btn btn-primary" id="meanButton" type="button">Média</button>
+                                </div>
+                                <br />
+                                <div id="frequencyChart">
+                                    @(Html.Kendo().Chart(frequency)
                                             .Name("chart")
                                             .Legend(legend => legend
                                             .Position(ChartLegendPosition.Top))
@@ -234,9 +270,9 @@
 
 
                                 )
-                            </div>
-                            <div id="medianChart">
-                                @(Html.Kendo().Chart(median)
+                                </div>
+                                <div id="medianChart">
+                                    @(Html.Kendo().Chart(median)
                                     .Name("chart_median")
                                     .Legend(legend => legend
                                         .Position(ChartLegendPosition.Top))
@@ -266,9 +302,9 @@
                                     )
                                 )
 
-                            </div>
-                            <div id="meanChart">
-                                @(Html.Kendo().Chart(mean)
+                                </div>
+                                <div id="meanChart">
+                                    @(Html.Kendo().Chart(mean)
                                 .Name("chart_mean")
                                 .Legend(legend => legend
                                     .Position(ChartLegendPosition.Top))
@@ -298,14 +334,14 @@
                                 )
                                 )
 
+                                </div>
                             </div>
-                        </div>
 
-                    }
-                    else if (type == "mean")
-                    {
-                        <div>
-                            @(Html.Kendo().Chart(allResources)
+                        }
+                        else if (type == "mean")
+                        {
+                            <div>
+                                @(Html.Kendo().Chart(allResources)
                                 .Name("chart")
                                 .Title("Média")
                                 .Legend(legend => legend
@@ -324,7 +360,7 @@
                                     .Format("{0}%")
                                     .Template("#= series.name #: #= value # minutos")
                                 )
-                                .ChartArea(x => x.Height(210))
+                                .ChartArea(x => x.Height(320))
                                 .Pannable(pannable => pannable
                                     .Lock(ChartAxisLock.Y)
                                 )
@@ -335,13 +371,13 @@
 
 
                             )
-                        </div>
+                            </div>
 
-                    }
-                    else if (type == "effort" || type == "effortWorkstation")
-                    {
-                        <div>
-                            @(Html.Kendo().Chart(allResourcesEffort)
+                        }
+                        else if (type == "effort" || type == "effortWorkstation")
+                        {
+                            <div>
+                                @(Html.Kendo().Chart(allResourcesEffort)
                                 .Name("chart")
                                 .Title("Tempo de Trabalho")
                                 .Legend(legend => legend
@@ -360,7 +396,7 @@
                                     .Format("{0}%")
                                     .Template("#= series.name #: #= value # minutos")
                                 )
-                                .ChartArea(x => x.Height(210))
+                                .ChartArea(x => x.Height(320))
                                 .Pannable(pannable => pannable
                                     .Lock(ChartAxisLock.Y)
                                 )
@@ -371,12 +407,12 @@
 
 
                             )
-                        </div>
-                    }
-                    else
-                    {
-                        <div>
-                            @(Html.Kendo().Chart(operationalEffort)
+                            </div>
+                        }
+                        else
+                        {
+                            <div>
+                                @(Html.Kendo().Chart(operationalEffort)
                                 .Name("chart")
                                 .Title("Tempo Operacional")
                                 .Legend(legend => legend
@@ -395,7 +431,7 @@
                                     .Format("{0}%")
                                     .Template("#= series.name #: #= value # minutos")
                                 )
-                                .ChartArea(x => x.Height(210))
+                                .ChartArea(x => x.Height(320))
                                 .Pannable(pannable => pannable
                                     .Lock(ChartAxisLock.Y)
                                 )
@@ -406,135 +442,140 @@
 
 
                             )
-                        </div>
-                    }
+                            </div>
+                        }
 
-
+                        @if (type != "meanWork")
+                        {
+                            <div id="infoGraph" style="max-height: 2px;display: none;">
+                                <p class="text-danger">Grafo não atualizado, com os filtros selecionados</p>
+                            </div>
+                        }
+                    </div>
                 </div>
-            }
+                @if (type != "meanWork")
+                {
+                    <div class="row">
+                        <div class="col">
+                            <div class="card text-xs-center" style="height: 200.5px; max-height: 200.5px">
+                                <div class="card-body" style="overflow-y:auto">
+                                    <h5 class="card-title">Informação</h5>
+                                    <dl class="row">
+                                        @if (type == "mean")
+                                        {
+                                            <dt class="col-sm-6">Desempenho médio: </dt>
+                                            <dd class="col-sm-6">@String.Format("{0:N0}",meanMinutesAll) minutos</dd>
+                                        }
+                                        else if (type == "effort" || type == "effortWorkstation")
+                                        {
+                                            <dt class="col-sm-6">Tempo de Trabalho Total: </dt>
+                                            <dd class="col-sm-6">@String.Format("{0:N0}", totalEffort) minutos</dd>
+                                        }
+                                        else
+                                        {
+                                            <dt class="col-sm-6">Tempo Operacional: </dt>
+                                            <dd class="col-sm-6">@String.Format("{0:N0}", totalEffort) minutos</dd>
+                                        }
+                                        <dt class="col-sm-6">Atividade Escolhida: </dt>
+                                        <dd class="col-sm-6">@activityChosen</dd>
+                                    </dl>
+                                </div>
+                            </div> <!-- end card-box-->
+                        </div> <!-- end col -->
+                        <div class="col">
+                            <div class="card text-xs-center" style="height: 200.5px; max-height: 200.5px">
+                                <div class="card-body">
+                                    <h5 class="card-title">Peças</h5>
+                                    <div style="max-height: 120px;overflow-y:auto">
+                                        @if (parts == null)
+                                        {
+                                            <h5>Nenhuma peça.</h5>
+                                        }
+                                        else
+                                        {
+                                            foreach (var p in parts)
+                                            {
+                                                <h5>@p</h5>
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="card text-xs-center" style="height: 200.5px; max-height: 200.5px">
+                                <div class="card-body">
+                                    <h5 class="card-title">Moldes</h5>
+                                    <div style="max-height: 120px;overflow-y:auto">
+                                        @if (moulds == null)
+                                        {
+                                            <h5>Nenhum molde.</h5>
+                                        }
+                                        else
+                                        {
+                                            foreach (var m in moulds)
+                                            {
+                                                <h5>@m</h5>
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    }
+                }
         }
     </div>
 </div>
-<br />
+<div id="error" class="alert alert-danger" data-alert="alert" style="display:none;">
+    Não existem dados nas datas inseridas
+</div>
 
 
 @if ((type == "mean" || type == "effort" || type == "effortWorkstation" || type == "effortWork" || type == "meanWork")
    && (meanMinutesAll != null || totalEffort != null || hasValues == "true"))
 {
-    <div class="row">
-        @if (type == "meanWork")
-        {
-            <div class="col">
-                @if (Model != null)
-                {
-                    <div class="table-responsive">
-                        <table id="scroll-horizontal-datatable" class="table table-dark dt-responsive nowrap w-100">
-                            <thead>
+<div class="row">
+    @if (type == "meanWork")
+    {
+        <div class="col">
+            @if (Model != null)
+            {
+                <div class="table-responsive">
+                    <table id="scroll-horizontal-datatable" class="table table-dark dt-responsive nowrap w-100">
+                        <thead>
+                            <tr>
+                                <th>Frequência</th>
+                                <th>Média</th>
+                                <th>Mediana</th>
+                                <th>Duração Mínima</th>
+                                <th>Duração Máxima</th>
+                                <th>Workstation</th>
+                        </thead>
+                        <tbody>
+
+                            @foreach (Pmviz_Frontend.Models.WorkstationFreq a in Model)
+                            {
                                 <tr>
-                                    <th>Frequência</th>
-                                    <th>Média</th>
-                                    <th>Mediana</th>
-                                    <th>Duração Mínima</th>
-                                    <th>Duração Máxima</th>
-                                    <th>Workstation</th>
-                            </thead>
-                            <tbody>
+                                    <td>@a.Frequency</td>
+                                    <td>@a.MeanActivityFormatted</td>
+                                    <td>@a.MedianActivityFormatted</td>
+                                    <td>@a.MinActivityFormatted</td>
+                                    <td>@a.MaxActivityFormatted</td>
+                                    <td>@a.Workstation</td>
+                                </tr>
 
-                                @foreach (Pmviz_Frontend.Models.WorkstationFreq a in Model)
-                                {
-                                    <tr>
-                                        <td>@a.Frequency</td>
-                                        <td>@a.MeanActivityFormatted</td>
-                                        <td>@a.MedianActivityFormatted</td>
-                                        <td>@a.MinActivityFormatted</td>
-                                        <td>@a.MaxActivityFormatted</td>
-                                        <td>@a.Workstation</td>
-                                    </tr>
-
-                                }
-
-                            </tbody>
-                        </table>
-                    </div>
-
-                }
-            </div>
-
-        }
-        else
-        {
-            <div class="col">
-                <div class="card text-xs-center">
-                    <div class="card-header">
-                        Information
-                    </div>
-                    <div class="card-body">
-                        @if (type == "mean")
-                        {
-                            <h5>
-                                Desempenho médio: @meanMinutesAll minutos
-                            </h5>
-                        }
-                        else if (type == "effort" || type == "effortWorkstation")
-                        {
-                            <h5>
-                                Tempo de Trabalho Total: @totalEffort minutos
-                            </h5>
-                        }
-                        else
-                        {
-                            <h5>
-                                Tempo Operacional: @totalEffort minutos
-                            </h5>
-                        }
-                        <h5>
-                            Atividade Escolhida: @activityChosen
-                        </h5>
-                    </div>
-                </div> <!-- end card-box-->
-            </div> <!-- end col -->
-            <div class="col">
-                <div class="card text-xs-center">
-                    <div class="card-header">
-                        Peças
-                    </div>
-                    <div class="card-body">
-                        @if (parts == null)
-                        {
-                            <h5>Nenhuma peça.</h5>
-                        }
-                        else
-                        {
-                            foreach (var p in parts)
-                            {
-                                <h5>@p</h5>
                             }
-                        }
-                    </div>
+
+                        </tbody>
+                    </table>
                 </div>
-            </div>
-            <div class="col">
-                <div class="card text-xs-center">
-                    <div class="card-header">
-                        Molde
-                    </div>
-                    <div class="card-body">
-                        @if (moulds == null)
-                        {
-                            <h5>Nenhum molde.</h5>
-                        }
-                        else
-                        {
-                            foreach (var m in moulds)
-                            {
-                                <h5>@m</h5>
-                            }
-                        }
-                    </div>
-                </div>
-            </div>
-        }
-    </div>
+
+            }
+        </div>
+    }
+</div>
 }
 
 <script>
@@ -549,7 +590,95 @@
     var radioPerformanceWork = document.getElementById("radioPerformanceWork");
     var userCheck = document.getElementById("userCheck");
     var workCheck = document.getElementById("workCheck");
+    var divLoader = document.getElementById("loader");
+    var divGraph = document.getElementById("divGraph"); 
+    var typeResource = "@typeResource" + "s";
+    var type = "@type";
+    var startDate = ''; var endDate = '';
 
+    if (type == "mean") {
+        type = "performance";
+    } else if (type == "effort") {
+        type = "workhours/activities";
+    } else if (type == "effortWorkstation"){
+        type = "workhours/workstations";
+    } else if (type == "effortWork"){
+        type = "workstations/operationalhours";
+    }
+
+    $('#inputStartFilter, #inputEndFilter').change(function () {
+        if (startDate != $('#inputStartFilter').val() || endDate != $('#inputEndFilter').val()) {
+            $("#infoGraph").css("display", "block");
+            $("#filterGraph").prop("disabled", false);
+        } else {
+            $("#infoGraph").css("display", "none");
+            $("#filterGraph").prop("disabled", true);
+        }
+    });
+
+    $("#filterGraph").click(function () {
+        if (new Date($('#inputStartFilter').val()) > new Date($('#inputEndFilter').val())) {
+            $("#error").html("As datas no filtro não estão inseridas corretamente");
+            $("#error").fadeIn();
+            closeAlertBox();
+            return;
+        }
+        loading(divGraph, divLoader);
+        $.ajax({
+            type: "POST",
+            data: {
+                process: @processId,
+                startDate: convertDate($('#inputStartFilter').val()),
+                endDate: convertDate($('#inputEndFilter').val()),
+                type: "resources",
+                categoryType: typeResource,
+                categoryResource: type,
+                activity: $("#actv").val(),
+                workstation: $("#works").val()
+            },
+            url: "/Log/GetFilter",
+            dataType: 'json',
+            success: function (response) {
+                if (response.success) {
+                    loading(divLoader, divGraph);
+                    if (!response.request) {
+                        $("#error").html("Não existem dados nas datas inseridas");
+                        $("#error").fadeIn();
+                        closeAlertBox();
+                        return;
+                    }
+                    var chart = $("#chart").data("kendoChart");
+                    var data = changeArrayToChart(JSON.parse(response.request));
+                    
+                    startDate = $('#inputStartFilter').val();
+                    endDate = $('#inputEndFilter').val();
+                    $("#infoGraph").css("display", "none");
+                    $("#filterGraph").prop("disabled", true);
+
+                    var dataSource = new kendo.data.DataSource({
+                        data: data
+                    });
+                    if (chart != null) {
+                        chart.setDataSource(dataSource);
+                    }
+                } else {
+                    loading(divLoader, divGraph);
+                    $("#error").fadeIn();
+                    closeAlertBox();
+                }
+            },
+            error: function (response) {
+                loading(divLoader, divGraph);
+                alert("Erro a realizar o pedido");
+            }
+        });
+    });
+
+    function closeAlertBox() {
+        window.setTimeout(function () {
+            $("#error").fadeOut(300)
+        }, 3000);
+    } 
 
     if (userCheck != null) {
         userTypeDiv.style.display = "block"
@@ -560,46 +689,47 @@
         userTypeDiv.style.display = "none"
         workstationTypeDiv.style.display = "block"
     }
+    if (type == "meanWork") {
+        $(document).ready(function () {
+            var frequencyChart = document.getElementById("frequencyChart");
+            var medianChart = document.getElementById("medianChart");
+            var meanChart = document.getElementById("meanChart");
+            var frequencyButton = document.getElementById("frequencyButton");
+            var medianButton = document.getElementById("medianButton");
+            var meanButton = document.getElementById("meanButton");
 
-    $(document).ready(function () {
-        var frequencyChart = document.getElementById("frequencyChart");
-        var medianChart = document.getElementById("medianChart");
-        var meanChart = document.getElementById("meanChart");
-        var frequencyButton = document.getElementById("frequencyButton");
-        var medianButton = document.getElementById("medianButton");
-        var meanButton = document.getElementById("meanButton");
-
-        medianChart.style.display = "none";
-        meanChart.style.display = "none";
-        frequencyButton.disabled = true;
-
-        $("#frequencyButton").click(function () {
+            medianChart.style.display = "none";
+            meanChart.style.display = "none";
             frequencyButton.disabled = true;
-            medianButton.disabled = false;
-            meanButton.disabled = false;
-            frequencyChart.style.display = "block";
-            medianChart.style.display = "none";
-            meanChart.style.display = "none";
-        });
 
-        $("#medianButton").click(function () {
-            frequencyButton.disabled = false;
-            medianButton.disabled = true;
-            meanButton.disabled = false;
-            frequencyChart.style.display = "none";
-            medianChart.style.display = "block";
-            meanChart.style.display = "none";
-        });
+            $("#frequencyButton").click(function () {
+                frequencyButton.disabled = true;
+                medianButton.disabled = false;
+                meanButton.disabled = false;
+                frequencyChart.style.display = "block";
+                medianChart.style.display = "none";
+                meanChart.style.display = "none";
+            });
 
-        $("#meanButton").click(function () {
-            frequencyButton.disabled = false;
-            medianButton.disabled = false;
-            meanButton.disabled = true;
-            frequencyChart.style.display = "none";
-            medianChart.style.display = "none";
-            meanChart.style.display = "block";
+            $("#medianButton").click(function () {
+                frequencyButton.disabled = false;
+                medianButton.disabled = true;
+                meanButton.disabled = false;
+                frequencyChart.style.display = "none";
+                medianChart.style.display = "block";
+                meanChart.style.display = "none";
+            });
+
+            $("#meanButton").click(function () {
+                frequencyButton.disabled = false;
+                medianButton.disabled = false;
+                meanButton.disabled = true;
+                frequencyChart.style.display = "none";
+                medianChart.style.display = "none";
+                meanChart.style.display = "block";
+            });
         });
-    });
+    }
 
     if (selectList.value == "") {
         select.style.display = "none";
@@ -675,6 +805,75 @@
         }
 
 
+    }
+
+    function clearCalendar(x) {
+        $('#' + x).val('');
+        if (startDate != $('#inputStartFilter').val() || endDate != $('#inputEndFilter').val()) {
+            $("#infoGraph").css("display", "block");
+            $("#filterGraph").prop("disabled", false);
+        } else {
+            $("#infoGraph").css("display", "none");
+            $("#filterGraph").prop("disabled", true);
+        }
+    }
+    function convertDate(field) {
+        if (field) {
+            let current_datetime = new Date(field);
+            return current_datetime.getFullYear() + "-" + (current_datetime.getMonth() + 1) + "-" + current_datetime.getDate();
+        }
+        return null;
+    }
+
+    function changeArrayToChart(s) {
+        if (type == "performance") {
+            for (i = 0; i < s.Resources.length; i++) {
+                s.Resources[i].MeanMillis = millisToMinutesAndSeconds(s.Resources[i].MeanMillis);
+            }
+            if (s.Resources.length) {
+                s.Resources.sort(function (a, b) {
+                    return b.MeanMillis - a.MeanMillis;
+                });
+            }
+            return s.Resources;
+        }
+        if (type == "workhours/activities" || type == "workhours/workstations") {
+            for (i = 0; i < s.Users.length; i++) {
+                s.Users[i].WorkHoursMillis = millisToMinutesAndSeconds(s.Users[i].WorkHoursMillis);
+            }
+            if (s.Users.length) {
+                s.Users.sort(function (a, b) {
+                    return b.WorkHoursMillis - a.WorkHoursMillis;
+                });
+            }
+            return s.Users;
+        }
+        if (type == "workstations/operationalhours") {
+            for (i = 0; i < s.Workstation.length; i++) {
+                s.Workstation[i].OperationalHoursMillis = millisToMinutesAndSeconds(s.Workstation[i].OperationalHoursMillis);
+            }
+            if (s.Workstation.length) {
+                s.Workstation.sort(function (a, b) {
+                    return b.OperationalHoursMillis - a.OperationalHoursMillis;
+                });
+            }
+            return s.Workstation;
+        }
+        
+        
+    }
+
+    function millisToMinutesAndSeconds(millis) {
+        var minutes = Math.floor(millis / 60000);
+        var seconds = ((millis % 60000) / 1000).toFixed(0);
+        return minutes + seconds / 100;
+    }
+
+    function loading(x, y) {
+        if (x.style.display != "none" || y.style.display != "block") {
+            x.style.display = "none";
+            y.style.display = "block";
+        }
     }
 
 

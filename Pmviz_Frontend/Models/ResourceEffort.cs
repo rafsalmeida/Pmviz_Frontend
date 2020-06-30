@@ -17,7 +17,9 @@ namespace Pmviz_Frontend.Models
 
         [DataMember]
         public Mean WorkHours { get; set; }
+        [DataMember]
 
+        public string FullDate { get; set; }
     }
 
 }

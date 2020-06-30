@@ -69,19 +69,23 @@ namespace Pmviz_Frontend.Controllers
             {
                 json += ", \"activities\":" + activities.ToString();
             }
-            if (startDate != null && endDate != null)
+            if (startDate != null)
             {
-                json += ", \"startDate\":\"" + startDate + "\", \"endDate\":\"" + endDate + "\"";
+                json += ", \"startDate\":\"" + startDate + "\"";
+            }
+            if (endDate != null)
+            {
+                json += ", \"endDate\":\"" + endDate + "\"";
             }
             json += " }";
 
             if (miner == "alpha-miner")
             {
-                url = "http://localhost:8080/api/conformance/performance/" + miner + "/" + process;
+                url = "http://localhost:8080/api/conformance/performance/" + miner + "/model/" + process;
             }
             else
             {
-                url = "http://localhost:8080/api/conformance/performance/" + miner + "/" + process + "?threshold=" + threshold.Replace(',', '.');
+                url = "http://localhost:8080/api/conformance/performance/" + miner + "/model/" + process + "?threshold=" + threshold.Replace(',', '.');
             }
             HttpResponseMessage response;
             HttpContent c = new StringContent(json, Encoding.UTF8, "application/json");
@@ -90,6 +94,10 @@ namespace Pmviz_Frontend.Controllers
                 using (response = await httpClient.PostAsync(url, c))
                 {
                     var status = response.IsSuccessStatusCode;
+                    if (response.ReasonPhrase == "No Content")
+                    {
+                        return Json(new { success = true, request = "" });
+                    }
                     if (status == false)
                     {
                         return RedirectToAction("Index", "Home", new { error = "1" });
@@ -114,15 +122,23 @@ namespace Pmviz_Frontend.Controllers
                         {
                             json += ", \"activities\":" + activitiesFilter.ToString();
                         }
-                        if (startDateFilter != null && endDateFilter != null)
+                        if (startDateFilter != null)
                         {
-                            json += ", \"startDate\":\"" + startDateFilter + "\", \"endDate\":\"" + endDateFilter + "\"";
+                            json += ", \"startDate\":\"" + startDateFilter + "\"";
+                        }
+                        if (endDateFilter != null)
+                        {
+                            json += ", \"endDate\":\"" + endDateFilter + "\"";
                         }
                         json += " }";
                         c = new StringContent(json, Encoding.UTF8, "application/json");
 
-                        response = await httpClient.PostAsync("http://localhost:8080/api/conformance/process/" + process, c);
+                        response = await httpClient.PostAsync("http://localhost:8080/api/conformance/performance/process/" + process, c);
                         status = response.IsSuccessStatusCode;
+                        if (response.ReasonPhrase == "No Content")
+                        {
+                            return Json(new { success = true, request = "" });
+                        }
                         if (status == false)
                         {
                             return Json(new { success = false, request = response.Content.ReadAsStringAsync() });
@@ -155,18 +171,26 @@ namespace Pmviz_Frontend.Controllers
             {
                 json += ", \"activities\":" + activities.ToString();
             }
-            if (startDate != null && endDate != null)
+            if (startDate != null)
             {
-                json += ", \"startDate\":\"" + startDate + "\", \"endDate\":\"" + endDate + "\"";
+                json += ", \"startDate\":\"" + startDate + "\"";
+            }
+            if (endDate != null)
+            {
+                json += ", \"endDate\":\"" + endDate + "\"";
             }
             json += " }";
             HttpResponseMessage response;
             HttpContent c = new StringContent(json, Encoding.UTF8, "application/json");
             using (var httpClient = new HttpClient())
             {
-                using (response = await httpClient.PostAsync("http://localhost:8080/api/conformance/process/" + process, c))
+                using (response = await httpClient.PostAsync("http://localhost:8080/api/conformance/performance/process/" + process, c))
                 {
                     var status = response.IsSuccessStatusCode;
+                    if (response.ReasonPhrase == "No Content")
+                    {
+                        return Json(new { success = true, request = "" });
+                    }
                     if (status == false)
                     {
                         return Json(new { success = false, request = response.Content.ReadAsStringAsync() });
