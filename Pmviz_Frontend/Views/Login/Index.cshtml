@@ -60,7 +60,7 @@
                             <div class="auth-logo">
                                 <h4>PMVIZ</h4>
                             </div>
-                            <p class="text-muted mb-4 mt-3">Enter your email address and password to access.</p>
+                            <p class="text-muted mb-4 mt-3">Insere o teu username e password para iniciar sessão.</p>
                             @if (ViewBag.Error != null)
                             {
                                 <div class="alert alert-danger" role="alert">
@@ -71,12 +71,12 @@
                         <form method="post">
                             <div class="form-group mb-3">
                                 <label for="username">Username</label>
-                                <input class="form-control" type="text" name="username" required="" placeholder="Enter your username">
+                                <input class="form-control" type="text" name="username" required="" placeholder="Insere o username">
                             </div>
                             <div class="form-group mb-3">
                                 <label for="password">Password</label>
                                 <div class="input-group input-group-merge">
-                                    <input type="password" name="password" class="form-control" placeholder="Enter your password">
+                                    <input type="password" name="password" class="form-control" placeholder="Insere a password">
                                     <div class="input-group-append" data-password="false">
                                         <div class="input-group-text">
                                             <span class="password-eye"></span>
@@ -88,9 +88,6 @@
                                 <button class="btn btn-primary btn-block" type="submit"> Log In </button>
 
                             </div>
-                            <div class="col-12 text-center">
-                                <p>Don't have an account? <a href="/register"><b>Sign Up</b></a></p>
-                            </div> <!-- end col -->
                         </form>
                     </div> <!-- end card-body -->
                 </div>

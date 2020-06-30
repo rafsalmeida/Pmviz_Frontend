@@ -39,7 +39,7 @@ namespace Pmviz_Frontend.Controllers
                             return View();
 
                         }
-                        ViewBag.ErrorProcess = "Error retrieving processes. Please try again later";
+                        ViewBag.ErrorProcess = "Erro ao buscar processos.";
                         return View();
                     }
                 }
@@ -70,7 +70,7 @@ namespace Pmviz_Frontend.Controllers
                             ViewBag.ErrorProcess = await response.Content.ReadAsStringAsync();
 
                         }
-                        ViewBag.ErrorProcess = "Error retrieving processes. Please try again later";
+                        ViewBag.ErrorProcess = "Erro ao buscar processos.";
                     }
                 }
 
@@ -94,7 +94,7 @@ namespace Pmviz_Frontend.Controllers
                             return View("Process", "Statistics");
 
                         }
-                        ViewBag.ErrorActivity = "Error retrieving activities. Please try again later";
+                        ViewBag.ErrorActivity = "Erro ao buscar atividades.";
                         return View("Process", "Statistics");
                     }
                 }
@@ -128,7 +128,7 @@ namespace Pmviz_Frontend.Controllers
                             ViewBag.ErrorProcess = await response.Content.ReadAsStringAsync();
 
                         }
-                        ViewBag.ErrorProcess = "Error retrieving processes. Please try again later";
+                        ViewBag.ErrorProcess = "Erro ao buscar processos.";
                     }
                 }
 
@@ -150,7 +150,7 @@ namespace Pmviz_Frontend.Controllers
                             ViewBag.ErrorActivity = await response.Content.ReadAsStringAsync();
 
                         }
-                        ViewBag.ErrorActivity = "Error retrieving activities. Please try again later";
+                        ViewBag.ErrorActivity = "Erro ao buscar processos.";
                     }
                 }
 
@@ -209,7 +209,7 @@ namespace Pmviz_Frontend.Controllers
                         var resource = JArray.Parse(data["resources"].ToString());
                         if(resource.Count == 0)
                         {
-                            ViewBag.ErrorActivity = "There are no records of your mean times in this activity.";
+                            ViewBag.ErrorActivity = "Sem dados para esta atividade.";
                             return View("Process", "Statistics");
                         }
 
@@ -233,7 +233,7 @@ namespace Pmviz_Frontend.Controllers
                             return View("Process", "Statistics");
 
                         }
-                        ViewBag.ErrorActivity = "Error retrieving activities. Please try again later";
+                        ViewBag.ErrorActivity = "Erro ao buscar atividades.";
                         return View("Process", "Statistics");
 
                     }

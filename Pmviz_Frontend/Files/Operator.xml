@@ -7,9 +7,12 @@
   <path>/authorization
     </path>
   <path>/graph/frequencyPerformanceGraph
-  </path>
-  <path>/graph/index
+    </path>
+  <path>/graph/conformanceGraph
     </path>
   <path>/log/resource
+    </path>
+  <path>
+    /register
     </path>
 </root>

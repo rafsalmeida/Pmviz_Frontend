@@ -7,16 +7,16 @@
 }
 
 @{
-    ViewData["Title"] = "Manage Access";
+    ViewData["Title"] = "Controlo de Acesso";
 }
 
 <div class="row">
     <div class="col-md-3 col-xl-3">
         <div class="card-box">
             <form method="post">
-                <label for="role" class="required">Role to allow/restrict access to</label>
+                <label for="role" class="required">Role para permitir/proibir acesso</label>
                 <select name="role" class="btn-sm btn-light dropdown-toggle" required onchange="handleRole(this)">
-                    <option value="" disabled selected>Choose a role</option>
+                    <option value="" disabled selected>Escolha um role</option>
 
                     @foreach (var r in roles)
                     {
@@ -54,8 +54,8 @@
             <div class="card-box">
                 <form action='@Url.Action("Save","Authorization")' method="post">
                     <input type="hidden" name="roleChosen" value="@role" />
-                    <label for="allowed" id="authorization">Allowed</label>
-                    <label for="notAllowed">Not Allowed</label>
+                    <label for="allowed" id="authorization">Permitido</label>
+                    <label for="notAllowed">Proíbido</label>
                     <br />
                     @(Html.Kendo().ListBox()
                         .Name("allowed")
@@ -89,7 +89,7 @@
                     <br />
                     <br />
                     <div>
-                        <button class="btn btn-primary" type="submit">Save</button>
+                        <button class="btn btn-primary" type="submit">Salvar</button>
                     </div>
                 </form>
             </div>

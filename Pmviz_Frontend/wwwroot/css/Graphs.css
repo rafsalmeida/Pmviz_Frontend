@@ -175,6 +175,10 @@
     background-color: #acbcff;
 }
 
+.card-conformance {
+    margin-bottom: 7.2px !important;
+}
+
 
 /******** BUTTONS ********/
 #centerGC {

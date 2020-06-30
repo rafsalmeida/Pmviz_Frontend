@@ -20,5 +20,8 @@ namespace Pmviz_Frontend.Models
 
         [DataMember]
         public double GeneralMean { get; set; }
+        [DataMember]
+
+        public string FullDate { get; set; }
     }
 }

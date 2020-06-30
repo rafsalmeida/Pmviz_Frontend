@@ -17,156 +17,138 @@
 
 <div class="row">
     <div class="col-md-3">
-        <br/>
-        <form method="post" id="ticketsForm" action='@Url.Action("Mould","Tag")' kendo-validator="true">
-            <label for="mouldSelected" class="required">Choose the mould</label>
-            <br />
-            <select name="mouldSelected" class="btn-sm btn-light dropdown-toggle" id="mouldsList" required onchange="handleMoulds(this)">
-                @if (moulds != null)
-                {
-                    <option value="" disabled selected>Choose a mould</option>
+        <br />
+        <div class="card-box">
 
-                    @foreach (var mould in moulds)
+            <form method="post" id="ticketsForm" action='@Url.Action("Mould","Tag")' kendo-validator="true">
+                <label for="mouldSelected" class="required">Escolha um molde:</label>
+                <br />
+                <select name="mouldSelected" class="btn-sm btn-light dropdown-toggle" id="mouldsList" required onchange="handleMoulds(this)">
+                    @if (moulds != null)
                     {
-                        if (chosenMould == mould.Code)
+                        <option value="" disabled selected>Escolha um molde</option>
+
+                        @foreach (var mould in moulds)
                         {
-                            <option value="@mould.Code" selected>@mould.Code</option>
+                            if (chosenMould == mould.Code)
+                            {
+                                <option value="@mould.Code" selected>@mould.Code</option>
+                            }
+                            else
+                            {
+                                <option value="@mould.Code">@mould.Code</option>
+                            }
                         }
-                        else
-                        {
-                            <option value="@mould.Code">@mould.Code</option>
-                        }
+
                     }
+
+                </select>
+                <button class="btn-sm btn-primary" type="submit" id="send" hidden>Submit</button>
+            </form>
+            <br />
+            @if (TempData["ErrorConn"] != null)
+            {
+                <div class="alert alert-danger" role="alert">
+                    @TempData["ErrorConn"]
+                </div>
+            }
+
+            @if (TempData["RFID"] != null)
+            {
+                <div class="alert alert-danger" role="alert">
+                    @TempData["RFID"]
+                </div>
+            }
+
+            @if (TempData["SuccessRFID"] != null)
+            {
+                <div class="alert alert-success" role="alert">
+                    @TempData["SuccessRFID"]
+                </div>
+            }
+
+            @if (TempData["Cancel"] != null)
+            {
+                <div class="alert alert-success" role="alert">
+                    @TempData["Cancel"]
+                </div>
+            }
+
+            @if (ViewBag.ErrorPart != null)
+            {
+                <div class="alert alert-danger" role="alert">
+                    @ViewBag.ErrorPart
+                </div>
+            }
+
+            @if (TempData["ErrorRFID"] != null)
+            {
+                <div class="alert alert-danger" role="alert">
+                    @TempData["ErrorRFID"]
+                </div>
+            }
+        </div>
+    </div>
+
+        @if (parts != null)
+        {
+            <div class="col">
+
+                @if (parts.Count() > 0)
+                {
+
+                    <div class="table-responsive">
+                        <br />
+                        <h5>Peças</h5>
+                        <table id="scroll-horizontal-datatable" class="table table-dark dt-responsive nowrap w-100">
+                            <thead>
+                                <tr>
+                                    <th>Código</th>
+                                    <th>Descrição</th>
+                                    <th>RFID</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (Pmviz_Frontend.Models.Part a in parts)
+                                {
+                                    <tr>
+                                        <td class="id">@a.Code</td>
+                                        <td>@a.Description</td>
+                                        @if (a.TagRfid == null)
+                                        {
+                                            <td>-</td>
+
+                                        }
+                                        else
+                                        {
+                                            <td>@a.TagRfid</td>
+
+                                        }
+                                        <td>
+                                            <button class="btn btn-sm btn-rounded btn-primary tag">Tag</button>
+                                        </td>
+                                    </tr>
+
+                                }
+
+                            </tbody>
+                        </table>
+                    </div>
+
+                }
+                else
+                {
+                    <div class="alert alert-danger" role="alert">
+                        Este molde não tem partes associadas!
+                    </div>
 
                 }
 
-            </select>
-            <button class="btn-sm btn-primary" type="submit" id="send" hidden>Submit</button>
-        </form>
-        <br />
-        @if (TempData["ErrorConn"] != null)
-        {
-            <div class="alert alert-danger" role="alert">
-                @TempData["ErrorConn"]
             </div>
-        }
 
-        @if (TempData["RFID"] != null)
-        {
-            <div class="alert alert-danger" role="alert">
-                @TempData["RFID"]
-            </div>
-        }
-
-        @if (TempData["SuccessRFID"] != null)
-        {
-            <div class="alert alert-success" role="alert">
-                @TempData["SuccessRFID"]
-            </div>
-        }
-
-        @if (TempData["Cancel"] != null)
-        {
-            <div class="alert alert-success" role="alert">
-                @TempData["Cancel"]
-            </div>
-        }
-
-        @if (ViewBag.ErrorPart != null)
-        {
-            <div class="alert alert-danger" role="alert">
-                @ViewBag.ErrorPart
-            </div>
-        }
-
-        @if (TempData["ErrorRFID"] != null)
-        {
-            <div class="alert alert-danger" role="alert">
-                @TempData["ErrorRFID"]
-            </div>
         }
     </div>
-
-    @if (parts != null)
-    {
-        <div class="col">
-
-            @if (parts.Count() > 0)
-            {
-                <!--@(Html.Kendo().Grid(parts)
-                .Name("Grid")
-                .Columns(columns =>
-                {
-                    columns.Bound(p => p.Code).Title("Code");
-                    columns.Bound(p => p.Description).Title("Description");
-                    columns.Bound(p => p.TagRfid).Title("RFID");
-                    columns.Command(command => command.Custom("Tag").Click("tag")).Width(110);
-
-                })
-                .Pageable()
-                .Navigatable()
-                .Sortable()
-                .Groupable()
-                .Filterable()
-                .Resizable(resize => resize.Columns(true))
-                .Scrollable(s => s.Height("auto"))
-                .DataSource(dataSource => dataSource
-                    .Ajax()
-                    .PageSize(20)
-                    .ServerOperation(false)
-                 )
-                )-->
-            <div class="table-responsive">
-                <h5>Parts</h5>
-                <table id="scroll-horizontal-datatable" class="table table-dark dt-responsive nowrap w-100">
-                    <thead>
-                        <tr>
-                            <th>Code</th>
-                            <th>Description</th>
-                            <th>RFID</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (Pmviz_Frontend.Models.Part a in parts)
-                        {
-                            <tr>
-                                <td class="id">@a.Code</td>
-                                <td>@a.Description</td>
-                                @if (a.TagRfid == null)
-                                {
-                                    <td>-</td>
-
-                                }
-                                else
-                                {
-                                    <td>@a.TagRfid</td>
-
-                                }
-                                <td>
-                                    <button class="btn btn-sm btn-rounded btn-primary tag">Tag</button>
-                                </td>
-                            </tr>
-
-                        }
-
-                    </tbody>
-                </table>
-            </div>
-
-            }
-            else
-            {
-                <div class="alert alert-danger" role="alert">
-                    This mould has no parts associated!
-                </div>
-
-            }
-
-        </div>
-
-    }
-</div>
 
 
 <script type="text/javascript">
@@ -182,7 +164,7 @@
         var $text = $row.find(".id").text(); // Find the text
 
          window.location = '@Url.Action("Tag","Tag")?id=' + $text
-        var r = confirm("Please wait while the part is being tagged! The page will reload when the part is correctly tagged. If you want to cancel, please click on the Cancel button. If not, click OK.");
+        var r = confirm("A página vai atualizar quando a peça for taggada. Se quiser cancelar, clique em Cancel. Se não, clique OK.");
         if (!r) {
             window.location = '@Url.Action("Cancel","Tag")?id=' + $text
         }

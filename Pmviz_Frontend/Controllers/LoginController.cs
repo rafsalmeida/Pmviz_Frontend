@@ -65,11 +65,11 @@ namespace Pmviz_Frontend.Controllers
                     {
                         if(response.StatusCode == HttpStatusCode.Unauthorized)
                         {
-                            ViewBag.Error = "Invalid Credentials!";
+                            ViewBag.Error = "Credenciais inválidas!";
                             return View();
                         }
                     }
-                    ViewBag.Error = "Something went wrong. Please try again later.";
+                    ViewBag.Error = "Algo deu errado.";
                     return View();
 
                 }
@@ -97,7 +97,7 @@ namespace Pmviz_Frontend.Controllers
                 }
                 else
                 {
-                    ViewBag.Error = "Something went wrong. Please try again later.";
+                    ViewBag.Error = "Algo deu errado.";
                     return null;
                 }
             }

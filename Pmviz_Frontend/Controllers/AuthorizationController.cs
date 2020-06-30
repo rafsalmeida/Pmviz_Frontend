@@ -38,7 +38,7 @@ namespace Pmviz_Frontend.Controllers
                     }
                     else
                     {
-                        ViewBag.Error = "Roles not available. Please try again later.";
+                        ViewBag.Error = "Algo deu errado.";
                         return View();
                     }
                 }
@@ -76,7 +76,7 @@ namespace Pmviz_Frontend.Controllers
                     }
                     else
                     {
-                        ViewBag.Error = "Roles not available. Please try again later.";
+                        ViewBag.Error = "Algo deu errado.";
                     }
                 }
             }
@@ -118,7 +118,7 @@ namespace Pmviz_Frontend.Controllers
 
             UpdateXmlFile(roleChosen, newRoutesNotAllowed);
 
-            TempData["success"] = "Changes successfully made!";
+            TempData["success"] = "Mudanças bem sucedidas!";
             
             return RedirectToAction("Index", "Authorization");
 
