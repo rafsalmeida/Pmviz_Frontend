@@ -100,7 +100,7 @@
             @if (type == "frequency" || type == "effort" || type == "operational")
             {
 
-            <div class="card-box" style="height: 477px">
+            <div id="chartDiv" class="card-box" style="height: 477px">
                 <div id="loader" style="display: none;"></div>
                 <div id="divGraph">
                     @if (type == "frequency")
@@ -111,7 +111,11 @@
                             <button class="btn btn-primary" id="meanButton" type="button">Média</button>
                         </div>
 
-
+                        <style> 
+                            #chartDiv {
+                                height: 420px !important;
+                            }
+                        </style>
                         <br />
                         <div id="frequencyChart">
                             @(Html.Kendo().Chart(frequency)
@@ -134,7 +138,7 @@
                                     .Visible(true)
                                     .Template("#= series.name #: #= value #")
                                 )
-                                .ChartArea(x => x.Height(370))
+                                .ChartArea(x => x.Height(313))
                                 .Pannable(pannable => pannable
                                     .Lock(ChartAxisLock.Y)
                                 )
@@ -167,7 +171,7 @@
                                 .Visible(true)
                                 .Template("#= dataItem.MedianActivityFormatted #")
                             )
-                            .ChartArea(x => x.Height(370))
+                            .ChartArea(x => x.Height(313))
                             .Pannable(pannable => pannable
                                 .Lock(ChartAxisLock.Y)
                             )
@@ -199,7 +203,7 @@
                             .Visible(true)
                             .Template("#= dataItem.MeanActivityFormatted #")
                         )
-                        .ChartArea(x => x.Height(370))
+                        .ChartArea(x => x.Height(313))
                         .Pannable(pannable => pannable
                             .Lock(ChartAxisLock.Y)
                         )

@@ -114,7 +114,6 @@
                         <label for="effort">Tempo Operacional</label>
                     </div>
 
-                    <br />
                     <div id="acts">
                         <h6>Escolha uma atividade:</h6>
                         <select name="activity" class="btn-sm btn-light dropdown-toggle" id="actv" onchange="handleAct(this)">
@@ -257,7 +256,7 @@
                                             .Visible(true)
                                             .Template("#= series.name #: #= value #")
                                         )
-                                        .ChartArea(x => x.Height(265))
+                                        .ChartArea(x => x.Height(315))
                                         .Pannable(pannable => pannable
                                             .Lock(ChartAxisLock.Y)
                                         )
@@ -290,7 +289,7 @@
                                         .Visible(true)
                                         .Template("#= dataItem.MedianActivityFormatted #")
                                     )
-                                    .ChartArea(x => x.Height(265))
+                                    .ChartArea(x => x.Height(315))
                                     .Pannable(pannable => pannable
                                         .Lock(ChartAxisLock.Y)
                                     )
@@ -322,7 +321,7 @@
                                     .Visible(true)
                                     .Template("#= dataItem.MeanActivityFormatted #")
                                 )
-                                .ChartArea(x => x.Height(265))
+                                .ChartArea(x => x.Height(315))
                                 .Pannable(pannable => pannable
                                     .Lock(ChartAxisLock.Y)
                                 )
