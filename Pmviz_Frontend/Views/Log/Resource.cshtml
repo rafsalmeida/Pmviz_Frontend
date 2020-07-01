@@ -24,16 +24,19 @@
     ViewData["Title"] = "Recursos";
 }
 <link href="@Url.Content("~/css/Loading.css")" rel="stylesheet" />
+
 <div class="row">
     <div class="col-md-3 col-xl-3">
-        <div class="card-box" style="height: 421px">
-            <div class="row col"><button onclick="location.href='/Log/Activity?id=@processId'" class="btn btn-sm btn-secondary">Estatísticas das atividades</button></div>
-            <br />
-            <div class="row col">
-                <h4 class="text-dark my-1">Estatísticas de Recursos</h4>
-            </div>
+        <div class="card-box" style="height: 428px;">
+            <a href="/Log/Activity?id=@processId" class="btn btn-secondary btn-sm col-lg-12" style="white-space:normal !important;max-width:400px;margin-bottom:4px; word-wrap:break-word;">
+                <i class="fas fa-chart-bar"></i>Estatísticas das atividades do processo
+            </a>
+            <small class="form-text text-muted">Ver a estatística das atividades do processo selecionado</small>
+            <h4 class="text-dark my-1">Estatísticas de Recursos</h4>
+            <h5 class="text-dark">Processo: @processId</h5>
             @if (activities != null && workstations != null)
             {
+            <div id="radioForms" style="max-height: 73%; overflow-y: auto; overflow-x:hidden">
                 <form method="post" action='@Url.Action("Resource", "Log", new { id = processId })'>
                     <h6>Escolha um tipo de recurso:</h6>
                     @if (typeResource == "user")
@@ -158,6 +161,7 @@
                         <button class="btn-xs btn-primary" type="submit" id="send" hidden>Submit</button>
                     </div>
                 </form>
+            </div>
             }
             else
             {
@@ -223,7 +227,7 @@
             @if ((type == "mean" || type == "effort" || type == "effortWorkstation" || type == "effortWork" || type == "meanWork")
      && (meanMinutesAll != null || totalEffort != null || hasValues == "true"))
             {
-                <div class="card-box" style="height: 421px">
+                <div class="card-box" style="height: 428px">
                     <div id="loader" style="display: none; position: relative;"></div>
                     <div id="divGraph">
                         @if (type == "meanWork")
@@ -575,6 +579,8 @@
         }
     </div>
 }
+
+
 
 <script>
     var select = document.getElementById("acts");
