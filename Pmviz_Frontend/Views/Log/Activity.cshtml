@@ -28,35 +28,41 @@
             <h5 class="text-dark">Processo: @processId</h5>
             <div id="radioFormsA" style="max-height: 73%; overflow-y: auto; overflow-x:hidden">
                 <form method="post" action='@Url.Action("Activity","Log", new {id = processId})'>
-                    @if (type == "frequency")
-                    {
-                        <input type="radio" class="btn btn-primary" name="type" value="frequency" checked>
-                    }
-                    else
-                    {
-                        <input type="radio" class="btn btn-primary" name="type" value="frequency" onclick="handle(this);">
-                    }
-                    <label for="frequency">Frequência e duração</label>
+                    <div class="form-check form-check-inline">
+                        @if (type == "frequency")
+                        {
+                            <input type="radio" class="btn btn-primary form-check-input" name="type" value="frequency" checked>
+                        }
+                        else
+                        {
+                            <input type="radio" class="btn btn-primary form-check-input" name="type" value="frequency" onclick="handle(this);">
+                        }
+                        <label class="form-check-label" for="frequency">Frequência e duração</label>
+                    </div>
                     <br />
-                    @if (type == "effort")
-                    {
-                        <input type="radio" class="btn btn-primary" name="type" value="effort" checked>
-                    }
-                    else
-                    {
-                        <input type="radio" class="btn btn-primary" name="type" value="effort" onclick="handle(this);">
-                    }
-                    <label for="effort">Tempo de Trabalho</label>
+                    <div class="form-check form-check-inline">
+                        @if (type == "effort")
+                        {
+                            <input type="radio" class="btn btn-primary form-check-input" name="type" value="effort" checked>
+                        }
+                        else
+                        {
+                            <input type="radio" class="btn btn-primary form-check-input" name="type" value="effort" onclick="handle(this);">
+                        }
+                        <label class="form-check-label" for="effort">Tempo de Trabalho</label>
+                    </div>
                     <br />
-                    @if (type == "operational")
-                    {
-                        <input type="radio" class="btn btn-primary" name="type" value="operational" checked>
-                    }
-                    else
-                    {
-                        <input type="radio" class="btn btn-primary" name="type" value="operational" onclick="handle(this);">
-                    }
-                    <label for="effort">Tempo Operacional</label>
+                    <div class="form-check form-check-inline">
+                        @if (type == "operational")
+                        {
+                            <input type="radio" class="btn btn-primary form-check-input" name="type" value="operational" checked>
+                        }
+                        else
+                        {
+                            <input type="radio" class="btn btn-primary form-check-input" name="type" value="operational" onclick="handle(this);">
+                        }
+                        <label class="form-check-label" for="effort">Tempo Operacional</label>
+                    </div>
                     <button type="submit" id="send" hidden></button>
                 </form>
             </div>

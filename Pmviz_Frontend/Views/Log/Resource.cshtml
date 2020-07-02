@@ -27,7 +27,7 @@
 
 <div class="row">
     <div class="col-md-3 col-xl-3">
-        <div class="card-box" style="height: 428px;">
+        <div class="card-box" style="height: 410px;">
             <a href="/Log/Activity?id=@processId" class="btn btn-secondary btn-sm col-lg-12" style="white-space:normal !important;max-width:400px;margin-bottom:4px; word-wrap:break-word;">
                 <i class="fas fa-chart-bar"></i>Estatísticas das atividades do processo
             </a>
@@ -39,82 +39,96 @@
             <div id="radioForms" style="max-height: 73%; overflow-y: auto; overflow-x:hidden">
                 <form method="post" action='@Url.Action("Resource", "Log", new { id = processId })'>
                     <h6>Escolha um tipo de recurso:</h6>
-                    @if (typeResource == "user")
-                    {
-                        <input type="radio" name="typeR" id="userCheck" value="user" checked>
-                    }
-                    else
-                    {
-                        <input type="radio" name="typeR" value="user" onclick="handleRadio(this);">
+                    <div class="form-check form-check-inline">
+                        @if (typeResource == "user")
+                        {
+                            <input type="radio" class="form-check-input" name="typeR" id="userCheck" value="user" checked>
+                        }
+                        else
+                        {
+                            <input type="radio" class="form-check-input" name="typeR" value="user" onclick="handleRadio(this);">
 
-                    }
-                    <label for="user">Utilizadores</label>
+                        }
+                        <label for="user" class="form-check-label">Utilizadores</label>
+                    </div>
                     <br />
-                    @if (typeResource == "workstation")
-                    {
-                        <input type="radio" name="typeR" id="workCheck" value="workstation" checked>
-                    }
-                    else
-                    {
-                        <input type="radio" name="typeR" value="workstation" onclick="handleRadio(this);">
+                    <div class="form-check form-check-inline">
+                        @if (typeResource == "workstation")
+                        {
+                            <input type="radio" class="form-check-input" name="typeR" id="workCheck" value="workstation" checked>
+                        }
+                        else
+                        {
+                            <input type="radio" class="form-check-input" name="typeR" value="workstation" onclick="handleRadio(this);">
 
-                    }
-                    <label for="workstation">Estações</label>
+                        }
+                        <label for="workstation" class="form-check-label">Estações</label>
+                    </div>
                     <br />
                     <h6>Escolha um tipo de estatísticas:</h6>
                     <div id="option">
-                        @if (type == "mean")
-                        {
-                            <input type="radio" name="type" value="mean" checked>
-                        }
-                        else
-                        {
-                            <input type="radio" name="type" value="mean" id="typeWorkstation" onclick="handleMiner(this);">
+                        <div class="form-check form-check-inline">
+                            @if (type == "mean")
+                            {
+                                <input type="radio" class="form-check-input" name="type" value="mean" checked>
+                            }
+                            else
+                            {
+                                <input type="radio" class="form-check-input" name="type" value="mean" id="typeWorkstation" onclick="handleMiner(this);">
 
-                        }
-                        <label for="mean">Desempenho</label>
+                            }
+                            <label for="mean" class="form-check-label">Desempenho</label>
+                        </div>
                         <br />
-                        @if (type == "effort")
-                        {
-                            <input type="radio" name="type" value="effort" checked>
-                        }
-                        else
-                        {
-                            <input type="radio" name="type" value="effort" onclick="handleMiner(this);">
-                        }
-                        <label for="effort">Tempo de Trabalho</label>
+                        <div class="form-check form-check-inline">
+                            @if (type == "effort")
+                            {
+                                <input type="radio" class="form-check-input" name="type" value="effort" checked>
+                            }
+                            else
+                            {
+                                <input type="radio" class="form-check-input" name="type" value="effort" onclick="handleMiner(this);">
+                            }
+                            <label for="effort" class="form-check-label">Tempo de Trabalho</label>
+                        </div>
                         <br />
-                        @if (type == "effortWorkstation")
-                        {
-                            <input type="radio" name="type" value="effortWorkstation" checked>
-                        }
-                        else
-                        {
-                            <input type="radio" name="type" value="effortWorkstation" onclick="handleMiner(this);">
-                        }
-                        <label for="effort">Trabalho por Estação</label>
+                        <div class="form-check form-check-inline">
+                            @if (type == "effortWorkstation")
+                            {
+                                <input type="radio" class="form-check-input" name="type" value="effortWorkstation" checked>
+                            }
+                            else
+                            {
+                                <input type="radio" class="form-check-input" name="type" value="effortWorkstation" onclick="handleMiner(this);">
+                            }
+                            <label for="effort" class="form-check-label">Trabalho por Estação</label>
+                        </div>
                     </div>
                     <div id="option2">
-                        @if (type == "meanWork")
-                        {
-                            <input type="radio" name="type" value="meanWork" checked>
-                        }
-                        else
-                        {
-                            <input type="radio" name="type" id="radioPerformanceWork" value="meanWork" onclick="handleMiner(this);">
+                        <div class="form-check form-check-inline">
+                            @if (type == "meanWork")
+                            {
+                                <input type="radio" class="form-check-input" name="type" value="meanWork" checked>
+                            }
+                            else
+                            {
+                                <input type="radio" class="form-check-input" name="type" id="radioPerformanceWork" value="meanWork" onclick="handleMiner(this);">
 
-                        }
-                        <label for="mean">Desempenho das Estações</label>
+                            }
+                            <label for="mean" class="form-check-label">Desempenho das Estações</label>
+                        </div>
                         <br />
-                        @if (type == "effortWork")
-                        {
-                            <input type="radio" name="type" value="effortWork" checked>
-                        }
-                        else
-                        {
-                            <input type="radio" name="type" value="effortWork" onclick="handleMiner(this);">
-                        }
-                        <label for="effort">Tempo Operacional</label>
+                        <div class="form-check form-check-inline">
+                            @if (type == "effortWork")
+                            {
+                                <input type="radio" class="form-check-input" name="type" value="effortWork" checked>
+                            }
+                            else
+                            {
+                                <input type="radio" class="form-check-input" name="type" value="effortWork" onclick="handleMiner(this);">
+                            }
+                            <label for="effort" class="form-check-label">Tempo Operacional</label>
+                        </div>
                     </div>
 
                     <div id="acts">
@@ -227,7 +241,7 @@
             @if ((type == "mean" || type == "effort" || type == "effortWorkstation" || type == "effortWork" || type == "meanWork")
      && (meanMinutesAll != null || totalEffort != null || hasValues == "true"))
             {
-                <div class="card-box" style="height: 428px">
+                <div class="card-box" style="height: 410px">
                     <div id="loader" style="display: none; position: relative;"></div>
                     <div id="divGraph">
                         @if (type == "meanWork")
@@ -260,7 +274,7 @@
                                             .Visible(true)
                                             .Template("#= series.name #: #= value #")
                                         )
-                                        .ChartArea(x => x.Height(315))
+                                        .ChartArea(x => x.Height(297))
                                         .Pannable(pannable => pannable
                                             .Lock(ChartAxisLock.Y)
                                         )
@@ -293,7 +307,7 @@
                                         .Visible(true)
                                         .Template("#= dataItem.MedianActivityFormatted #")
                                     )
-                                    .ChartArea(x => x.Height(315))
+                                    .ChartArea(x => x.Height(297))
                                     .Pannable(pannable => pannable
                                         .Lock(ChartAxisLock.Y)
                                     )
@@ -325,7 +339,7 @@
                                     .Visible(true)
                                     .Template("#= dataItem.MeanActivityFormatted #")
                                 )
-                                .ChartArea(x => x.Height(315))
+                                .ChartArea(x => x.Height(297))
                                 .Pannable(pannable => pannable
                                     .Lock(ChartAxisLock.Y)
                                 )
@@ -361,7 +375,7 @@
                                     .Format("{0}%")
                                     .Template("#= series.name #: #= value # minutos")
                                 )
-                                .ChartArea(x => x.Height(375))
+                                .ChartArea(x => x.Height(357))
                                 .Pannable(pannable => pannable
                                     .Lock(ChartAxisLock.Y)
                                 )
@@ -397,7 +411,7 @@
                                     .Format("{0}%")
                                     .Template("#= series.name #: #= value # minutos")
                                 )
-                                .ChartArea(x => x.Height(375))
+                                .ChartArea(x => x.Height(357))
                                 .Pannable(pannable => pannable
                                     .Lock(ChartAxisLock.Y)
                                 )
@@ -432,7 +446,7 @@
                                     .Format("{0}%")
                                     .Template("#= series.name #: #= value # minutos")
                                 )
-                                .ChartArea(x => x.Height(375))
+                                .ChartArea(x => x.Height(357))
                                 .Pannable(pannable => pannable
                                     .Lock(ChartAxisLock.Y)
                                 )
