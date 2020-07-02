@@ -26,7 +26,21 @@ namespace Pmviz_Frontend.Controllers
             }
             using (var httpClient = new HttpClient())
             {
-                // GET ALL MOULDS
+                // GET ALL MOULDS AND WORKSTATIONS
+                using (var response = await httpClient.GetAsync("http://localhost:8080/api/workstations/isTagging"))
+                {
+                    string apiResponse = await response.Content.ReadAsStringAsync();
+                    var status = response.IsSuccessStatusCode;
+                    if (status == true)
+                    {
+                        var workstations = JsonConvert.DeserializeObject<List<Workstation>>(apiResponse);
+                        ViewData["workstations"] = workstations;
+                    }
+                    else
+                    {
+                        ViewBag.Error = "Estações não disponíveis. Tente mais tarde.";
+                    }
+                }
                 using (var response = await httpClient.GetAsync("http://localhost:8080/api/moulds"))
                 {
                     string apiResponse = await response.Content.ReadAsStringAsync();
@@ -35,6 +49,7 @@ namespace Pmviz_Frontend.Controllers
                     {
                         var moulds = JsonConvert.DeserializeObject<List<Mould>>(apiResponse);
                         ViewData["moulds"] = moulds;
+                        ViewData["mouldSelected"] = "-1";
                         return View();
                     }
                     else
@@ -47,12 +62,28 @@ namespace Pmviz_Frontend.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Mould(string mouldSelected)
+        public async Task<IActionResult> Mould(string mouldSelected, string workstationsSelected)
         {
             using (var httpClient = new HttpClient())
             {
                 ViewData["mouldSelected"] = mouldSelected;
-                // GET ALL MOULDS
+                ViewData["workstationSelected"] = workstationsSelected;
+
+                // GET ALL MOULDS AND WORKSTATIONS
+                using (var response = await httpClient.GetAsync("http://localhost:8080/api/workstations/isTagging"))
+                {
+                    string apiResponse = await response.Content.ReadAsStringAsync();
+                    var status = response.IsSuccessStatusCode;
+                    if (status == true)
+                    {
+                        var workstations = JsonConvert.DeserializeObject<List<Workstation>>(apiResponse);
+                        ViewData["workstations"] = workstations;
+                    }
+                    else
+                    {
+                        ViewBag.Error = "Estações não disponíveis. Tente mais tarde.";
+                    }
+                }
                 using (var response = await httpClient.GetAsync("http://localhost:8080/api/moulds"))
                 {
                     var moulds = new List<Mould>();
@@ -95,7 +126,7 @@ namespace Pmviz_Frontend.Controllers
 
         }
 
-        public async Task<IActionResult> Tag([FromQuery(Name = "id")] string codePart)
+        public async Task<IActionResult> Tag([FromQuery(Name = "id")] string codePart, [FromQuery(Name = "workstation")] string workstation)
         {
             #region Connect to Broker
             rfidJson = "";
@@ -117,7 +148,7 @@ namespace Pmviz_Frontend.Controllers
                 // INVOKE PUBLISH AND SUBSCRIBE AT THE SAME TIME
                 Parallel.Invoke
                 (
-                    () => Publish(mClient, codePart),
+                    () => Publish(mClient, codePart, workstation),
                     () => Subscribe(mClient, codePart)
 
                 );
@@ -182,7 +213,7 @@ namespace Pmviz_Frontend.Controllers
         }
 
 
-        public IActionResult Cancel([FromQuery(Name = "id")] string codePart)
+        public IActionResult Cancel([FromQuery(Name = "id")] string codePart, [FromQuery(Name = "workstation")] string workstation)
         {
             // CONNECT TO BROKER
             string brokerAddress = "test.mosquitto.org";
@@ -197,7 +228,7 @@ namespace Pmviz_Frontend.Controllers
                 return RedirectToAction("Index", "Tag");
             } else
             {
-                string topic = "cancelTagPart";
+                string topic = "cancelTagPartWS"+workstation;
 
                 mClient.Publish(topic, Encoding.UTF8.GetBytes(codePart), MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE, true);
                 //mClient.Disconnect();
@@ -208,9 +239,9 @@ namespace Pmviz_Frontend.Controllers
             }
 
         }
-        public void Publish(MqttClient mClient, string codePart)
+        public void Publish(MqttClient mClient, string codePart, string workstation)
         {
-            string topic = "tagPart";
+            string topic = "tagPartWS"+workstation;
 
             mClient.Publish(topic, Encoding.UTF8.GetBytes(codePart), MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE, true);
 
