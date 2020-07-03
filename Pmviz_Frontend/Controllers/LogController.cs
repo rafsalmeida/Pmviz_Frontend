@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -19,6 +20,8 @@ namespace PmvizFrontend.Controllers
             List<Log> logList = new List<Log>();
             using (var httpClient = new HttpClient())
             {
+                httpClient.DefaultRequestHeaders.Authorization =
+                        new AuthenticationHeaderValue("Bearer", HttpContext.Session.GetString("sessionKey"));
                 using (var response = await httpClient.GetAsync("http://localhost:8080/api/processes"))
                 {
                     string apiResponse = await response.Content.ReadAsStringAsync();
@@ -30,7 +33,9 @@ namespace PmvizFrontend.Controllers
                         return View(logList);
                     } else
                     {
-                        return RedirectToAction("Index", "Home", new { error = "1"});
+                        ViewBag.Error = await response.Content.ReadAsStringAsync();
+                        return View();
+
                     }
                 }
             }
@@ -54,6 +59,8 @@ namespace PmvizFrontend.Controllers
                 ViewData["type"] = "frequency";
                 using (var httpClient = new HttpClient())
                 {
+                    httpClient.DefaultRequestHeaders.Authorization =
+                        new AuthenticationHeaderValue("Bearer", HttpContext.Session.GetString("sessionKey"));
                     using (var response = await httpClient.GetAsync("http://localhost:8080/api/activities/" + processId+"/freqduration"))
                     {
                         string apiResponse = await response.Content.ReadAsStringAsync();
@@ -113,13 +120,8 @@ namespace PmvizFrontend.Controllers
                         }
                         else
                         {
-                            if (response.StatusCode == System.Net.HttpStatusCode.Conflict)
-                            {
-                                ViewBag.Error = await response.Content.ReadAsStringAsync();
-                                return View();
 
-                            }
-                            ViewBag.Error = "Algo deu errado.";
+                            ViewBag.Error = await response.Content.ReadAsStringAsync();
                             return View();
 
                         }
@@ -134,6 +136,8 @@ namespace PmvizFrontend.Controllers
                 ViewData["type"] = "effort";
                 using (var httpClient = new HttpClient())
                 {
+                    httpClient.DefaultRequestHeaders.Authorization =
+                        new AuthenticationHeaderValue("Bearer", HttpContext.Session.GetString("sessionKey"));
                     using (var response = await httpClient.GetAsync("http://localhost:8080/api/activities/" + processId+"/workhours"))
                     {
                         string apiResponse = await response.Content.ReadAsStringAsync();
@@ -162,13 +166,8 @@ namespace PmvizFrontend.Controllers
                         }
                         else
                         {
-                            if (response.StatusCode == System.Net.HttpStatusCode.Conflict)
-                            {
-                                ViewBag.Error = await response.Content.ReadAsStringAsync();
-                                return View();
+                            ViewBag.Error = await response.Content.ReadAsStringAsync();
 
-                            }
-                            ViewBag.Error = "Algo deu errado.";
                             return View();
 
                         }
@@ -182,6 +181,8 @@ namespace PmvizFrontend.Controllers
                 ViewData["type"] = "operational";
                 using (var httpClient = new HttpClient())
                 {
+                    httpClient.DefaultRequestHeaders.Authorization =
+                        new AuthenticationHeaderValue("Bearer", HttpContext.Session.GetString("sessionKey"));
                     using (var response = await httpClient.GetAsync("http://localhost:8080/api/activities/" + processId + "/operationalhours"))
                     {
                         string apiResponse = await response.Content.ReadAsStringAsync();
@@ -215,13 +216,7 @@ namespace PmvizFrontend.Controllers
                         }
                         else
                         {
-                            if (response.StatusCode == System.Net.HttpStatusCode.Conflict)
-                            {
-                                ViewBag.Error = await response.Content.ReadAsStringAsync();
-                                return View();
-
-                            }
-                            ViewBag.Error = "Algo deu errado.";
+                            ViewBag.Error = await response.Content.ReadAsStringAsync();
                             return View();
 
                         }
@@ -245,6 +240,8 @@ namespace PmvizFrontend.Controllers
             ViewData["processId"] = processId;
             using (var httpClient = new HttpClient())
             {
+                httpClient.DefaultRequestHeaders.Authorization =
+                        new AuthenticationHeaderValue("Bearer", HttpContext.Session.GetString("sessionKey"));
                 using (var response = await httpClient.GetAsync("http://localhost:8080/api/processes/" + processId + "/activities"))
                 {
                     string apiResponse = await response.Content.ReadAsStringAsync();
@@ -258,12 +255,8 @@ namespace PmvizFrontend.Controllers
                     }
                     else
                     {
-                        if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
-                        {
-                            ViewBag.ErrorActivity = await response.Content.ReadAsStringAsync();
+                        ViewBag.ErrorActivity = await response.Content.ReadAsStringAsync();
 
-                        }
-                        ViewBag.ErrorActivity = "Algo deu errado.";
                     }
                 }
 
@@ -281,13 +274,7 @@ namespace PmvizFrontend.Controllers
                     }
                     else
                     {
-                        if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
-                        {
-                            ViewBag.ErrorWorkstations = await response.Content.ReadAsStringAsync();
-                            return View();
-
-                        }
-                        ViewBag.ErrorWorkstations = "Algo deu errado.";
+                        ViewBag.ErrorWorkstations = await response.Content.ReadAsStringAsync();
                         return View();
                     }
                 }
@@ -309,6 +296,8 @@ namespace PmvizFrontend.Controllers
 
                     using (var httpClient = new HttpClient())
                     {
+                        httpClient.DefaultRequestHeaders.Authorization =
+                        new AuthenticationHeaderValue("Bearer", HttpContext.Session.GetString("sessionKey"));
                         using (var response = await httpClient.GetAsync("http://localhost:8080/api/processes/" + processId + "/activities"))
                         {
                             string apiResponse = await response.Content.ReadAsStringAsync();
@@ -322,12 +311,8 @@ namespace PmvizFrontend.Controllers
                             }
                             else
                             {
-                                if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
-                                {
-                                    ViewBag.ErrorActivity = await response.Content.ReadAsStringAsync();
+                                ViewBag.ErrorActivity = await response.Content.ReadAsStringAsync();
 
-                                }
-                                ViewBag.ErrorActivity = "Algo deu errado.";
                             }
                         }
 
@@ -344,12 +329,8 @@ namespace PmvizFrontend.Controllers
                             }
                             else
                             {
-                                if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
-                                {
-                                    ViewBag.ErrorWorkstations = await response.Content.ReadAsStringAsync();
+                                ViewBag.ErrorWorkstations = await response.Content.ReadAsStringAsync();
 
-                                }
-                                ViewBag.ErrorWorkstations = "Algo deu errado.";
                             }
                         }
                         using (var response = await httpClient.GetAsync("http://localhost:8080/api/resources/" + processId + "/users/performance?activity=" + activity))
@@ -435,13 +416,8 @@ namespace PmvizFrontend.Controllers
                             }
                             else
                             {
-                                if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
-                                {
-                                    ViewBag.ErrorActivity = await response.Content.ReadAsStringAsync();
-                                    return View();
+                                ViewBag.ErrorActivity = await response.Content.ReadAsStringAsync();
 
-                                }
-                                ViewBag.ErrorActivity = "Algo deu errado.";
                                 return View();
 
                             }
@@ -460,6 +436,8 @@ namespace PmvizFrontend.Controllers
 
                     using (var httpClient = new HttpClient())
                     {
+                        httpClient.DefaultRequestHeaders.Authorization =
+                        new AuthenticationHeaderValue("Bearer", HttpContext.Session.GetString("sessionKey"));
                         using (var response = await httpClient.GetAsync("http://localhost:8080/api/processes/" + processId + "/activities"))
                         {
                             string apiResponse = await response.Content.ReadAsStringAsync();
@@ -473,12 +451,8 @@ namespace PmvizFrontend.Controllers
                             }
                             else
                             {
-                                if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
-                                {
-                                    ViewBag.ErrorActivity = await response.Content.ReadAsStringAsync();
+                                ViewBag.ErrorActivity = await response.Content.ReadAsStringAsync();
 
-                                }
-                                ViewBag.ErrorActivity = "Algo deu errado.";
                             }
                         }
                         using (var response = await httpClient.GetAsync("http://localhost:8080/api/workstations"))
@@ -494,12 +468,8 @@ namespace PmvizFrontend.Controllers
                             }
                             else
                             {
-                                if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
-                                {
-                                    ViewBag.ErrorWorkstations = await response.Content.ReadAsStringAsync();
+                                ViewBag.ErrorWorkstations = await response.Content.ReadAsStringAsync();
 
-                                }
-                                ViewBag.ErrorWorkstations = "Algo deu errado.";
                             }
                         }
                         using (var response = await httpClient.GetAsync("http://localhost:8080/api/resources/" + processId + "/users/workhours/activities?activity=" + activity))
@@ -584,13 +554,8 @@ namespace PmvizFrontend.Controllers
                             }
                             else
                             {
-                                if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
-                                {
-                                    ViewBag.ErrorActivity = await response.Content.ReadAsStringAsync();
-                                    return View();
+                                ViewBag.ErrorActivity = await response.Content.ReadAsStringAsync();
 
-                                }
-                                ViewBag.ErrorActivity = "Algo deu errado.";
                                 return View();
 
                             }
@@ -611,6 +576,8 @@ namespace PmvizFrontend.Controllers
 
                     using (var httpClient = new HttpClient())
                     {
+                        httpClient.DefaultRequestHeaders.Authorization =
+                        new AuthenticationHeaderValue("Bearer", HttpContext.Session.GetString("sessionKey"));
                         using (var response = await httpClient.GetAsync("http://localhost:8080/api/processes/" + processId + "/activities"))
                         {
                             string apiResponse = await response.Content.ReadAsStringAsync();
@@ -624,12 +591,8 @@ namespace PmvizFrontend.Controllers
                             }
                             else
                             {
-                                if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
-                                {
-                                    ViewBag.ErrorActivity = await response.Content.ReadAsStringAsync();
-
-                                }
-                                ViewBag.ErrorActivity = "Algo deu errado";
+                                ViewBag.ErrorActivity = await response.Content.ReadAsStringAsync();
+                                ;
                             }
                         }
                         using (var response = await httpClient.GetAsync("http://localhost:8080/api/workstations"))
@@ -645,12 +608,8 @@ namespace PmvizFrontend.Controllers
                             }
                             else
                             {
-                                if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
-                                {
-                                    ViewBag.ErrorWorkstations = await response.Content.ReadAsStringAsync();
+                                ViewBag.ErrorWorkstations = await response.Content.ReadAsStringAsync();
 
-                                }
-                                ViewBag.ErrorWorkstations = "Algo deu errado.";
                             }
                         }
                         using (var response = await httpClient.GetAsync("http://localhost:8080/api/resources/" + processId + "/users/workhours/workstations?workstation=" + workstation))
@@ -733,13 +692,8 @@ namespace PmvizFrontend.Controllers
                             }
                             else
                             {
-                                if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
-                                {
-                                    ViewBag.ErrorActivity = await response.Content.ReadAsStringAsync();
-                                    return View();
+                                ViewBag.ErrorActivity = await response.Content.ReadAsStringAsync();
 
-                                }
-                                ViewBag.ErrorActivity = "Algo deu errado";
                                 return View();
 
                             }
@@ -754,6 +708,8 @@ namespace PmvizFrontend.Controllers
                 {
                     using (var httpClient = new HttpClient())
                     {
+                        httpClient.DefaultRequestHeaders.Authorization =
+                        new AuthenticationHeaderValue("Bearer", HttpContext.Session.GetString("sessionKey"));
                         using (var response = await httpClient.GetAsync("http://localhost:8080/api/processes/" + processId + "/activities"))
                         {
                             string apiResponse = await response.Content.ReadAsStringAsync();
@@ -816,6 +772,8 @@ namespace PmvizFrontend.Controllers
                     ViewData["hasValues"] = "true";
                     using (var httpClient = new HttpClient())
                     {
+                        httpClient.DefaultRequestHeaders.Authorization =
+                        new AuthenticationHeaderValue("Bearer", HttpContext.Session.GetString("sessionKey"));
                         using (var response = await httpClient.GetAsync("http://localhost:8080/api/processes/" + processId + "/activities"))
                         {
                             string apiResponse = await response.Content.ReadAsStringAsync();
@@ -829,12 +787,8 @@ namespace PmvizFrontend.Controllers
                             }
                             else
                             {
-                                if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
-                                {
-                                    ViewBag.ErrorActivity = await response.Content.ReadAsStringAsync();
+                                ViewBag.ErrorActivity = await response.Content.ReadAsStringAsync();
 
-                                }
-                                ViewBag.ErrorActivity = "Algo deu errado.";
                             }
                         }
                         using (var response = await httpClient.GetAsync("http://localhost:8080/api/workstations"))
@@ -850,12 +804,8 @@ namespace PmvizFrontend.Controllers
                             }
                             else
                             {
-                                if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
-                                {
-                                    ViewBag.ErrorWorkstations = await response.Content.ReadAsStringAsync();
+                                ViewBag.ErrorWorkstations = await response.Content.ReadAsStringAsync();
 
-                                }
-                                ViewBag.ErrorWorkstations = "Algo deu errado.";
                             }
                         }
                         using (var response = await httpClient.GetAsync("http://localhost:8080/api/resources/" + processId + "/workstations/performance?activity="+activity))
@@ -917,20 +867,8 @@ namespace PmvizFrontend.Controllers
                             }
                             else
                             {
-                                if (response.StatusCode == System.Net.HttpStatusCode.Conflict)
-                                {
-                                    ViewBag.Error = await response.Content.ReadAsStringAsync();
-                                    return View();
+                                ViewBag.Error = await response.Content.ReadAsStringAsync();
 
-                                }
-
-                                if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
-                                {
-                                    ViewBag.Error = await response.Content.ReadAsStringAsync();
-                                    return View();
-
-                                }
-                                ViewBag.Error = "Algo deu errado.";
                                 return View();
 
                             }
@@ -950,6 +888,8 @@ namespace PmvizFrontend.Controllers
 
                     using (var httpClient = new HttpClient())
                     {
+                        httpClient.DefaultRequestHeaders.Authorization =
+                        new AuthenticationHeaderValue("Bearer", HttpContext.Session.GetString("sessionKey"));
                         using (var response = await httpClient.GetAsync("http://localhost:8080/api/processes/" + processId + "/activities"))
                         {
                             string apiResponse = await response.Content.ReadAsStringAsync();
@@ -963,12 +903,8 @@ namespace PmvizFrontend.Controllers
                             }
                             else
                             {
-                                if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
-                                {
-                                    ViewBag.ErrorActivity = await response.Content.ReadAsStringAsync();
-
-                                }
-                                ViewBag.ErrorActivity = "Algo deu errado.";
+                                ViewBag.ErrorActivity = await response.Content.ReadAsStringAsync();
+                                
                             }
                         }
 
@@ -985,12 +921,8 @@ namespace PmvizFrontend.Controllers
                             }
                             else
                             {
-                                if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
-                                {
-                                    ViewBag.ErrorWorkstations = await response.Content.ReadAsStringAsync();
+                                ViewBag.ErrorWorkstations = await response.Content.ReadAsStringAsync();
 
-                                }
-                                ViewBag.ErrorWorkstations = "Algo deu errado.";
                             }
                         }
                         using (var response = await httpClient.GetAsync("http://localhost:8080/api/resources/" + processId + "/workstations/operationalhours?activity=" + activity))
@@ -1076,13 +1008,8 @@ namespace PmvizFrontend.Controllers
                             }
                             else
                             {
-                                if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
-                                {
-                                    ViewBag.ErrorActivity = await response.Content.ReadAsStringAsync();
-                                    return View();
+                                ViewBag.ErrorActivity = await response.Content.ReadAsStringAsync();
 
-                                }
-                                ViewBag.ErrorActivity = "Algo deu errado.";
                                 return View();
 
                             }
@@ -1099,6 +1026,8 @@ namespace PmvizFrontend.Controllers
                 {
                     using (var httpClient = new HttpClient())
                     {
+                        httpClient.DefaultRequestHeaders.Authorization =
+                        new AuthenticationHeaderValue("Bearer", HttpContext.Session.GetString("sessionKey"));
                         using (var response = await httpClient.GetAsync("http://localhost:8080/api/processes/" + processId + "/activities"))
                         {
                             string apiResponse = await response.Content.ReadAsStringAsync();
@@ -1112,12 +1041,8 @@ namespace PmvizFrontend.Controllers
                             }
                             else
                             {
-                                if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
-                                {
-                                    ViewBag.ErrorActivity = await response.Content.ReadAsStringAsync();
+                                ViewBag.ErrorActivity = await response.Content.ReadAsStringAsync();
 
-                                }
-                                ViewBag.ErrorActivity = "Algo deu errado";
                             }
                         }
 
@@ -1135,80 +1060,6 @@ namespace PmvizFrontend.Controllers
 
         }
 
-
-        public async Task<IActionResult> Activities([FromQuery(Name = "id")] string logid)
-        {
-           
-            using (var httpClient = new HttpClient())
-            {
-                using (var response = await httpClient.GetAsync("http://localhost:8080/api/logs/"+logid+"/activities"))
-                {
-                    string apiResponse = await response.Content.ReadAsStringAsync();
-                    var status = response.IsSuccessStatusCode;
-                    if (status == true)
-                    {
-                        System.Diagnostics.Debug.WriteLine(apiResponse);
-                        var activities = JsonConvert.DeserializeObject<string[]>(apiResponse);
-                        var activitiesList = new List<Activity>();
-                        foreach (var a in activities)
-                        {
-                            Activity act = new Activity
-                            {
-                                Name = a
-                            };
-                            activitiesList.Add(act);
-
-                        }
-                        return View("Activities",activitiesList);
-                    }
-                    else
-                    {
-                        return RedirectToAction("Index", "Home", new { error = "1" });
-                    }
-                }
-            }
-        }
-
-        public async Task<IActionResult> Resources([FromQuery(Name = "id")] string logid)
-        {
-
-            using (var httpClient = new HttpClient())
-            {
-                using (var response = await httpClient.GetAsync("http://localhost:8080/api/logs/" + logid + "/resources"))
-                {
-                    string apiResponse = await response.Content.ReadAsStringAsync();
-                    var status = response.IsSuccessStatusCode;
-                    if (status == true)
-                    {
-                        System.Diagnostics.Debug.WriteLine(apiResponse);
-                        var resources = JsonConvert.DeserializeObject<string[]>(apiResponse);
-                        var resourcesList = new List<Resource>();
-                        foreach (var r in resources)
-                        {
-                            Resource res = new Resource
-                            {
-                                Name = r
-                            };
-                            resourcesList.Add(res);
-
-                        }
-                        return View("Resources", resourcesList);
-                    }
-                    else
-                    {
-                        return RedirectToAction("Index", "Home", new { error = "1" });
-                    }
-                }
-            }
-        }
-
-        public IActionResult Back()
-        {
-            var obj = JObject.Parse(HttpContext.Session.GetString("userDetails"));
-            var role = obj["role"];
-
-            return RedirectToAction("Index", role.ToString());
-        }
 
         public async Task<IActionResult> GetFilter(string process, string startDate, string endDate, string type, string categoryType, string categoryResource, string activity, string workstation)
         {
@@ -1241,6 +1092,8 @@ namespace PmvizFrontend.Controllers
             }
             using (var httpClient = new HttpClient())
             {
+                httpClient.DefaultRequestHeaders.Authorization =
+                        new AuthenticationHeaderValue("Bearer", HttpContext.Session.GetString("sessionKey"));
                 using (response = await httpClient.PostAsync(url, c))
                 {
                     var status = response.IsSuccessStatusCode;

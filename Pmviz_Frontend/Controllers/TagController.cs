@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -24,8 +26,11 @@ namespace Pmviz_Frontend.Controllers
             {
                 ViewBag.Error = "RFID Inválido.";
             }
+
             using (var httpClient = new HttpClient())
             {
+                httpClient.DefaultRequestHeaders.Authorization =
+                new AuthenticationHeaderValue("Bearer", HttpContext.Session.GetString("sessionKey"));
                 // GET ALL MOULDS AND WORKSTATIONS
                 using (var response = await httpClient.GetAsync("http://localhost:8080/api/workstations/isTagging"))
                 {
@@ -66,6 +71,9 @@ namespace Pmviz_Frontend.Controllers
         {
             using (var httpClient = new HttpClient())
             {
+                httpClient.DefaultRequestHeaders.Authorization =
+                new AuthenticationHeaderValue("Bearer", HttpContext.Session.GetString("sessionKey"));
+
                 ViewData["mouldSelected"] = mouldSelected;
                 ViewData["workstationSelected"] = workstationsSelected;
 
@@ -170,7 +178,8 @@ namespace Pmviz_Frontend.Controllers
 
                 using (var httpClient = new HttpClient())
                 {
-
+                    httpClient.DefaultRequestHeaders.Authorization =
+                        new AuthenticationHeaderValue("Bearer", HttpContext.Session.GetString("sessionKey"));
                     using (var response = await httpClient.PutAsync("http://localhost:8080/api/parts/" + codePart + "/tag/" + rfid, content))
                     {
                         string apiResponse = await response.Content.ReadAsStringAsync();
@@ -270,6 +279,7 @@ namespace Pmviz_Frontend.Controllers
             }
             catch (System.OutOfMemoryException e)
             {
+                System.Diagnostics.Debug.WriteLine(e);
                 return;
             }
 

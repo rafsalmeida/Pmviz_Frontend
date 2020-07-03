@@ -8,6 +8,8 @@ using System.Xml.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.IO;
+using System.Net.Http.Headers;
+using Microsoft.AspNetCore.Http;
 
 namespace Pmviz_Frontend.Controllers
 {
@@ -17,6 +19,8 @@ namespace Pmviz_Frontend.Controllers
         {
             using (var httpClient = new HttpClient())
             {
+                httpClient.DefaultRequestHeaders.Authorization =
+                        new AuthenticationHeaderValue("Bearer", HttpContext.Session.GetString("sessionKey"));
                 using (var response = await httpClient.GetAsync("http://localhost:8080/api/users/roles"))
                 {
                     string apiResponse = await response.Content.ReadAsStringAsync();
@@ -55,6 +59,8 @@ namespace Pmviz_Frontend.Controllers
             var hasresource = false;
             using (var httpClient = new HttpClient())
             {
+                httpClient.DefaultRequestHeaders.Authorization =
+                        new AuthenticationHeaderValue("Bearer", HttpContext.Session.GetString("sessionKey"));
                 using (var response = await httpClient.GetAsync("http://localhost:8080/api/users/roles"))
                 {
                     string apiResponse = await response.Content.ReadAsStringAsync();
@@ -129,6 +135,8 @@ namespace Pmviz_Frontend.Controllers
         {
             using (var httpClient = new HttpClient())
             {
+                httpClient.DefaultRequestHeaders.Authorization =
+                        new AuthenticationHeaderValue("Bearer", HttpContext.Session.GetString("sessionKey"));
                 using (var response = await httpClient.GetAsync("http://localhost:8080/api/users/roles"))
                 {
                     string apiResponse = await response.Content.ReadAsStringAsync();

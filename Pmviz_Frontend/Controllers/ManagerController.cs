@@ -13,6 +13,7 @@ namespace Pmviz_Frontend.Controllers
 {
     public class ManagerController : Controller
     {
+        
         public IActionResult Index()
         {
             return View();

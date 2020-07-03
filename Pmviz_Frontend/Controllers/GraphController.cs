@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -17,6 +19,8 @@ namespace Pmviz_Frontend.Controllers
             HttpResponseMessage response;
             using (var httpClient = new HttpClient())
             {
+                httpClient.DefaultRequestHeaders.Authorization =
+                        new AuthenticationHeaderValue("Bearer", HttpContext.Session.GetString("sessionKey"));
                 using (response = await httpClient.GetAsync("http://localhost:8080/api/processes"))
                 {
                     ViewData["processes"] = response.Content.ReadAsStringAsync().Result;
@@ -35,6 +39,8 @@ namespace Pmviz_Frontend.Controllers
             HttpResponseMessage response;
             using (var httpClient = new HttpClient())
             {
+                httpClient.DefaultRequestHeaders.Authorization =
+                        new AuthenticationHeaderValue("Bearer", HttpContext.Session.GetString("sessionKey"));
                 using (response = await httpClient.GetAsync("http://localhost:8080/api/processes"))
                 {
                     ViewData["processes"] = response.Content.ReadAsStringAsync().Result;
@@ -91,6 +97,8 @@ namespace Pmviz_Frontend.Controllers
             HttpContent c = new StringContent(json, Encoding.UTF8, "application/json");
             using (var httpClient = new HttpClient())
             {
+                httpClient.DefaultRequestHeaders.Authorization =
+                        new AuthenticationHeaderValue("Bearer", HttpContext.Session.GetString("sessionKey"));
                 using (response = await httpClient.PostAsync(url, c))
                 {
                     var status = response.IsSuccessStatusCode;
@@ -184,6 +192,8 @@ namespace Pmviz_Frontend.Controllers
             HttpContent c = new StringContent(json, Encoding.UTF8, "application/json");
             using (var httpClient = new HttpClient())
             {
+                httpClient.DefaultRequestHeaders.Authorization =
+                        new AuthenticationHeaderValue("Bearer", HttpContext.Session.GetString("sessionKey"));
                 using (response = await httpClient.PostAsync("http://localhost:8080/api/conformance/performance/process/" + process, c))
                 {
                     var status = response.IsSuccessStatusCode;
@@ -215,6 +225,8 @@ namespace Pmviz_Frontend.Controllers
             HttpContent c = new StringContent(json, Encoding.UTF8, "application/json");
 
             var httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Authorization =
+                        new AuthenticationHeaderValue("Bearer", HttpContext.Session.GetString("sessionKey"));
             var asd = await httpClient.PostAsync("http://localhost:8080/api/conformance/process/" + process, c);
 
             return Json(new{ success = true, request = asd.Content.ReadAsStringAsync() });
@@ -226,6 +238,8 @@ namespace Pmviz_Frontend.Controllers
             HttpResponseMessage response;
             using (var httpClient = new HttpClient())
             {
+                httpClient.DefaultRequestHeaders.Authorization =
+                        new AuthenticationHeaderValue("Bearer", HttpContext.Session.GetString("sessionKey"));
                 using (response = await httpClient.GetAsync("http://localhost:8080/api/conformance/" + process + "/filterInformation"))
                 {
                     var status = response.IsSuccessStatusCode;
@@ -246,6 +260,8 @@ namespace Pmviz_Frontend.Controllers
             HttpResponseMessage response;
             using (var httpClient = new HttpClient())
             {
+                httpClient.DefaultRequestHeaders.Authorization =
+                        new AuthenticationHeaderValue("Bearer", HttpContext.Session.GetString("sessionKey"));
                 using (response = await httpClient.GetAsync("http://localhost:8080/api/processes/" + process + "/resources"))
                 {
                     var status = response.IsSuccessStatusCode;
@@ -266,6 +282,8 @@ namespace Pmviz_Frontend.Controllers
             HttpResponseMessage response;
             using (var httpClient = new HttpClient())
             {
+                httpClient.DefaultRequestHeaders.Authorization =
+                        new AuthenticationHeaderValue("Bearer", HttpContext.Session.GetString("sessionKey"));
                 string url = "http://localhost:8080/api/workflow-network/" + miner + "/processes/" + process;
                 if (miner == "heuristic-miner")
                 {

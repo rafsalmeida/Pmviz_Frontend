@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -20,6 +21,8 @@ namespace Pmviz_Frontend.Controllers
 
             using (var httpClient = new HttpClient())
             {
+                httpClient.DefaultRequestHeaders.Authorization =
+                       new AuthenticationHeaderValue("Bearer", HttpContext.Session.GetString("sessionKey"));
                 using (var response = await httpClient.GetAsync("http://localhost:8080/api/users/"+username+"/processes"))
                 {
                     string apiResponse = await response.Content.ReadAsStringAsync();
@@ -33,13 +36,8 @@ namespace Pmviz_Frontend.Controllers
                     }
                     else
                     {
-                        if(response.StatusCode == System.Net.HttpStatusCode.NotFound)
-                        {
-                            ViewBag.ErrorProcess = await response.Content.ReadAsStringAsync();
-                            return View();
+                        ViewBag.ErrorProcess = await response.Content.ReadAsStringAsync();
 
-                        }
-                        ViewBag.ErrorProcess = "Erro ao buscar processos.";
                         return View();
                     }
                 }
@@ -53,6 +51,8 @@ namespace Pmviz_Frontend.Controllers
 
             using (var httpClient = new HttpClient())
             {
+                httpClient.DefaultRequestHeaders.Authorization =
+                        new AuthenticationHeaderValue("Bearer", HttpContext.Session.GetString("sessionKey"));
                 using (var response = await httpClient.GetAsync("http://localhost:8080/api/users/" + username + "/processes"))
                 {
                     string apiResponse = await response.Content.ReadAsStringAsync();
@@ -65,12 +65,8 @@ namespace Pmviz_Frontend.Controllers
                     }
                     else
                     {
-                        if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
-                        {
-                            ViewBag.ErrorProcess = await response.Content.ReadAsStringAsync();
+                        ViewBag.ErrorProcess = await response.Content.ReadAsStringAsync();
 
-                        }
-                        ViewBag.ErrorProcess = "Erro ao buscar processos.";
                     }
                 }
 
@@ -88,13 +84,8 @@ namespace Pmviz_Frontend.Controllers
                     }
                     else
                     {
-                        if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
-                        {
-                            ViewBag.ErrorActivity = await response.Content.ReadAsStringAsync();
-                            return View("Process", "Statistics");
+                        ViewBag.ErrorActivity = await response.Content.ReadAsStringAsync();
 
-                        }
-                        ViewBag.ErrorActivity = "Erro ao buscar atividades.";
                         return View("Process", "Statistics");
                     }
                 }
@@ -111,6 +102,8 @@ namespace Pmviz_Frontend.Controllers
 
             using (var httpClient = new HttpClient())
             {
+                httpClient.DefaultRequestHeaders.Authorization =
+                        new AuthenticationHeaderValue("Bearer", HttpContext.Session.GetString("sessionKey"));
                 using (var response = await httpClient.GetAsync("http://localhost:8080/api/users/" + username + "/processes"))
                 {
                     string apiResponse = await response.Content.ReadAsStringAsync();
@@ -123,12 +116,8 @@ namespace Pmviz_Frontend.Controllers
                     }
                     else
                     {
-                        if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
-                        {
-                            ViewBag.ErrorProcess = await response.Content.ReadAsStringAsync();
+                        ViewBag.ErrorProcess = await response.Content.ReadAsStringAsync();
 
-                        }
-                        ViewBag.ErrorProcess = "Erro ao buscar processos.";
                     }
                 }
 
@@ -145,12 +134,8 @@ namespace Pmviz_Frontend.Controllers
                     }
                     else
                     {
-                        if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
-                        {
-                            ViewBag.ErrorActivity = await response.Content.ReadAsStringAsync();
+                        ViewBag.ErrorActivity = await response.Content.ReadAsStringAsync();
 
-                        }
-                        ViewBag.ErrorActivity = "Erro ao buscar processos.";
                     }
                 }
 
@@ -227,13 +212,8 @@ namespace Pmviz_Frontend.Controllers
                     }
                     else
                     {
-                        if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
-                        {
-                            ViewBag.ErrorActivity = await response.Content.ReadAsStringAsync();
-                            return View("Process", "Statistics");
+                        ViewBag.ErrorActivity = await response.Content.ReadAsStringAsync();
 
-                        }
-                        ViewBag.ErrorActivity = "Erro ao buscar atividades.";
                         return View("Process", "Statistics");
 
                     }
@@ -250,6 +230,8 @@ namespace Pmviz_Frontend.Controllers
 
             using (var httpClient = new HttpClient())
             {
+                httpClient.DefaultRequestHeaders.Authorization =
+                        new AuthenticationHeaderValue("Bearer", HttpContext.Session.GetString("sessionKey"));
                 using (var response = await httpClient.GetAsync("http://localhost:8080/api/processes/" + processId + "/activities"))
                 {
                     string apiResponse = await response.Content.ReadAsStringAsync();

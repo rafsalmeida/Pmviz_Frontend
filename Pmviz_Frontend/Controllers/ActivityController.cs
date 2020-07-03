@@ -13,7 +13,7 @@ namespace Pmviz_Frontend.Controllers
 {
     public class ActivityController : Controller
     {
-        public async Task<IActionResult> Index([FromQuery(Name = "id")] string logid)
+        /*public async Task<IActionResult> Index([FromQuery(Name = "id")] string logid)
         {
 
             using (var httpClient = new HttpClient())
@@ -88,6 +88,6 @@ namespace Pmviz_Frontend.Controllers
                     }
                 }
             }
-        }
+        }*/
     }
 }

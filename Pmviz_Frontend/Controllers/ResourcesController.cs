@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -16,6 +18,8 @@ namespace Pmviz_Frontend.Controllers
         {
             using (var httpClient = new HttpClient())
             {
+                httpClient.DefaultRequestHeaders.Authorization =
+                        new AuthenticationHeaderValue("Bearer", HttpContext.Session.GetString("sessionKey"));
                 using (var response = await httpClient.GetAsync("http://localhost:8080/api/processes"))
                 {
                     string apiResponse = await response.Content.ReadAsStringAsync();
@@ -40,6 +44,8 @@ namespace Pmviz_Frontend.Controllers
         {
             using (var httpClient = new HttpClient())
             {
+                httpClient.DefaultRequestHeaders.Authorization =
+                        new AuthenticationHeaderValue("Bearer", HttpContext.Session.GetString("sessionKey"));
                 using (var response = await httpClient.GetAsync("http://localhost:8080/api/processes/" + processId + "/activities"))
                 {
                     string apiResponse = await response.Content.ReadAsStringAsync();
@@ -75,6 +81,8 @@ namespace Pmviz_Frontend.Controllers
 
             using (var httpClient = new HttpClient())
             {
+                httpClient.DefaultRequestHeaders.Authorization =
+                        new AuthenticationHeaderValue("Bearer", HttpContext.Session.GetString("sessionKey"));
                 using (var response = await httpClient.GetAsync("http://localhost:8080/api/processes/" + processId + "/activities"))
                 {
                     string apiResponse = await response.Content.ReadAsStringAsync();
