@@ -59,7 +59,7 @@
                 </div>
             </div>
             <div class="card border-0 card-conformance">
-                <div class="card-body" style="height: 40%;">
+                <div class="card-body">
                     <h4 id="processSelected" class="header-title mb-0">Escolha o processo de referência</h4>
                     <div class="collapse pt-3 show">
                         <div class="row">
@@ -72,12 +72,12 @@
                             </div>
                             <div id="divSelectCase" class="col">
                                 <div class="col-md">
-                                    <a id="centerButton" href="" class="btn btn-secondary btn-sm col-lg-12 disabled" style="white-space:normal !important;max-width:400px;margin-bottom:4px; word-wrap:break-word;">
+                                    <a id="centerButton" href="#" class="btn btn-secondary btn-sm col-lg-12 disabled" style="white-space:normal !important;max-width:400px;margin-bottom:4px; word-wrap:break-word;">
                                         <i class="fas fa-project-diagram"></i>Centrar Grafo
                                     </a>
                                 </div>
                                 <div class="col-md">
-                                    <a id="legendGraphButton" href="" class="btn btn-info btn-sm col-lg-12" title="Legenda do grafo" data-toggle="popover" data-placement="bottom" style="white-space:normal !important;max-width:400px;margin-bottom:4px; word-wrap:break-word;" disabled>
+                                    <a id="legendGraphButton" href="#" class="btn btn-info btn-sm col-lg-12" title="Legenda do grafo" data-toggle="popover" data-placement="bottom" style="white-space:normal !important;max-width:400px;margin-bottom:4px; word-wrap:break-word;" disabled>
                                         <i class="fas fa-info"></i>  Informação do grafo
                                     </a>
                                     <div id="popover_content_wrapper" style="display: none">
@@ -181,8 +181,8 @@
                     </div> 
                 </div>
             </div>
-            <div class="card border-0 card-conformance">
-                <div id="modelCompare" class="card-body" style="height: 36.2%;">
+            <div id="modelCompare" class="card border-0 card-conformance" style="height: 33.55%;">
+                <div class="card-body">
                     <h4 class="header-title mb-0">Escolha o modelo a comparar </h4>
                     <div class="collapse pt-3 show">
                         <div class="row">
@@ -1629,6 +1629,7 @@
         if (typeof cy !== "undefined") {
             cy.fit();
         }
+        console.log("asdsa");
     });
 
     function closeAlertBox() {
