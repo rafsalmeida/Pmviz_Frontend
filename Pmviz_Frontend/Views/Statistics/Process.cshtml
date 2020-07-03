@@ -11,78 +11,82 @@
 @{
     ViewData["Title"] = "Minhas Estatísticas";
 }
+    <div style="height: 88.5vh;">
+        <div class="row" style="height:50%">
+            <div class="col-md-3 col-xl-3">
+                <div class="card-box" style="height:100%">
+                    <h4 class="text-dark my-1">Minhas Estatísticas</h4>
+                    <br />
+                    @if (activities != null)
+                    {
+                        <form action='@Url.Action("Process", "Statistics", new { id = processId })' method="post" id="ticketsForm" kendo-validator="true">
+                            <label for="processList" class="required">Escolha outro processo:</label>
+                            <br />
+                            <div class="form-group">
+                                <select name="processId" id="processList" class="form-control btn-sm btn-light dropdown-toggle" required">
+                                    <option value="" disabled selected>Escolha outro processo</option>
 
-<div class="row">
-    <div class="col-md-3 col-xl-3">
-        <div class="card-box">
-            <h4 class="text-dark my-1">Minhas Estatísticas</h4>
-            @if (activities != null)
-            {
-        <form action='@Url.Action("Process", "Statistics", new { id = processId })' method="post" id="ticketsForm" kendo-validator="true">
-            <label for="processList" class="required">Escolha outro processo:</label>
-            <br />
-            <select name="processId" id="processList" class="btn-sm btn-light dropdown-toggle" required">
-                <option value="" disabled selected>Escolha outro processo</option>
+                                    @foreach (var p in allProcesses)
+                                    {
+                                        if (processId == p.Id.ToString())
+                                        {
+                                            <option value="@p.Id" selected>@p.Id - @p.Name</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@p.Id">@p.Id - @p.Name</option>
+                                        }
+                                    }
 
-                @foreach (var p in allProcesses)
+
+                                </select>
+                            </div>
+                            <br />
+                            <label for="selectList" class="required">Escolha uma atividade:</label>
+                            <br />
+                            <div class="form-group">
+                                <select name="activity" id="selectList" class="form-control btn-sm btn-light dropdown-toggle" required onchange="handleAct(this)">
+                                    <option value="" disabled selected>Escolha uma atividade:</option>
+
+                                    @foreach (var act in activities)
+                                    {
+                                        if (activityChosen == act.Id.ToString())
+                                        {
+                                            <option value="@act.Id" selected>@act.Id - @act.Name</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@act.Id">@act.Id - @act.Name</option>
+                                        }
+                                    }
+
+                                </select>
+                            </div>
+                            <br />
+                            <div>
+                                <button class="btn-xs btn-primary" id="send" type="submit" hidden>Submit</button>
+                            </div>
+                        </form>
+                    }
+                </div>
+            </div>
+            <div class="col">
+                @if (ViewBag.ErrorActivity != null)
                 {
-                    if (processId == p.Id.ToString())
-                    {
-                        <option value="@p.Id" selected>@p.Id - @p.Name</option>
-                    }
-                    else
-                    {
-                        <option value="@p.Id">@p.Id - @p.Name</option>
-                    }
+                    <div class="alert alert-danger" role="alert">
+                        @ViewBag.ErrorActivity
+                    </div>
+                    <div class="container" style="text-align:center">
+                        <a href='@Url.Action("Index","Statistics")' class="btn btn-danger">Voltar</a>
+                    </div>
+                    <br />
                 }
-
-
-            </select>
-            <br />
-            <br />
-            <label for="selectList" class="required">Escolha uma atividade:</label>
-            <br />
-            <select name="activity" id="selectList" class="btn-sm btn-light dropdown-toggle" required onchange="handleAct(this)">
-                <option value="" disabled selected>Escolha uma atividade:</option>
-
-                @foreach (var act in activities)
+                else
                 {
-                    if (activityChosen == act.Id.ToString())
+                    @if (meanMinutesUser != null || meanMinutesAll != null)
                     {
-                        <option value="@act.Id" selected>@act.Id - @act.Name</option>
-                    }
-                    else
-                    {
-                        <option value="@act.Id">@act.Id - @act.Name</option>
-                    }
-                }
-
-            </select>
-            <br />
-            <div>
-                <button class="btn-xs btn-primary" id="send" type="submit" hidden>Submit</button>
-            </div>
-        </form>
-            }
-        </div>
-    </div>
-    <div class="col">
-        @if (ViewBag.ErrorActivity != null)
-        {
-            <div class="alert alert-danger" role="alert">
-                @ViewBag.ErrorActivity
-            </div>
-            <div class="container" style="text-align:center">
-                <a href='@Url.Action("Index","Statistics")' class="btn btn-danger">Voltar</a>
-            </div>
-            <br />
-        }
-        else
-        {
-            @if (meanMinutesUser != null || meanMinutesAll != null)
-            {
-                <div class="card-box">
-                    @(Html.Kendo().Chart()
+                        <div class="card-box" style="height:100%">
+                            @(Html.Kendo().Chart()
                         .Name("chart")
                         .Title("Média em minutos")
                         .Legend(legend => legend
@@ -102,7 +106,7 @@
                             .Format("{0}%")
                             .Template("#= series.name #: #= value # minutos")
                         )
-                        .ChartArea(x => x.Height(210))
+                        .ChartArea(x => x.Height(370))
                         .Pannable(pannable => pannable
                             .Lock(ChartAxisLock.Y)
                         )
@@ -112,85 +116,81 @@
                         )
 
                     )
+                        </div>
+
+                    }
+
+
+                }
+            </div>
+        </div>
+
+
+        <br /><br />
+
+        @if (meanMinutesUser != null || meanMinutesAll != null)
+        {
+            <div class="row" style="height:30%">
+                <div class="col" style="height:100%">
+                    <div class="card text-xs-center" style="height:100%">
+                        <div class="card-body" style="overflow-y:auto">
+                            <h5 class="card-title">Informação</h5>
+                            <dl class="row">
+                                <dt class="col-sm-6">Média Geral: </dt>
+                                <dd class="col-sm-6">@String.Format("{0:N0}", meanMinutesAll) minutos</dd>
+                                <dt class="col-sm-6">Média do Utilizador: </dt>
+                                <dd class="col-sm-6">@String.Format("{0:N0}", meanMinutesUser) minutos</dd>
+                                <dt class="col-sm-6">Atividade Escolhida: </dt>
+                                <dd class="col-sm-6">@String.Format("{0:N0}", activityChosen) minutos</dd>
+                                <dt class="col-sm-6">Processo Escolhido: </dt>
+                                <dd class="col-sm-6">@processId</dd>
+                            </dl>
+                        </div>
+                    </div> <!-- end card-box-->
+                </div> <!-- end col -->
+                <div class="col">
+                    <div class="card text-xs-center" style="height:100%">
+                        <div class="card-body">
+                            <h5 class="card-title">Peças</h5>
+                            <div style="max-height: 120px;overflow-y:auto">
+                                @if (parts == null)
+                                {
+                                    <h5>Nenhuma peça.</h5>
+                                }
+                                else
+                                {
+                                    foreach (var p in parts)
+                                    {
+                                        <h5>@p</h5>
+                                    }
+                                }
+                            </div>
+                        </div>
+                    </div>
                 </div>
-
-            }
-
-
+                <div class="col">
+                    <div class="card text-xs-center" style="height:100%">
+                        <div class="card-body">
+                            <h5 class="card-title">Moldes</h5>
+                            <div style="max-height: 120px;overflow-y:auto">
+                                @if (moulds == null)
+                                {
+                                    <h5>Nenhum molde.</h5>
+                                }
+                                else
+                                {
+                                    foreach (var m in moulds)
+                                    {
+                                        <h5>@m</h5>
+                                    }
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         }
     </div>
-</div>
-
-
-
-
-@if (meanMinutesUser != null || meanMinutesAll != null)
-{
-    <div class="row">
-        <div class="col">
-            <div class="card text-xs-center">
-                <div class="card-header">
-                    Information
-                </div>
-                <div class="card-body">
-                    <h5>
-                        Média Geral: @meanMinutesAll minutes
-                    </h5>
-                    <h5>
-                        Média do Utilizador: @meanMinutesUser minutes
-                    </h5>
-                    <h5>
-                        Atividade Escolhida: @activityChosen
-                    </h5>
-                    <h5>
-                        Processo Escolhido: @processId
-                    </h5>
-                </div>
-            </div> <!-- end card-box-->
-        </div> <!-- end col -->
-        <div class="col">
-            <div class="card text-xs-center">
-                <div class="card-header">
-                    Peças
-                </div>
-                <div class="card-body">
-                    @if (parts == null)
-                    {
-                        <h5>Nenhuma peça.</h5>
-                    }
-                    else
-                    {
-                        foreach (var p in parts)
-                        {
-                            <h5>@p</h5>
-                        }
-                    }
-                </div>
-            </div>
-        </div>
-        <div class="col">
-            <div class="card text-xs-center">
-                <div class="card-header">
-                    Molde
-                </div>
-                <div class="card-body">
-                    @if (moulds == null)
-                    {
-                        <h5>Nenhum molde.</h5>
-                    }
-                    else
-                    {
-                        foreach (var m in moulds)
-                        {
-                            <h5>@m</h5>
-                        }
-                    }
-                </div>
-            </div>
-        </div>
-    </div>
-}
-
 <script>
 
     var selectList = document.getElementById("selectList");
@@ -216,7 +216,7 @@
                     var information = JSON.parse(response.request);
                     activitiesNew = information;
                     selectList.value = information
-                } 
+                }
             },
             error: function (response) {
                 alert("error!");  //

@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Freq. Perf. Graph";
+    ViewData["Title"] = "Grafo Freq. e Desem.";
 }
 <link href="@Url.Content("~/css/Graphs.css")" rel="stylesheet" />
 <link href="@Url.Content("~/css/Loading.css")" rel="stylesheet" />
@@ -9,9 +9,9 @@
         overflow-x: hidden !important;
     }
 </style>
-<div class="row">
-    <div class="col-md-5">
-       <div id="divSelectGraph" class="card border-0">
+<div class="row" style="height: 88.5vh;">
+    <div class="col-md-5" style="height: 100%">
+       <div id="divSelectGraph" class="card border-0" style="height: 16%">
            <div class="card-body">
                <h4>Escolha o tipo de grafo</h4>
                <div class="collapse pt-3 show">
@@ -28,7 +28,7 @@
                </div>
            </div>
         </div>
-        <div id="divSelectAlgorithm" class="card border-0">
+        <div id="divSelectAlgorithm" class="card border-0" style="height: 16%">
             <div class="card-body">
                 <h4>Escolha o algoritmo</h4>
                 <div class="collapse pt-3 show">
@@ -44,7 +44,7 @@
                         <div class="form-inline" id="divTreshold">
                             <div class="form-group">
                                 <label for="thresholdInput">Threshold</label>
-                                <input type="number" class="form-control mx-sm-2" id="thresholdInput" value="0.1" step=".1" min="0" max="1" style="height: 20px">
+                                <input type="number" class="form-control mx-sm-2" id="thresholdInput" value="0.1" step=".1" min="0" max="1" style="height: 20px" onkeydown="event.preventDefault()">
                                 <small id="thresholdHelp" class="text-muted">O threshold têm que estar entre 0 e 1</small>
                             </div>
                         </div>
@@ -52,46 +52,48 @@
                 </div>
             </div>
         </div>
-        <div class="card border-0">
+        <div class="card border-0" style="height: 16%">
             <div class="card-body">
                 <h4 id="processSelected" class="header-title mb-0">Escolha um processo</h4>
                 <div class="collapse pt-3 show">
                     <div class="row">
-                        <div class="col-md-9">
+                        <div class="col">
                             <div class="form-group">
-                                <select id="inputProcesses" name="processes" class="selectpicker form-control" data-size="6">
+                                <select id="inputProcesses" name="processes" class="selectpicker form-control" data-size="6" data-dropup-auto="false">
                                     <option value="" disabled selected>Escolha um processo</option>
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-3" style="padding-left: 0">
-                            <div class="form-group">
-                                <button id="centerButton" class="btn btn-secondary pull-right" disabled><i class="fas fa-project-diagram"></i>Centrar</button>
-                            </div>
+                        <div class="col">
+                            <a id="centerButton" href="" class="btn btn-secondary col-lg-12 disabled" style="white-space:normal !important;max-width:400px;margin-bottom:4px; word-wrap:break-word;">
+                                <i class="fas fa-project-diagram"></i>Centrar Grafo
+                            </a>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="card border-0">
+        <div class="card border-0" style="height: 43.7%">
             <div class="card-body">
                 <div id="infoFrequency">
                     <h4>Informação do grafo de frequência</h4>
                     <p>Grafo que representa a frequência que cada atividade teve no processo</p>
-                    <div class="collapse pt-3 show">
+                    <div class="collapse pt-3 show legendGraphs" style="overflow-y: auto; overflow-x:hidden; max-height:250px">
                         <div class="row">
                             <div class="col-sm-3">
                                 <div class="rectangle darkBlue">Fresagem</div>
                             </div>
                             <div class="col-sm-9">
-                                <p class="text-dark align-middle">Quanto mais azul, mais frequente é a atividade no processo</p>
+                                <p class="text-dark align-middle text-break">Quanto mais azul, mais frequente é a atividade no processo</p>
                             </div>
+                            <br />
                             <div class="col-sm-3">
                                 <div class="rectangle softBlue">Fresagem</div>
                             </div>
                             <div class="col-sm-9">
-                                <p class="text-dark align-middle">Quanto menos azul, menos frequente é a atividade no processo</p>
+                                <p class="text-dark align-middle text-break">Quanto menos azul, menos frequente é a atividade no processo</p>
                             </div>
+                            <br />
                             <br />
                             <div class="col-sm-3">
                                 <div class="row">
@@ -100,8 +102,9 @@
                                 </div>
                             </div>
                             <div class="col-sm-9">
-                                <p class="text-dark align-middle">Quanto mais azul, mais frequente é a relação entre as atividades no processo</p>
+                                <p class="text-dark align-middle text-break">Quanto mais azul, mais frequente é a relação entre as atividades no processo</p>
                             </div>
+                            <br />
                             <div class="col-sm-3">
                                 <div class="row">
                                     <div class="softBlue-rectangle-shape"></div>
@@ -109,7 +112,7 @@
                                 </div>
                             </div>
                             <div class="col-sm-9">
-                                <p class="text-dark align-middle">Quanto menos azul, menos frequente é a relação entre as atividades no processo</p>
+                                <p class="text-dark align-middle text-break">Quanto menos azul, menos frequente é a relação entre as atividades no processo</p>
                             </div>
                         </div>
                     </div>
@@ -125,12 +128,14 @@
                             <div class="col-md-9">
                                 <p class="text-dark align-text-top">Quanto mais vermelho, mais tempo (médio) é gasto na execução da atividade no processo</p>
                             </div>
+                            <br />
                             <div class="col-md-3">
                                 <div class="rectangle softRed">Fresagem</div>
                             </div>
                             <div class="col-md-9">
                                 <p class="text-dark align-text-top">Quanto menos vermelho, menos tempo (médio) é gasto na execução da atividade no processo</p>
                             </div>
+                            <br />
                             <br />
                             <div class="col-md-3">
                                 <div class="row">
@@ -141,6 +146,7 @@
                             <div class="col-md-9">
                                 <p class="text-dark align-text-top">Quanto mais vermelho, mais tempo (médio) é gasto entre as atividades no processo</p>
                             </div>
+                            <br />
                             <div class="col-md-3">
                                 <div class="row">
                                     <div class="softRed-rectangle-shape"></div>
@@ -156,10 +162,10 @@
             </div>
         </div>
     </div>
-    <div class="col-sm-7 card-box" style="height: 88.5vh;">
+    <div class="col-sm-7 card-box" style="height: 100%">
         <div id="loaderCy" style="display: none;"></div>
         <div id="cy">
-            <div id="tip">Escolha um processo</div>
+            <div id="tip">Escolha um processo com eventos</div>
         </div>
     </div>
 </div>
@@ -176,13 +182,14 @@
     var processes = JSON.parse(@Html.Raw(Json.Serialize(ViewData["processes"])));
     var cy = null;
     var stillUpdating = false;
-
+    var verifyChangeInput = false;
     var process = {
         idProcess: '',
         nameProcess: '',
         miner: 'alpha-miner',
         graph: 'frequency',
         data: '',
+        treshold: '0,1',
         nodeTimes: [],
         relationTimes: [],
         edgesMaxTime: '',
@@ -227,38 +234,33 @@
         }
     }
 
-    (function($){
-        $.fn.extend({
-            donetyping: function(callback,timeout){
-                timeout = timeout || 1e3;
-                var timeoutReference,
-                    doneTyping = function(el){
-                        if (!timeoutReference) {
-                            return;
-                        }
-                        timeoutReference = null;
-                        callback.call(el);
-                    };
-                return this.each(function(i,el){
-                    var $el = $(el);
-                    $el.is(':input') && $el.on('keyup keypress paste',function(e){
-                        if (e.type == 'keyup' && e.keyCode != 8) {
-                            return;
-                        }
-                        if (timeoutReference) {
-                            clearTimeout(timeoutReference);
-                        }
-                        timeoutReference = setTimeout(function(){
-                            doneTyping(el);
-                        }, timeout);
-                    }).on('blur',function(){
-                        doneTyping(el);
-                    });
-                });
+    function changeInputNumber() {
+        if (thresholdInput.value == process.treshold) {
+            if (!stillUpdating) {
+                verifyChangeInput = false;
+                getData();
+                return;
             }
-        });
-    })(jQuery);
-
+            stillUpdating = true;
+            return;
+        }
+        
+        process.treshold = thresholdInput.value;
+        setTimeout(changeInputNumber, 2000);
+    }
+    $('#thresholdInput').on('mouseup', function () {
+        if (stillUpdating) {
+            return;
+        }
+        if (process.idProcess != "" && !verifyChangeInput) {
+            changeInputNumber();
+            verifyChangeInput = true;
+        }
+        if (process.idProcess == "") {
+            process.treshold = thresholdInput.value;
+        }
+    });
+    /*
     $('#thresholdInput').donetyping(function(){
         if (process.idProcess && $(this).val() >= 0 && $(this).val() <= 1) {
             if (!stillUpdating) {
@@ -267,7 +269,7 @@
             }
             stillUpdating = true;
         }
-    });
+    });*/
 
     if (processes.length != 0) {
         for (var i = 0; i < processes.length; i++) {
@@ -323,26 +325,28 @@
             data: {
                 process: process.idProcess,
                 miner: process.miner,
-                threshold: thresholdInput.value
+                threshold: process.treshold
             },
             url: "/Graph/GetWorkFlow",
             dataType: 'json',
             success: function (response) {
-                if (stillUpdating) {
+                if (stillUpdating || process.treshold != thresholdInput.value) {
+                    process.treshold = thresholdInput.value;
                     getData();
                 }
                 stillUpdating = false;
                 if (response.success) {
                     process.data = response.request;
                     loading(divLoaderCy, divCy);
-                    centerButton.disabled = false;
+                    $("#centerButton").removeClass('disabled');
                     generateGraph();
                 } else {
                     loading(divLoaderCy, divCy);
                     $('#processSelected').empty();
                     $('#processSelected').text('Escolha um processo com atividades');
+                    process.idProcess = "";
                     resetGraph();
-                    centerButton.disabled = true;
+                    $("#centerButton").addClass('disabled');
                 }
             },
             error: function (response) {
@@ -354,13 +358,13 @@
     function resetGraph() {
         if (cy != null) {
             cy.unmount();
-
             var element = document.createElement("div");
             element.setAttribute("id", "tip");
-            element.appendChild(document.createTextNode('Escolha um processo com eventos'));
+            element.appendChild(document.createTextNode('Este processo não tem eventos'));
             document.getElementById("cy").appendChild(element);
             return;
         }
+        document.getElementById("tip").innerHTML = "Este processo não tem eventos";
         document.getElementById("tip").style.display = "block";
     }
 
