@@ -1,6 +1,11 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Http;
+@{
+    List<string> details = Context.Session.GetString("listDetails").Split(new char[] { ',' }).ToList();
+}
+@{
     ViewData["Title"] = "Home Page";
 }
+
 @if (ViewBag.Error != null)
 {
     <div class="alert alert-danger" role="alert">
@@ -15,43 +20,48 @@
     </div>
 }
 
-<!-- start page title -->
-
-<div class="row">
-    <div class="col-12">
-        <div class="page-title-box">
-            <div class="page-title-right">
-                <ol class="breadcrumb m-0">
-                    <li class="breadcrumb-item active">Contactos</li>
-                </ol>
-            </div>
-            <h4 class="page-title">Home</h4>
-        </div>
-    </div>
-</div>
-
-<!-- end page title -->
+<!-- start page  -->
 
 
-<!-- end row -->
-<div class="row">
-    <div class="col-lg-4">
-        <div class="text-center card-box">
-            <div class="pt-2 pb-2">
-                <img src="../assets/images/users/user-3.jpg" class="rounded-circle img-thumbnail avatar-xl" alt="profile-image">
-                <h4 class="mt-3"><a href="extras-profile.html" class="text-dark">Paulo Pereira</a></h4>
-                <p class="text-muted">Developer <span> | </span> <span> <a href="#" class="text-pink">websitename.com</a> </span></p>
-            </div> <!-- end .padding -->
-        </div> <!-- end card-box-->
-    </div> <!-- end col -->
+<h4 class="page-title">Home</h4>
+@if (!details.Contains("seeAllProcesses"))
+{
+    <p>Lista de processos</p>
+}
+@if (!details.Contains("activityFrequency"))
+{
+    <p>Estatísticas de atividades</p>
 
-    <div class="col-lg-4">
-        <div class="text-center card-box">
-            <div class="pt-2 pb-2">
-                <img src="../assets/images/users/user-4.jpg" class="rounded-circle img-thumbnail avatar-xl" alt="profile-image">
-                <h4 class="mt-3"><a href="extras-profile.html" class="text-dark">Rafaela Almeida</a></h4>
-                <p class="text-muted">Developer <span> | </span> <span> <a href="https://rafsalmeida.github.io" class="text-pink">Website</a> </span></p>
-            </div> <!-- end .padding -->
-        </div> <!-- end card-box-->
-    </div> <!-- end col -->
-</div>
+}
+@if (!details.Contains("resourcesStats"))
+{
+    <p>Estatísticas de recursos</p>
+
+}
+@if (!details.Contains("manageAccess"))
+{
+    <p>Controlo de acesso</p>
+}
+@if (!details.Contains("frequencyGraph"))
+{
+    <p>Grafo freq. desemp.</p>
+
+}
+@if (!details.Contains("compareGraphs"))
+{
+    <p>Grafo conformidade</p>
+}
+@if (!details.Contains("tagParts"))
+{
+    <p>tagging</p>
+}
+@if (!details.Contains("myStatistics"))
+{
+    <p>My stats</p>
+}
+@if (!details.Contains("createUsers"))
+{
+    <p>Criar users</p>
+}
+
+<!-- end page  -->
