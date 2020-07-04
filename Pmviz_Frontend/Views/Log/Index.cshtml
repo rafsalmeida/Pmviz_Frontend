@@ -71,7 +71,7 @@ else
                                         }
                                         @if (!details.Contains("resourcesStats") && !details.Contains("activityFrequency"))
                                         {
-                                    <td class="">
+                                    <td>
                                         <div class="btn-group d-flex justify-content-center" role="group" aria-label="Basic example">
                                             @if (!details.Contains("activityFrequency"))
                                             {
@@ -111,16 +111,6 @@ else
             window.location = '@Url.Action("Resource","Log")?id=' + $id
         }
     }
-
-
-    $(".resource").click(function() {
-        var $row = $(this).closest("tr");    // Find the row
-        var $text = $row.find(".id").text(); // Find the text
-
-        window.location = '@Url.Action("Resource","Log")?id=' + $text
-
-    });
-
 
 </script>
 
