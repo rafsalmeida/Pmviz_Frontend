@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Compare Processes";
+    ViewData["Title"] = "Grafo de Conformidade";
 }
 <link href="@Url.Content("~/css/Graphs.css")" rel="stylesheet" />
 <link href="@Url.Content("~/css/Loading.css")" rel="stylesheet" />
@@ -23,9 +23,9 @@
 </div>
 <div id="loader" style="display: none;"></div>
 <div id="fullPage">
-    <div class="row">
+    <div class="row" style="height: 88.5vh">
         <div class="col-sm-5">
-            <div id="divSelectAlgorithm" class="card border-0 card-conformance">
+            <div id="divSelectAlgorithm" class="card border-0 card-conformance" style="height: 19.5%">
                 <div class="card-body">
                     <h5>Escolha o algoritmo e a opção de tempo estimado</h5>
                     <div class="collapse pt-3 show">
@@ -42,7 +42,7 @@
                                 <div class="form-inline" id="divTreshold">
                                     <div class="form-group">
                                         <label for="thresholdInput">Threshold</label>
-                                        <input type="number" class="form-control mx-sm-2" id="thresholdInput" value="0.1" step=".1" min="0" max="1" style="height: 20px">
+                                        <input type="number" class="form-control mx-sm-2" id="thresholdInput" value="0.1" step=".1" min="0" max="1" style="height: 20px" onKeyUp="if(this.value>1){this.value='1';}else if(this.value<0){this.value='0';}">
                                         <small id="thresholdHelp" class="text-muted">O threshold têm que estar entre 0 e 1</small>
                                     </div>
                                 </div>
@@ -51,8 +51,7 @@
                             <div class="row">
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" name="filter" id="estimatedEnd" checked>
-                                    <label class="form-check-label" for="estimatedEnd">Fim estimado</label>
-                                    <small id="estimatedEndHelp" class="text-muted">Ativar/Desativar o fim estimado das atividades</small>
+                                    <label class="form-check-label" for="estimatedEnd">Incluir atividades com fim estimado</label>
                                 </div>
                             </div>
                         </div>
@@ -64,59 +63,57 @@
                     <h4 id="processSelected" class="header-title mb-0">Escolha o processo de referência</h4>
                     <div class="collapse pt-3 show">
                         <div class="row">
-                            <div class="col-sm-6">
+                            <div class="col">
                                 <div class="form-group">
                                     <select id="inputProcesses" name="processes" class="selectpicker form-control" data-size="6">
                                         <option value="" disabled selected>Escolha o processo</option>
                                     </select>
                                 </div>
                             </div>
-                            <div id="divSelectCase">
-                                <div class="col row">
-                                    <div class="col">
-                                        <div class="form-group">
-                                            <button id="centerButton" class="btn btn-sm btn-secondary pull-right" disabled><i class="fas fa-project-diagram"></i>Centrar</button>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="form-group">
-                                            <button id="legendGraphButton" class="btn btn-sm btn-info pull-right" title="Legenda do grafo" data-toggle="popover" data-placement="bottom"><i class="fas fa-info"></i>  Informação do grafo</button>
-                                        </div>
-                                        <div id="popover_content_wrapper" style="display: none">
-                                            <div>
-                                                <div class="row">
-                                                    <div class="col-sm-3">
-                                                        <div class="rectangle green">Fresagem</div>
-                                                    </div>
-                                                    <div class="col">
-                                                        <p class="text-dark align-middle" style="position: relative;top: 6px;">Tempo do processo conforme em relação ao modelo</p>
-                                                    </div>
+                            <div id="divSelectCase" class="col">
+                                <div class="col-md">
+                                    <a id="centerButton" href="#" class="btn btn-secondary btn-sm col-lg-12 disabled" style="white-space:normal !important;max-width:400px;margin-bottom:4px; word-wrap:break-word;">
+                                        <i class="fas fa-project-diagram"></i>Centrar Grafo
+                                    </a>
+                                </div>
+                                <div class="col-md">
+                                    <a id="legendGraphButton" href="#" class="btn btn-info btn-sm col-lg-12" title="Legenda do grafo" data-toggle="popover" data-placement="bottom" style="white-space:normal !important;max-width:400px;margin-bottom:4px; word-wrap:break-word;" disabled>
+                                        <i class="fas fa-info"></i>  Informação do grafo
+                                    </a>
+                                    <div id="popover_content_wrapper" style="display: none">
+                                        <div>
+                                            <div class="row">
+                                                <div class="col-sm-3">
+                                                    <div class="rectangle green">Fresagem</div>
                                                 </div>
-                                                <div class="row">
-                                                    <div class="col-sm-3">
-                                                        <div class="rectangle red">Fresagem</div>
-                                                    </div>
-                                                    <div class="col">
-                                                        <p class="text-dark align-middle" style="position: relative;top: 6px;">Tempo do processo não conforme em relação ao modelo</p>
-                                                    </div>
-                                                </div><br />
-                                                <div class="row">
-                                                    <div class="col-sm-3 row">
-                                                        <div class="green-rectangle-shape"></div>
-                                                        <div class="green-triangle-shape"></div>
-                                                    </div>
-                                                    <div class="col">
-                                                        <p class="text-dark align-middle" style="left: 25px;position: relative;">Tempo conforme entre as atividades</p>
-                                                    </div>
+                                                <div class="col">
+                                                    <p class="text-dark align-middle" style="position: relative;top: 6px;">Tempo do processo conforme o modelo selecionado</p>
                                                 </div>
-                                                <div class="row">
-                                                    <div class="col-sm-3 row">
-                                                        <div class="red-rectangle-shape"></div>
-                                                        <div class="red-triangle-shape"></div>
-                                                    </div>
-                                                    <div class="col">
-                                                        <p class="text-dark align-middle" style="left: 25px;position: relative;">Tempo não conforme entre as atividades</p>
-                                                    </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-3">
+                                                    <div class="rectangle red">Fresagem</div>
+                                                </div>
+                                                <div class="col">
+                                                    <p class="text-dark align-middle" style="position: relative; top: 6px;">Tempo do processo não conforme o modelo selecionado</p>
+                                                </div>
+                                            </div><br />
+                                            <div class="row">
+                                                <div class="col-sm-3 row">
+                                                    <div class="green-rectangle-shape"></div>
+                                                    <div class="green-triangle-shape"></div>
+                                                </div>
+                                                <div class="col">
+                                                    <p class="text-dark align-middle" style="left: 25px;position: relative;">Tempo conforme entre as atividades</p>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-3 row">
+                                                    <div class="red-rectangle-shape"></div>
+                                                    <div class="red-triangle-shape"></div>
+                                                </div>
+                                                <div class="col">
+                                                    <p class="text-dark align-middle" style="left: 25px;position: relative;">Tempo não conforme entre as atividades</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -153,19 +150,19 @@
                                 <div id="colFilterMoulds" class="col">
                                     <div class="form-group">
                                         <label class="text-dark">Moldes</label>
-                                        <select id="mouldsFilter" class="form-control form-control-sm" multiple title="No mold selected" data-size="4" data-dropup-auto="false" data-actions-box="true"></select>
+                                        <select id="mouldsFilter" class="form-control form-control-sm" multiple title="Nenhum molde selecionado" data-size="4" data-dropup-auto="false" data-actions-box="true"></select>
                                     </div>
                                 </div>
                                 <div id="colFilterParts" class="col" style="display:none;">
                                     <div class="form-group">
-                                        <label class="text-dark">Partes</label>
-                                        <select id="partsFilter" class="form-control form-control-sm selectpicker" multiple title="No parts selected" data-size="4" data-actions-box="true"></select>
+                                        <label class="text-dark">Peças</label>
+                                        <select id="partsFilter" class="form-control form-control-sm selectpicker" multiple title="Nenhuma peça selecionada" data-size="4" data-actions-box="true"></select>
                                     </div>
                                 </div>
                                 <div class="col">
                                     <div class="form-group">
                                         <label class="text-dark">Atividades</label>
-                                        <select id="activitiesFilter" class="form-control form-control-sm selectpicker" multiple title="No activity selected" data-size="4" data-dropup-auto="false" data-actions-box="true"></select>
+                                        <select id="activitiesFilter" class="form-control form-control-sm selectpicker" multiple title="Nenhuma atividade selecionada" data-size="4" data-dropup-auto="false" data-actions-box="true"></select>
                                     </div>
                                 </div>
                             </div>
@@ -173,19 +170,19 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label class="text-dark">Operadores</label>
-                                        <select id="resourcesFilter" class="form-control form-control-sm selectpicker" multiple title="No operator selected" data-size="4" data-dropup-auto="false" data-actions-box="true"></select>
+                                        <select id="resourcesFilter" class="form-control form-control-sm selectpicker" multiple title="Nenhuma operador selecionado" data-size="4" data-dropup-auto="false" data-actions-box="true"></select>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div id="clearActivities">
-                            <h5>Não há nenhum processo com eventos selecionado</h5>
+                            <h5>O processo selecionado não tem eventos</h5>
                         </div>
                     </div> 
                 </div>
             </div>
-            <div class="card border-0 card-conformance">
-                <div id="modelCompare" class="card-body">
+            <div id="modelCompare" class="card border-0 card-conformance" style="height: 33.55%;">
+                <div class="card-body">
                     <h4 class="header-title mb-0">Escolha o modelo a comparar </h4>
                     <div class="collapse pt-3 show">
                         <div class="row">
@@ -216,19 +213,19 @@
                             <div id="colCaseMoulds" class="col">
                                 <div class="form-group">
                                     <label class="text-dark">Moldes</label>
-                                    <select id="mouldsCase" class="form-control form-control-sm selectpicker" multiple title="No mold selected" data-size="4" data-actions-box="true"></select>
+                                    <select id="mouldsCase" class="form-control form-control-sm selectpicker" multiple title="Nenhum molde selecionado" data-size="4" data-actions-box="true"></select>
                                 </div>
                             </div>
                             <div id="colCaseParts" class="col" style="display:none;">
                                 <div class="form-group">
-                                    <label class="text-dark">Partes</label>
-                                    <select id="partsCase" class="form-control form-control-sm selectpicker" multiple title="No parts selected" data-size="4" data-actions-box="true"></select>
+                                    <label class="text-dark">Peças</label>
+                                    <select id="partsCase" class="form-control form-control-sm selectpicker" multiple title="Nenhuma peça selecionada" data-size="4" data-actions-box="true"></select>
                                 </div>
                             </div>
                             <div class="col">
                                 <div class="form-group">
                                     <label class="text-dark">Atividades</label>
-                                    <select id="activitiesCase" class="form-control form-control-sm selectpicker" multiple title="No activity selected" data-size="4" data-actions-box="true"></select>
+                                    <select id="activitiesCase" class="form-control form-control-sm selectpicker" multiple title="Nenhuma atividade selecionada" data-size="4" data-actions-box="true"></select>
                                 </div>
                             </div>
                         </div>
@@ -236,7 +233,7 @@
                             <div class="col">
                                 <div class="form-group">
                                     <label class="text-dark">Operadores</label>
-                                    <select id="resourcesCase" class="form-control form-control-sm selectpicker" multiple title="No operator selected" data-size="4" data-actions-box="true"></select>
+                                    <select id="resourcesCase" class="form-control form-control-sm selectpicker" multiple title="Nenhuma operador selecionado" data-size="4" data-actions-box="true"></select>
                                 </div>
                             </div>
                         </div>
@@ -244,7 +241,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-sm-7 card-box" style="height: 88.5vh;">
+        <div class="col-sm-7 card-box" style="height: 100%">
             <div id="loaderCy" style="display: none;"></div>
             <div id="cy">
                 <div id="tip">Selecione um Processo e um Modelo a comparar</div>
@@ -379,46 +376,21 @@
         }
     });
 
-    (function ($) {
-        $.fn.extend({
-            donetyping: function (callback, timeout) {
-                timeout = timeout || 1e3;
-                var timeoutReference,
-                    doneTyping = function (el) {
-                        if (!timeoutReference) {
-                            return;
-                        }
-                        timeoutReference = null;
-                        callback.call(el);
-                    };
-                return this.each(function (i, el) {
-                    var $el = $(el);
-                    $el.is(':input') && $el.on('keyup keypress paste', function (e) {
-                        if (e.type == 'keyup' && e.keyCode != 8) {
-                            return;
-                        }
-                        if (timeoutReference) {
-                            clearTimeout(timeoutReference);
-                        }
-                        timeoutReference = setTimeout(function () {
-                            doneTyping(el);
-                        }, timeout);
-                    }).on('blur', function () {
-                        doneTyping(el);
-                    });
-                });
-            }
-        });
-    })(jQuery);
-
-    $('#thresholdInput').donetyping(function () {
-        if (process.idProcess && $(this).val() >= 0 && $(this).val() <= 1 && !verifyChangesRunning) {
+    $('#thresholdInput').on('change', function () {
+        if (isUpdating) {
+            return;
+        }
+        if (process.idProcess && !verifyChangesRunning) {
             verifyChanges();
+            return;
+        }
+        if (!process.idProcess) {
+            process.threshold = thresholdInput.value;
         }
     });
 
     $('#divSelectFilter input, #divSelectFilter select, #modelCompare input, #modelCompare select').change(function () {
-        if (!verifyChangesRunning) {
+        if (!verifyChangesRunning && process.idProcess == auxProcess.idProcess) {
             verifyChanges();
             return;
         }
@@ -528,6 +500,7 @@
                     $('#processSelected').empty();
                     $('#processSelected').text('Escolha o processo de referência');
                     processWithoutActivities = true;
+                    $("#centerButton").addClass('disabled');
                     resetGraph();
                     divSelectFilter.style.display = "none";
                     divmodelCompare.style.display = "none";
@@ -536,7 +509,7 @@
                     loading(divLoader, divFullPage);
                 }
             },
-            error: function (response) {
+            error: function () {
                 loading(divLoader, divFullPage);
                 $("#error").html("Erro no pedido");
                 $("#error").fadeIn();
@@ -553,33 +526,14 @@
         }
 
         if (JSON.stringify(auxProcess) != JSON.stringify(process)) {
-            if (process.threshold < 0 || process.threshold > 1) {
-                $("#error").html("O threshold têm que estar entre 0 e 1");
-                $("#error").fadeIn();
-                closeAlertBox();
-                return;
+            //Se por algum motivo o treshold estiver inválido, altera o logo 
+            if (process.treshold > 1) {
+                process.treshold = '1';
             }
-            /*
-            if (process.filter.startDate || process.filter.endDate) {
-                if ((process.filter.startDate && !process.filter.endDate) || (!process.filter.startDate && process.filter.endDate)) {
-                    alert("Only one date is inserted on the Process filter");
-                    return;
-                }
-                if (new Date(inputStartCase.value) > new Date(inputEndCase.value)) {
-                    alert('Dates on the Process filter are not entered correctly');
-                    return;
-                }
+            else if (process.treshold < 0) {
+                process.treshold = '0';
             }
-            if (process.modelCompare.startDate || process.modelCompare.endDate) {
-                if ((process.modelCompare.startDate && !process.modelCompare.endDate) || (!process.modelCompare.startDate && process.modelCompare.endDate)) {
-                    alert("Only one date is inserted on the Modal");
-                    return;
-                }
-                if (new Date(inputStartCase.value) > new Date(inputEndCase.value)) {
-                    alert('Dates on the Modal are not entered correctly');
-                    return;
-                }
-            }*/
+
             if (process.filter.startDate && process.filter.endDate) {
                 if (new Date(process.filter.startDate) > new Date(process.filter.endDate)) {
                     $("#error").html("As datas no filtro não estão inseridas corretamente");
@@ -620,7 +574,6 @@
                     alert('You have to select at least one mold or insert a data range');
                     return;
                 }*/
-
                 generateFullGraph();
             } else {
                 /*if (data.moulds) {
@@ -644,7 +597,7 @@
     function generateFullGraph() {
         isUpdating = 1;
         loading(divCy, divLoaderCy);
-        centerButton.disabled = true;
+        $("#centerButton").addClass('disabled');
         auxProcess = JSON.parse(JSON.stringify(process));
         $.ajax({
             type: "POST",
@@ -700,6 +653,7 @@
             },
             error: function (response) {
                 loading(divLoaderCy, divCy);
+                
                 $("#error").html("Erro no pedido");
                 $("#error").fadeIn();
                 closeAlertBox();
@@ -708,11 +662,10 @@
         });
     }
     function generateJustTheFilters() {
-
         auxProcess = JSON.parse(JSON.stringify(process));
         isUpdating = 1;
         loading(divCy, divLoaderCy);
-        centerButton.disabled = true;
+        $("#centerButton").addClass('disabled');
         $.ajax({
             type: "POST",
             data: {
@@ -1074,7 +1027,7 @@
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     function renderCytoscapeElementConformance() {
-        centerButton.disabled = false;
+        $("#centerButton").removeClass('disabled');
         isUpdating = 0;
         var element = document.getElementById("tip");
         if (typeof (element) != 'undefined' && element != null) {
@@ -1141,6 +1094,8 @@
                             "border-width": 4,
                             "border-color": "#ff0000",
                             "font-size": "16px",
+                            "text-wrap": "wrap",
+                            "text-max-width": "1000px",
                             "text-valign": "center",
                             "text-halign": "center",
                             "color": "#00b33c"
@@ -1655,6 +1610,7 @@
         if (typeof cy !== "undefined") {
             cy.fit();
         }
+        console.log("asdsa");
     });
 
     function closeAlertBox() {
