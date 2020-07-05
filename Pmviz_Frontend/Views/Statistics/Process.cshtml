@@ -52,11 +52,11 @@
                                     {
                                         if (activityChosen == act.Id.ToString())
                                         {
-                                            <option value="@act.Id" selected>@act.Id - @act.Name</option>
+                                            <option value="@act.Id" selected>@act.Name</option>
                                         }
                                         else
                                         {
-                                            <option value="@act.Id">@act.Id - @act.Name</option>
+                                            <option value="@act.Id">@act.Name</option>
                                         }
                                     }
 
@@ -73,13 +73,15 @@
             <div class="col">
                 @if (ViewBag.ErrorActivity != null)
                 {
-                    <div class="alert alert-danger" role="alert">
-                        @ViewBag.ErrorActivity
+                    <div id="errorActivities">
+                        <div class="alert alert-danger" role="alert">
+                            @ViewBag.ErrorActivity
+                        </div>
+                        <div class="container" style="text-align:center">
+                            <a href='@Url.Action("Index","Statistics")' class="btn btn-danger">Voltar</a>
+                        </div>
+                        <br />
                     </div>
-                    <div class="container" style="text-align:center">
-                        <a href='@Url.Action("Index","Statistics")' class="btn btn-danger">Voltar</a>
-                    </div>
-                    <br />
                 }
                 else
                 {
@@ -196,16 +198,21 @@
     var selectList = document.getElementById("selectList");
     var processList = document.getElementById("processList");
     var btnSubmit = document.getElementById("send");
+    var divError = document.getElementById("errorActivities");
 
     var activitiesNew;
 
-    var processId = processList.options[processList.selectedIndex].value
 
     function handleAct(selectBox) {
         btnSubmit.click()
     }
 
     $("#processList").change(function () {
+        if (divError != null) {
+            divError.style.display = "none"
+        }
+        var processId = processList.options[processList.selectedIndex].value
+
         $.ajax({
             type: "POST",
             data: { processId: processId },
@@ -215,7 +222,22 @@
                 if (response.success) {
                     var information = JSON.parse(response.request);
                     activitiesNew = information;
-                    selectList.value = information
+
+                    while (selectList.options.length > 0) {
+                        selectList.remove(selectList.options.length - 1);
+                    }
+
+                    var option = document.createElement("option");
+                    option.setAttribute("value", "");
+                    option.text = "Escolha uma atividade:";
+                    selectList.appendChild(option);
+
+                    for (var i = 0; i < activitiesNew.length; i++) {
+                        var option = document.createElement("option");
+                        option.setAttribute("value", activitiesNew[i].id);
+                        option.text = activitiesNew[i].name;
+                        selectList.appendChild(option);
+                    }
                 }
             },
             error: function (response) {

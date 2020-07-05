@@ -38,6 +38,11 @@
     <p>Estatísticas de recursos</p>
 
 }
+@if (!details.Contains("createUsers"))
+{
+    <p>Criar users</p>
+}
+
 @if (!details.Contains("manageAccess"))
 {
     <p>Controlo de acesso</p>
@@ -58,10 +63,6 @@
 @if (!details.Contains("myStatistics"))
 {
     <p>My stats</p>
-}
-@if (!details.Contains("createUsers"))
-{
-    <p>Criar users</p>
 }
 
 <!-- end page  -->

@@ -74,7 +74,7 @@ namespace PmvizFrontend.Controllers
                                 meanTime += a.MeanDuration.Hours != 0 ? a.MeanDuration.Hours + "h " : "";
                                 meanTime += a.MeanDuration.Minutes != 0 ? a.MeanDuration.Minutes + "m " : "";
                                 meanTime += a.MeanDuration.Seconds != 0 ? a.MeanDuration.Seconds + "s " : "";
-                                meanTime += a.MeanDuration.Millis != 0 ? a.MeanDuration.Millis + "ms " : " 0ms";
+                                meanTime += a.MeanDuration.Millis != 0 ? a.MeanDuration.Millis + "ms " : "";
                                 a.MeanActivityFormatted = meanTime;
 
                                 var tsMean = new TimeSpan(a.MeanDuration.Days, a.MeanDuration.Hours, a.MeanDuration.Minutes, a.MeanDuration.Seconds, a.MeanDuration.Millis);
@@ -85,7 +85,7 @@ namespace PmvizFrontend.Controllers
                                 medianTime += a.MedianDuration.Hours != 0 ? a.MedianDuration.Hours + "h " : "";
                                 medianTime += a.MedianDuration.Minutes != 0 ? a.MedianDuration.Minutes + "m " : "";
                                 medianTime += a.MedianDuration.Seconds != 0 ? a.MedianDuration.Seconds + "s " : "";
-                                medianTime += a.MedianDuration.Millis != 0 ? a.MedianDuration.Millis + "ms " : " 0ms";
+                                medianTime += a.MedianDuration.Millis != 0 ? a.MedianDuration.Millis + "ms " : "";
                                 a.MedianActivityFormatted = medianTime;
 
                                 var tsMedian = new TimeSpan(a.MedianDuration.Days, a.MedianDuration.Hours, a.MedianDuration.Minutes, a.MedianDuration.Seconds, a.MedianDuration.Millis);
@@ -96,15 +96,18 @@ namespace PmvizFrontend.Controllers
                                 minTime += a.MinDuration.Hours != 0 ? a.MinDuration.Hours + "h " : "";
                                 minTime += a.MinDuration.Minutes != 0 ? a.MinDuration.Minutes + "m " : "";
                                 minTime += a.MinDuration.Seconds != 0 ? a.MinDuration.Seconds + "s " : "";
-                                minTime += a.MinDuration.Millis != 0 ? a.MinDuration.Millis + "ms " : " 0ms";
+                                minTime += a.MinDuration.Millis != 0 ? a.MinDuration.Millis + "ms " : "";
                                 a.MinActivityFormatted = minTime;
 
                                 var maxTime = a.MaxDuration.Days != 0 ? a.MaxDuration.Days + "d " : "";
                                 maxTime += a.MaxDuration.Hours != 0 ? a.MaxDuration.Hours + "h " : "";
                                 maxTime += a.MaxDuration.Minutes != 0 ? a.MaxDuration.Minutes + "m " : "";
                                 maxTime += a.MaxDuration.Seconds != 0 ? a.MaxDuration.Seconds + "s " : "";
-                                maxTime += a.MaxDuration.Millis != 0 ? a.MaxDuration.Millis + "ms " : " 0ms";
+                                maxTime += a.MaxDuration.Millis != 0 ? a.MaxDuration.Millis + "ms " : "";
                                 a.MaxActivityFormatted = maxTime;
+
+                                a.RelativeFrequency = Math.Round(a.RelativeFrequency, 2);
+
 
 
                             }
@@ -821,7 +824,7 @@ namespace PmvizFrontend.Controllers
                                     meanTime += a.MeanDuration.Hours != 0 ? a.MeanDuration.Hours + "h " : "";
                                     meanTime += a.MeanDuration.Minutes != 0 ? a.MeanDuration.Minutes + "m " : "";
                                     meanTime += a.MeanDuration.Seconds != 0 ? a.MeanDuration.Seconds + "s " : "";
-                                    meanTime += a.MeanDuration.Millis != 0 ? a.MeanDuration.Millis + "ms " : " 0ms";
+                                    meanTime += a.MeanDuration.Millis != 0 ? a.MeanDuration.Millis + "ms " : "";
                                     a.MeanActivityFormatted = meanTime;
 
                                     var tsMean = new TimeSpan(a.MeanDuration.Days, a.MeanDuration.Hours, a.MeanDuration.Minutes, a.MeanDuration.Seconds, a.MeanDuration.Millis);
@@ -832,7 +835,7 @@ namespace PmvizFrontend.Controllers
                                     medianTime += a.MedianDuration.Hours != 0 ? a.MedianDuration.Hours + "h " : "";
                                     medianTime += a.MedianDuration.Minutes != 0 ? a.MedianDuration.Minutes + "m " : "";
                                     medianTime += a.MedianDuration.Seconds != 0 ? a.MedianDuration.Seconds + "s " : "";
-                                    medianTime += a.MedianDuration.Millis != 0 ? a.MedianDuration.Millis + "ms " : " 0ms";
+                                    medianTime += a.MedianDuration.Millis != 0 ? a.MedianDuration.Millis + "ms " : "";
                                     a.MedianActivityFormatted = medianTime;
 
                                     var tsMedian = new TimeSpan(a.MedianDuration.Days, a.MedianDuration.Hours, a.MedianDuration.Minutes, a.MedianDuration.Seconds, a.MedianDuration.Millis);
@@ -843,15 +846,17 @@ namespace PmvizFrontend.Controllers
                                     minTime += a.MinDuration.Hours != 0 ? a.MinDuration.Hours + "h " : "";
                                     minTime += a.MinDuration.Minutes != 0 ? a.MinDuration.Minutes + "m " : "";
                                     minTime += a.MinDuration.Seconds != 0 ? a.MinDuration.Seconds + "s " : "";
-                                    minTime += a.MinDuration.Millis != 0 ? a.MinDuration.Millis + "ms " : " 0ms";
+                                    minTime += a.MinDuration.Millis != 0 ? a.MinDuration.Millis + "ms " : "";
                                     a.MinActivityFormatted = minTime;
 
                                     var maxTime = a.MaxDuration.Days != 0 ? a.MaxDuration.Days + "d " : "";
                                     maxTime += a.MaxDuration.Hours != 0 ? a.MaxDuration.Hours + "h " : "";
                                     maxTime += a.MaxDuration.Minutes != 0 ? a.MaxDuration.Minutes + "m " : "";
                                     maxTime += a.MaxDuration.Seconds != 0 ? a.MaxDuration.Seconds + "s " : "";
-                                    maxTime += a.MaxDuration.Millis != 0 ? a.MaxDuration.Millis + "ms " : " 0ms";
+                                    maxTime += a.MaxDuration.Millis != 0 ? a.MaxDuration.Millis + "ms " : "";
                                     a.MaxActivityFormatted = maxTime;
+
+                                    a.RelativeFrequency = Math.Round(a.RelativeFrequency, 2);
 
 
                                 }

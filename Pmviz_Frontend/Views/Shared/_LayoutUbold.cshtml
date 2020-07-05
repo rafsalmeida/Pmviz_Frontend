@@ -181,6 +181,25 @@
                                 </a>
                             </li>
                         }
+                        @if (!details.Contains("myStatistics"))
+                        {
+                            <li id="myStatistics">
+                                <a href="/statistics" class="dropdown-item notify-item">
+                                    <i class="fas fa-chart-bar"></i>
+                                    <span>Minhas Estatísticas</span>
+                                </a>
+                            </li>
+                        }
+                        @if (!details.Contains("createUsers"))
+                        {
+                            <li id="createUsers">
+                                <a href="/register" class="dropdown-item notify-item">
+                                    <i class="fas fa-user-plus"></i>
+                                    <span>Criar Utilizadores</span>
+                                </a>
+                            </li>
+                        }
+
                         @if (!details.Contains("manageAccess"))
                         {
                             <li id="manageAccess">
@@ -217,24 +236,7 @@
                                 </a>
                             </li>
                         }
-                        @if (!details.Contains("myStatistics"))
-                        {
-                            <li id="myStatistics">
-                                <a href="/statistics" class="dropdown-item notify-item">
-                                    <i class="fas fa-chart-bar"></i>
-                                    <span>Minhas Estatísticas</span>
-                                </a>
-                            </li>
-                        }
-                        @if (!details.Contains("createUsers"))
-                        {
-                            <li id="createUsers">
-                                <a href="/register" class="dropdown-item notify-item">
-                                    <i class="fas fa-user-plus"></i>
-                                    <span>Criar Utilizadores</span>
-                                </a>
-                            </li>
-                        }
+
 
                     </ul>
 
