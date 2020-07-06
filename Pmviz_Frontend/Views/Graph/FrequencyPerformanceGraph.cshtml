@@ -44,7 +44,7 @@
                         <div class="form-inline" id="divTreshold">
                             <div class="form-group">
                                 <label for="thresholdInput">Threshold</label>
-                                <input type="number" class="form-control mx-sm-2" id="thresholdInput" value="0.1" step=".1" min="0" max="1" style="height: 20px" onKeyUp="if(this.value>1){this.value='1';}else if(this.value<0){this.value='0';}">
+                                <input type="number" class="form-control mx-sm-2" id="thresholdInput" value="0.1" step=".1" min="0" max="1" style="height: 20px" onKeyUp="if(this.value>1){this.value='1';}else if(this.value<0 || !this.value){this.value='0';}">
                                 <small id="thresholdHelp" class="text-muted">O threshold têm que estar entre 0 e 1</small>
                             </div>
                         </div>
@@ -241,8 +241,6 @@
                 getData();
                 return;
             }
-            stillUpdating = true;
-            return;
         }
         
         process.treshold = thresholdInput.value;
@@ -252,13 +250,15 @@
         if (stillUpdating) {
             return;
         }
-        if (process.idProcess != "" && !verifyChangeInput) {
+        if (process.idProcess == "") {
+            process.treshold = thresholdInput.value;
+            return;
+        }
+        if (!verifyChangeInput) {
             changeInputNumber();
             verifyChangeInput = true;
         }
-        if (process.idProcess == "") {
-            process.treshold = thresholdInput.value;
-        }
+        
     });
     /*
     $('#thresholdInput').donetyping(function(){
@@ -298,7 +298,7 @@
             for (let i = 0; i < process.data.statistics.nodes.length; i++) {
                 let meanDuration = process.data.statistics.nodes[i].meanDuration.days + '.' + process.data.statistics.nodes[i].meanDuration.hours + ':' +
                     process.data.statistics.nodes[i].meanDuration.minutes + ':' + process.data.statistics.nodes[i].meanDuration.seconds + '.' + process.data.statistics.nodes[i].meanDuration.millis;
-                nodeTimes[i] = moment.duration(meanDuration).asMinutes();
+                    nodeTimes[i] = moment.duration(meanDuration).asMinutes();
             }
 
             let relationTimes = [];
@@ -320,7 +320,7 @@
     function getData() {
         loading(divCy, divLoaderCy);
         stillUpdating = false;
-        if (process.treshold > 1) { process.treshold = '1'; } else if (process.treshold < 0) { process.treshold = '0'; }
+        if (!process.treshold) { thresholdInput.value = 0; process.treshold = '0';} else if (process.treshold > 1) { process.treshold = '1'; } else if (process.treshold < 0) { process.treshold = '0'; }
         $.ajax({
             type: "POST",
             data: {
