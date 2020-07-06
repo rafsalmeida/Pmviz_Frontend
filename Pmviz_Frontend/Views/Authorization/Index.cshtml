@@ -51,6 +51,13 @@
                 @TempData["success"]
             </div>
         }
+        @if(ViewBag.Error != null)
+        {
+            <div class="alert alert-danger" role="alert">
+                @ViewBag.Error
+            </div>
+
+        }
         @if (role != null)
         {   
             <div class="card-box">
