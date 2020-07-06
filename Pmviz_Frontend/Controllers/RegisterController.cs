@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -18,6 +20,8 @@ namespace Pmviz_Frontend.Controllers
         {
             using (var httpClient = new HttpClient())
             {
+                httpClient.DefaultRequestHeaders.Authorization =
+                        new AuthenticationHeaderValue("Bearer", HttpContext.Session.GetString("sessionKey"));
                 using (var response = await httpClient.GetAsync("http://localhost:8080/api/users/roles"))
                 {
                     string apiResponse = await response.Content.ReadAsStringAsync();
@@ -44,6 +48,8 @@ namespace Pmviz_Frontend.Controllers
 
             using (var httpClient = new HttpClient())
             {
+                httpClient.DefaultRequestHeaders.Authorization =
+                        new AuthenticationHeaderValue("Bearer", HttpContext.Session.GetString("sessionKey"));
                 using (var response = await httpClient.GetAsync("http://localhost:8080/api/users/roles"))
                 {
                     string apiResponse = await response.Content.ReadAsStringAsync();
@@ -55,7 +61,8 @@ namespace Pmviz_Frontend.Controllers
                     }
                     else
                     {
-                        ViewBag.Error = "Algo deu errado.";
+                        ViewBag.Error = await response.Content.ReadAsStringAsync();
+
                     }
                 }
                 
@@ -95,7 +102,7 @@ namespace Pmviz_Frontend.Controllers
                         }
                     }
 
-                    ViewBag.Error = "Algo deu errado.";
+                    ViewBag.Error = await response.Content.ReadAsStringAsync();
                     return View();
 
                 }

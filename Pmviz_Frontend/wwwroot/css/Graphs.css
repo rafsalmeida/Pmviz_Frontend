@@ -189,9 +189,8 @@
 
 /******** GRAFOS ********/
 #cy {
-    position: absolute;
-    width: 95%;
-    height: 94.5%;
+    width: 100%;
+    height: 100%;
     background-color: white;
     padding: 1.5rem;
     box-shadow: 0 0.75rem 6rem rgba(56,65,74,.03);
@@ -254,3 +253,35 @@
         width: 36%;
     }
 }
+
+@media (max-width: 767px) {
+    .legendGraphs {
+        max-height: 230px !important;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 908px) {
+    .legendGraphs {
+        max-height: 210px !important;
+    }
+}
+
+@media (min-width: 909px) and (max-width: 1029px) {
+    .legendGraphs {
+        max-height: 230px !important;
+    }
+}
+
+@media (min-width: 1030px) and (max-width: 1158px) {
+    .legendGraphs {
+        max-height: 210px !important;
+    }
+}
+
+@media (min-width: 1059px) and (max-width: 1522px) {
+    .legendGraphs {
+        max-height: 230px !important;
+    }
+}
+
+

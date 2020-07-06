@@ -100,12 +100,6 @@ namespace Pmviz_Frontend
                     name: "home",
                     pattern: "{controller=Home}/{action=Index}");
                 endpoints.MapControllerRoute(
-                    name: "manager",
-                    pattern: "{controller=Manager}/{action=Index}");
-                endpoints.MapControllerRoute(
-                    name: "operator",
-                    pattern: "{controller=Operator}/{action=Index}");
-                endpoints.MapControllerRoute(
                     name: "logs",
                     pattern: "{controller=Log}/{action=Index}/{id?}");
                 endpoints.MapControllerRoute(

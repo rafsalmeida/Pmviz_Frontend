@@ -15,6 +15,81 @@
     animation: spin 2s linear infinite;
 }
 
+@media (max-width: 768px) {
+    .btn-responsive {
+        padding: 2px 4px;
+        font-size: 80%;
+        line-height: 1;
+        border-radius: 3px;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 992px) {
+    .btn-responsive {
+        padding: 4px 9px;
+        font-size: 90%;
+        line-height: 1.2;
+    }
+}
+@media (min-width: 993px) and (max-width: 1976px) {
+    .btn-responsive {
+        padding: 4px 9px;
+        font-size: 90%;
+        line-height: 1.2;
+    }
+}
+
+@media (max-width:769px) {
+    #radioFormsA {
+        max-height: 73% !important;
+    }
+}
+
+@media(min-width: 770px) and (max-width:1141px) {
+    #radioFormsA {
+        max-height: 42% !important;
+    }
+}
+
+@media(min-width: 1142px) and (max-width:1210px) {
+    #radioFormsA {
+        max-height: 48% !important;
+    }
+}
+@media (max-width:757px) {
+    #radioForms {
+        max-height: 73% !important;
+    }
+}
+@media(min-width: 758px) and (max-width:1210px) {
+    #radioForms {
+        max-height: 48% !important;
+    }
+}
+@media(min-width: 1211px) and (max-width:1554px) {
+    #radioForms, #radioFormsA {
+        max-height: 57% !important;
+    }
+}
+
+@media(min-width: 1355px) and (max-width:1593px) {
+    #radioForms, #radioFormsA {
+        max-height: 60% !important;
+    }
+}
+@media(min-width: 1594px) and (max-width:1753px) {
+    #radioForms, #radioFormsA {
+        max-height: 68% !important;
+    }
+}
+
+@media(min-width:1754px) {
+    #radioForms {
+        max-height: 73% !important;
+    }
+}
+
+
 @-webkit-keyframes spin {
     0% {
         -webkit-transform: rotate(0deg);

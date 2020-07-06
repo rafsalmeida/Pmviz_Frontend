@@ -27,7 +27,8 @@ else
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <h4 class="header-title">Processos</h4>
+                        <h2>Lista de processos</h2>
+                        <br />
                         <div class="table-responsive">
                             <table id="scroll-horizontal-datatable" class="table table-dark dt-responsive nowrap w-100">
                                 <thead>
@@ -70,18 +71,19 @@ else
                                         }
                                         @if (!details.Contains("resourcesStats") && !details.Contains("activityFrequency"))
                                         {
-                                            <td>
-                                                @if (!details.Contains("activityFrequency"))
-                                                {
-                                                    <button class="btn btn-sm btn-rounded btn-primary activity">Atividades</button>
-                                                    <br />
-                                                }
-                                                @if (!details.Contains("resourcesStats"))
-                                                {
-                                                    <button class="btn btn-sm btn-rounded btn-danger resource">Recursos</button>
+                                    <td>
+                                        <div class="btn-group d-flex justify-content-center" role="group" aria-label="Basic example">
+                                            @if (!details.Contains("activityFrequency"))
+                                            {
+                                                <button type="button" class="btn btn-sm btn-primary activity" onclick="goToStatistics(@log.Id, 'Activity')">Atividades</button>
+                                            }
+                                            @if (!details.Contains("resourcesStats"))
+                                            {
+                                                <button type="button" class="btn btn-sm btn-danger resource" onclick="goToStatistics(@log.Id, 'Resource')">Recursos</button>
 
-                                                }
-                                            </td>
+                                            }
+                                        </div>
+                                    </td>
                                         }
 
                                     </tr>
@@ -102,22 +104,13 @@ else
 
 <script type="text/javascript">
 
-    $(".activity").click(function() {
-        var $row = $(this).closest("tr");    // Find the row
-        var $text = $row.find(".id").text(); // Find the text
-
-        window.location = '@Url.Action("Activity","Log")?id=' + $text
-
-    });
-
-    $(".resource").click(function() {
-        var $row = $(this).closest("tr");    // Find the row
-        var $text = $row.find(".id").text(); // Find the text
-
-        window.location = '@Url.Action("Resource","Log")?id=' + $text
-
-    });
-
+    function goToStatistics($id, x) {
+        if (x == "Activity") {
+            window.location = '@Url.Action("Activity","Log")?id=' + $id
+        } else {
+            window.location = '@Url.Action("Resource","Log")?id=' + $id
+        }
+    }
 
 </script>
 

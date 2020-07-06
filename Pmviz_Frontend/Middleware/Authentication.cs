@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Security.Policy;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 
 namespace Pmviz_Frontend.Middleware
@@ -24,13 +26,12 @@ namespace Pmviz_Frontend.Middleware
 
         public Task Invoke(HttpContext httpContext)
         {
-            if(httpContext.Request.Path == "/" || httpContext.Request.Path == "/login" || httpContext.Request.Path == "/register")
+            var hasToken = httpContext.Session.GetString("sessionKey") != null ? true : false;
+            if (httpContext.Request.Path == "/" || httpContext.Request.Path == "/login" || httpContext.Request.Path == "/register")
             {
                 return _next(httpContext);
             } else
             {
-                var hasToken = httpContext.Session.GetString("sessionKey") != null ? true : false;
-
                 if (hasToken)
                 {
                     var obj = JObject.Parse(httpContext.Session.GetString("userDetails"));
@@ -49,6 +50,15 @@ namespace Pmviz_Frontend.Middleware
 
                 }
             }
+            if (hasToken)
+            {
+                httpContext.Response.Redirect("/home");
+            }
+            else
+            {
+                httpContext.Response.Redirect("/login");
+            }
+            
             return httpContext.Response.WriteAsync(HttpStatusCode.Unauthorized.ToString());
         }
 

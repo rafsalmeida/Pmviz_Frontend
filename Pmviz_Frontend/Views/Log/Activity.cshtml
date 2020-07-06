@@ -19,44 +19,53 @@
 
 <div class="row">
     <div class="col-md-3 col-xl-3">
-        <div class="card-box">
-            <div class="row col"><button onclick="location.href='/Log/Resource?id=@processId'" class="btn btn-sm btn-secondary">Estaísticas dos Recursos</button></div>
-            <br />
-            <div class="row col">
-                <h4 class="text-dark my-1">Estatísticas de Atividades</h4>
+        <div class="card-box" style="height: 380px">
+            <a href="/Log/Resource?id=@processId" class="btn btn-secondary btn-sm col-lg-12" style="white-space:normal !important;max-width:400px;margin-bottom:4px; word-wrap:break-word;">
+                <i class="fas fa-chart-bar"></i>Estatísticas dos recursos do processo
+            </a>
+            <small class="form-text text-muted">Ver a estatística das atividades do processo selecionado</small>
+            <h4 class="text-dark my-1">Estatísticas de Atividades</h4>
+            <h5 class="text-dark">Processo: @processId</h5>
+            <div id="radioFormsA" style="max-height: 73%; overflow-y: auto; overflow-x:hidden">
+                <form method="post" action='@Url.Action("Activity","Log", new {id = processId})'>
+                    <div class="form-check form-check-inline">
+                        @if (type == "frequency")
+                        {
+                            <input type="radio" class="btn btn-primary form-check-input" name="type" value="frequency" checked>
+                        }
+                        else
+                        {
+                            <input type="radio" class="btn btn-primary form-check-input" name="type" value="frequency" onclick="handle(this);">
+                        }
+                        <label class="form-check-label" for="frequency">Frequência e duração</label>
+                    </div>
+                    <br />
+                    <div class="form-check form-check-inline">
+                        @if (type == "effort")
+                        {
+                            <input type="radio" class="btn btn-primary form-check-input" name="type" value="effort" checked>
+                        }
+                        else
+                        {
+                            <input type="radio" class="btn btn-primary form-check-input" name="type" value="effort" onclick="handle(this);">
+                        }
+                        <label class="form-check-label" for="effort">Tempo de Trabalho</label>
+                    </div>
+                    <br />
+                    <div class="form-check form-check-inline">
+                        @if (type == "operational")
+                        {
+                            <input type="radio" class="btn btn-primary form-check-input" name="type" value="operational" checked>
+                        }
+                        else
+                        {
+                            <input type="radio" class="btn btn-primary form-check-input" name="type" value="operational" onclick="handle(this);">
+                        }
+                        <label class="form-check-label" for="effort">Tempo Operacional</label>
+                    </div>
+                    <button type="submit" id="send" hidden></button>
+                </form>
             </div>
-            <form method="post" action='@Url.Action("Activity","Log", new {id = processId})'>
-                @if (type == "frequency")
-                {
-                    <input type="radio" class="btn btn-primary" name="type" value="frequency" checked>
-                }
-                else
-                {
-                    <input type="radio" class="btn btn-primary" name="type" value="frequency" onclick="handle(this);">
-                }
-                <label for="frequency">Frequência e duração</label>
-                <br />
-                @if (type == "effort")
-                {
-                    <input type="radio" class="btn btn-primary" name="type" value="effort" checked>
-                }
-                else
-                {
-                    <input type="radio" class="btn btn-primary" name="type" value="effort" onclick="handle(this);">
-                }
-                <label for="effort">Tempo de Trabalho</label>
-                <br />
-                @if (type == "operational")
-                {
-                    <input type="radio" class="btn btn-primary" name="type" value="operational" checked>
-                }
-                else
-                {
-                    <input type="radio" class="btn btn-primary" name="type" value="operational" onclick="handle(this);">
-                }
-                <label for="effort">Tempo Operacional</label>
-                <button type="submit" id="send" hidden></button>
-            </form>
         </div>
         @if ((type == "effort" || type == "operational") && ViewBag.Error == null)
         {
@@ -100,7 +109,7 @@
             @if (type == "frequency" || type == "effort" || type == "operational")
             {
 
-            <div id="chartDiv" class="card-box" style="height: 477px">
+            <div id="chartDiv" class="card-box" style="height: 641px">
                 <div id="loader" style="display: none;"></div>
                 <div id="divGraph">
                     @if (type == "frequency")
@@ -113,7 +122,7 @@
 
                         <style> 
                             #chartDiv {
-                                height: 420px !important;
+                                height: 380px !important;
                             }
                         </style>
                         <br />
@@ -138,7 +147,7 @@
                                     .Visible(true)
                                     .Template("#= series.name #: #= value #")
                                 )
-                                .ChartArea(x => x.Height(313))
+                                .ChartArea(x => x.Height(273))
                                 .Pannable(pannable => pannable
                                     .Lock(ChartAxisLock.Y)
                                 )
@@ -171,7 +180,7 @@
                                 .Visible(true)
                                 .Template("#= dataItem.MedianActivityFormatted #")
                             )
-                            .ChartArea(x => x.Height(313))
+                            .ChartArea(x => x.Height(273))
                             .Pannable(pannable => pannable
                                 .Lock(ChartAxisLock.Y)
                             )
@@ -203,7 +212,7 @@
                             .Visible(true)
                             .Template("#= dataItem.MeanActivityFormatted #")
                         )
-                        .ChartArea(x => x.Height(313))
+                        .ChartArea(x => x.Height(273))
                         .Pannable(pannable => pannable
                             .Lock(ChartAxisLock.Y)
                         )
@@ -238,7 +247,7 @@
                                 .Visible(true)
                                 .Template("#= series.name #: #= value # minutos")
                             )
-                            .ChartArea(x => x.Height(427))
+                            .ChartArea(x => x.Height(591))
                             .Pannable(pannable => pannable
                                 .Lock(ChartAxisLock.Y)
                             )
@@ -273,7 +282,7 @@
                                 .Visible(true)
                                 .Template("#= series.name #: #= value # minutos")
                             )
-                            .ChartArea(x => x.Height(427))
+                            .ChartArea(x => x.Height(591))
                             .Pannable(pannable => pannable
                                 .Lock(ChartAxisLock.Y)
                             )
