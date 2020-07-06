@@ -22,47 +22,75 @@
 
 <!-- start page  -->
 
+<div class="col-sm-12">
+    <h3 class="text-white">PMVIZ</h3>
+    <br />
+    @if (!details.Contains("seeAllProcesses"))
+    {
+        <h4 class="page-title">Lista de Processos</h4>
+        <p class="text-white">Nesta página pode observar-se todos os processos registados no sistema, bem como a sua informação.</p>
+    }
+    @if (!details.Contains("activityFrequency") || !details.Contains("resourcesStats")){
+        <div class="col-sm-10 align-self-center">
+            @if (!details.Contains("activityFrequency"))
+            {
+                <h4 class="page-title">Estatísticas de atividades</h4>
+                <p class="text-white">Consoante o processo escolhido, poderá observar-se as estatísticas das suas atividades (frequência, desempenho, entre outros).</p>
+            }
+            @if (!details.Contains("resourcesStats"))
+            {
+                <h4 class="page-title">Estatísticas de recursos</h4>
+                <p class="text-white">Consoante o processo escolhido, poderá observar-se as estatísticas dos seus recursos (desempenho, tempo operacional, entre outros).</p>
+            }
+        </div>
+    }
+    <br />
+    @if (!details.Contains("createUsers"))
+    {
+        <h4 class="page-title">Criar utilizadores</h4>
+        <p class="text-white">Esta página permite a criação de utilizadores.</p>
+        <br />
+    }
 
-<h4 class="page-title">Home</h4>
-@if (!details.Contains("seeAllProcesses"))
-{
-    <p>Lista de processos</p>
-}
-@if (!details.Contains("activityFrequency"))
-{
-    <p>Estatísticas de atividades</p>
+    @if (!details.Contains("manageAccess"))
+    {
+        <h4 class="page-title">Controlo de acesso</h4>
+        <p class="text-white">Nesta vista poderá alterar as funcionalidades que cada role pode ou não aceder.</p>
+        <br />
+    }
+    @if (!details.Contains("frequencyGraph"))
+    {
+        <h4 class="page-title">Grafo de Frequência e Desempenho</h4>
+        <p class="text-white">Nesta página poderá visualizar grafos de frequência e de desempenho dos processos registados.</p>
+        <br />
+    }
+    @if (!details.Contains("compareGraphs"))
+    {
+        <h4 class="page-title">Grafo de Conformidade</h4>
+        <p class="text-white">Nesta página poderá comparar dois modelos para perceber qual obteve o melhor desempenho.</p>
+        <br />
+    }
+    @if (!details.Contains("tagParts"))
+    {
+        <h4 class="page-title">Tagging de peças</h4>
+        <p class="text-white">Esta funcionalidade permite realizar o tagging de peças.</p>
+        <br />
+    }
+    @if (!details.Contains("myStatistics"))
+    {
+        <h4 class="page-title">Minhas Estatísticas</h4>
+        <p class="text-white">Nesta página poderá aceder às suas estatísticas.</p>
+        <br />
+    }
+</div>
 
-}
-@if (!details.Contains("resourcesStats"))
-{
-    <p>Estatísticas de recursos</p>
 
-}
-@if (!details.Contains("createUsers"))
-{
-    <p>Criar users</p>
-}
+<div style="position: absolute;bottom: 0; width:84.5%">
+    <hr />
+    <center>
+        <p>Projeto desenvolvido por Paulo Pereira e Rafaela Almeida - 2019/2020</p>
+    </center>
+</div>
 
-@if (!details.Contains("manageAccess"))
-{
-    <p>Controlo de acesso</p>
-}
-@if (!details.Contains("frequencyGraph"))
-{
-    <p>Grafo freq. desemp.</p>
-
-}
-@if (!details.Contains("compareGraphs"))
-{
-    <p>Grafo conformidade</p>
-}
-@if (!details.Contains("tagParts"))
-{
-    <p>tagging</p>
-}
-@if (!details.Contains("myStatistics"))
-{
-    <p>My stats</p>
-}
 
 <!-- end page  -->

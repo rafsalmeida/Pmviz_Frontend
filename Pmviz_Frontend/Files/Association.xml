@@ -16,7 +16,7 @@
   <path name="Ver Grafos de Conformidade">/graph/conformanceGraph
     <button>compareGraphs</button>
   </path>
-  <path name="Tagging">/tag
+  <path name="Tagging de peças">/tag
     <button>tagParts</button>
   </path>
   <path name="Ver Minhas Estatísticas">/statistics
