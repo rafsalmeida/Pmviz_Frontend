@@ -23,36 +23,11 @@ namespace Pmviz_Frontend.Controllers
             {
                 ViewBag.Success = "Mudanças bem sucedidas!";
             }
-            /*return RedirectToAction("Index","login");
-            var obj = JObject.Parse(HttpContext.Session.GetString("userDetails"));
-            var role = obj["role"];
-            ViewBag.Role = role;
-
-            TempData["msg"] = "<script>alert('Change succesfully');</script>";
-            /*@Html.Raw(TempData["msg"]);*/
 
             return View();
 
             
         }
 
-        public IActionResult About()
-        {
-            ViewData["Message"] = "Your application description page.";
-
-            return View();
-        }
-
-        public IActionResult Contact()
-        {
-            ViewData["Message"] = "Your contact page.";
-
-            return View();
-        }
-
-        public IActionResult Error()
-        {
-            return View();
-        }
     }
 }

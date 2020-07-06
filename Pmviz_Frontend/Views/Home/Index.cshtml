@@ -1,6 +1,11 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Http;
+@{
+    List<string> details = Context.Session.GetString("listDetails").Split(new char[] { ',' }).ToList();
+}
+@{
     ViewData["Title"] = "Home Page";
 }
+
 @if (ViewBag.Error != null)
 {
     <div class="alert alert-danger" role="alert">
@@ -15,43 +20,77 @@
     </div>
 }
 
-<!-- start page title -->
+<!-- start page  -->
 
-<div class="row">
-    <div class="col-12">
-        <div class="page-title-box">
-            <div class="page-title-right">
-                <ol class="breadcrumb m-0">
-                    <li class="breadcrumb-item active">Contactos</li>
-                </ol>
-            </div>
-            <h4 class="page-title">Home</h4>
+<div class="col-sm-12">
+    <h3 class="text-white">PMVIZ</h3>
+    <br />
+    @if (!details.Contains("seeAllProcesses"))
+    {
+        <h4 class="page-title">Lista de Processos</h4>
+        <p class="text-white">Nesta página pode observar-se todos os processos registados no sistema, bem como a sua informação.</p>
+    }
+    @if (!details.Contains("activityFrequency") || !details.Contains("resourcesStats")){
+        <div class="col-sm-10 align-self-center">
+            @if (!details.Contains("activityFrequency"))
+            {
+                <h4 class="page-title">Estatísticas de atividades</h4>
+                <p class="text-white">Consoante o processo escolhido, poderá observar-se as estatísticas das suas atividades (frequência, desempenho, entre outros).</p>
+            }
+            @if (!details.Contains("resourcesStats"))
+            {
+                <h4 class="page-title">Estatísticas de recursos</h4>
+                <p class="text-white">Consoante o processo escolhido, poderá observar-se as estatísticas dos seus recursos (desempenho, tempo operacional, entre outros).</p>
+            }
         </div>
-    </div>
+    }
+    <br />
+    @if (!details.Contains("createUsers"))
+    {
+        <h4 class="page-title">Criar utilizadores</h4>
+        <p class="text-white">Esta página permite a criação de utilizadores.</p>
+        <br />
+    }
+
+    @if (!details.Contains("manageAccess"))
+    {
+        <h4 class="page-title">Controlo de acesso</h4>
+        <p class="text-white">Nesta vista poderá alterar as funcionalidades que cada role pode ou não aceder.</p>
+        <br />
+    }
+    @if (!details.Contains("frequencyGraph"))
+    {
+        <h4 class="page-title">Grafo de Frequência e Desempenho</h4>
+        <p class="text-white">Nesta página poderá visualizar grafos de frequência e de desempenho dos processos registados.</p>
+        <br />
+    }
+    @if (!details.Contains("compareGraphs"))
+    {
+        <h4 class="page-title">Grafo de Conformidade</h4>
+        <p class="text-white">Nesta página poderá comparar dois modelos para perceber qual obteve o melhor desempenho.</p>
+        <br />
+    }
+    @if (!details.Contains("tagParts"))
+    {
+        <h4 class="page-title">Tagging de peças</h4>
+        <p class="text-white">Esta funcionalidade permite realizar o tagging de peças.</p>
+        <br />
+    }
+    @if (!details.Contains("myStatistics"))
+    {
+        <h4 class="page-title">Minhas Estatísticas</h4>
+        <p class="text-white">Nesta página poderá aceder às suas estatísticas.</p>
+        <br />
+    }
 </div>
 
-<!-- end page title -->
 
-
-<!-- end row -->
-<div class="row">
-    <div class="col-lg-4">
-        <div class="text-center card-box">
-            <div class="pt-2 pb-2">
-                <img src="../assets/images/users/user-3.jpg" class="rounded-circle img-thumbnail avatar-xl" alt="profile-image">
-                <h4 class="mt-3"><a href="extras-profile.html" class="text-dark">Paulo Pereira</a></h4>
-                <p class="text-muted">Developer <span> | </span> <span> <a href="#" class="text-pink">websitename.com</a> </span></p>
-            </div> <!-- end .padding -->
-        </div> <!-- end card-box-->
-    </div> <!-- end col -->
-
-    <div class="col-lg-4">
-        <div class="text-center card-box">
-            <div class="pt-2 pb-2">
-                <img src="../assets/images/users/user-4.jpg" class="rounded-circle img-thumbnail avatar-xl" alt="profile-image">
-                <h4 class="mt-3"><a href="extras-profile.html" class="text-dark">Rafaela Almeida</a></h4>
-                <p class="text-muted">Developer <span> | </span> <span> <a href="https://rafsalmeida.github.io" class="text-pink">Website</a> </span></p>
-            </div> <!-- end .padding -->
-        </div> <!-- end card-box-->
-    </div> <!-- end col -->
+<div style="position: absolute;bottom: 0; width:84.5%">
+    <hr />
+    <center>
+        <p>Projeto desenvolvido por Paulo Pereira e Rafaela Almeida - 2019/2020</p>
+    </center>
 </div>
+
+
+<!-- end page  -->

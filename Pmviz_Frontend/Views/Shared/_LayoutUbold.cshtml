@@ -1,14 +1,19 @@
 ﻿@using Microsoft.AspNetCore.Http;
+@using Newtonsoft.Json.Linq;
 @{
     List<string> details = Context.Session.GetString("listDetails").Split(new char[] { ',' }).ToList();
+}
+@{
+    var obj = JObject.Parse(Context.Session.GetString("userDetails"));
+    var username = obj["sub"];
 }
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - PMVIZ</title>
-
+    <title>PMVIZ - @ViewData["Title"]</title>
+    <link rel="shortcut icon" href="../assets/images/favicon.ico">
     <environment names="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.css" />
         <link rel="stylesheet" href="~/css/site.css" />
@@ -34,6 +39,7 @@
     <link href="~/assets/css/app.min.css" rel="stylesheet" type="text/css" id="app-default-stylesheet" />
 
     <link href="~/assets/css/bootstrap-dark.min.css" rel="stylesheet" type="text/css" id="bs-dark-stylesheet" />
+    <link src="https://cdnjs.cloudflare.com/ajax/libs/node-waves/0.7.6/waves.min.css" />
 
     <link href="~/assets/css/app-dark.min.css" rel="stylesheet" type="text/css" id="app-dark-stylesheet" />
 
@@ -56,6 +62,18 @@
                 <ul class="list-unstyled topnav-menu float-right mb-0">
                     <li class="dropdown notification-list">
                         <br />
+                        <div class="row">
+                            <h5>Sessão iniciada com:</h5><h4 class="text-white" style="position:relative; bottom:1.5px">&nbsp;@username</h4>
+                        </div>
+                    </li>
+                    <li class="dropdown notification-list">
+                        <br />
+                        <div style="width:30px">
+                        </div>
+                    </li>
+                    <li class="dropdown notification-list">
+                        <br />
+
                         <a href="/Login/Logout" class="btn btn-secondary waves-effect waves-light mr-1">
                             <i class="fas fa-sign-out-alt"></i>
                             <span class="pro-user-name ml-1">Logout</span>
@@ -117,44 +135,6 @@
 
             <div class="h-100" data-simplebar>
 
-                <!-- User box -->
-                <div class="user-box text-center">
-                    <img src="../assets/images/users/user-1.jpg" alt="user-img" title="Mat Helme"
-                         class="rounded-circle avatar-md">
-                    <div class="dropdown">
-                        <a href="javascript: void(0);" class="text-dark dropdown-toggle h5 mt-2 mb-1 d-block"
-                           data-toggle="dropdown">Geneva Kennedy</a>
-                        <div class="dropdown-menu user-pro-dropdown">
-
-                            <!-- item-->
-                            <a href="javascript:void(0);" class="dropdown-item notify-item">
-                                <i class="fe-user mr-1"></i>
-                                <span>My Account</span>
-                            </a>
-
-                            <!-- item-->
-                            <a href="javascript:void(0);" class="dropdown-item notify-item">
-                                <i class="fe-settings mr-1"></i>
-                                <span>Settings</span>
-                            </a>
-
-                            <!-- item-->
-                            <a href="javascript:void(0);" class="dropdown-item notify-item">
-                                <i class="fe-lock mr-1"></i>
-                                <span>Lock Screen</span>
-                            </a>
-
-                            <!-- item-->
-                            <a href="javascript:void(0);" class="dropdown-item notify-item">
-                                <i class="fe-log-out mr-1"></i>
-                                <span>Logout</span>
-                            </a>
-
-                        </div>
-                    </div>
-                    <p class="text-muted">Admin Head</p>
-                </div>
-
                 <!--- Sidemenu -->
                 <div id="sidebar-menu">
 
@@ -180,6 +160,25 @@
                                 </a>
                             </li>
                         }
+                        @if (!details.Contains("myStatistics"))
+                        {
+                            <li id="myStatistics">
+                                <a href="/statistics" class="dropdown-item notify-item">
+                                    <i class="fas fa-chart-bar"></i>
+                                    <span>Minhas Estatísticas</span>
+                                </a>
+                            </li>
+                        }
+                        @if (!details.Contains("createUsers"))
+                        {
+                            <li id="createUsers">
+                                <a href="/register" class="dropdown-item notify-item">
+                                    <i class="fas fa-user-plus"></i>
+                                    <span>Criar Utilizadores</span>
+                                </a>
+                            </li>
+                        }
+
                         @if (!details.Contains("manageAccess"))
                         {
                             <li id="manageAccess">
@@ -194,7 +193,7 @@
                             <li id="frequencyGraph">
                                 <a href="/graph/frequencyPerformanceGraph" class="dropdown-item notify-item">
                                     <i class="fas fa-project-diagram"></i>
-                                    <span>Grafos de Freq. Perf.</span>
+                                    <span>Grafo Freq. e Desemp.</span>
                                 </a>
                             </li>
                         }
@@ -216,24 +215,7 @@
                                 </a>
                             </li>
                         }
-                        @if (!details.Contains("myStatistics"))
-                        {
-                            <li id="myStatistics">
-                                <a href="/statistics" class="dropdown-item notify-item">
-                                    <i class="fas fa-chart-bar"></i>
-                                    <span>Minhas Estatísticas</span>
-                                </a>
-                            </li>
-                        }
-                        @if (!details.Contains("createUsers"))
-                        {
-                            <li id="createUsers">
-                                <a href="/register" class="dropdown-item notify-item">
-                                    <i class="fas fa-user-plus"></i>
-                                    <span>Criar Utilizadores</span>
-                                </a>
-                            </li>
-                        }
+
 
                     </ul>
 
@@ -258,15 +240,15 @@
             </div>
         </div>
     </div>
-
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/node-waves/0.7.6/waves.min.js"></script>
     <!-- Plugins js-->
     <script src="~/assets/libs/flatpickr/flatpickr.min.js"></script>
-    <script src="~/assets/libs/apexcharts/apexcharts.min.js"></script>
+    <!--<script src="~/assets/libs/apexcharts/apexcharts.min.js"></script>-->
     <script src="~/assets/libs/selectize/js/standalone/selectize.min.js"></script>
 
-    <!-- Dashboard 1 init js-->
-    <script src="~/assets/js/pages/dashboard-1.init.js"></script>
-
+    <!-- Dashboard 1 init js
+    <script src="~/assets/js/pages/dashboard-1.init.js"></script>-->
     <!-- DATATABLES-->
     <!-- Vendor js
     <script src="~/assets/js/vendor.min.js"></script>-->

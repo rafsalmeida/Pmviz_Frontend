@@ -67,6 +67,12 @@
                                     @ViewBag.Error
                                 </div>
                             }
+                            @if (TempData["error"] != null)
+                            {
+                                <div class="alert alert-danger" role="alert">
+                                    @TempData["error"]
+                                </div>
+                            }
                         </div>
                         <form method="post">
                             <div class="form-group mb-3">

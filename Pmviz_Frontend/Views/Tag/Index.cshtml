@@ -1,7 +1,10 @@
 ﻿@{
     IEnumerable<Pmviz_Frontend.Models.Mould> moulds = ViewData["moulds"] as IEnumerable<Pmviz_Frontend.Models.Mould>;
+    IEnumerable<Pmviz_Frontend.Models.Workstation> workstations = ViewData["workstations"] as IEnumerable<Pmviz_Frontend.Models.Workstation>;
     IEnumerable<Pmviz_Frontend.Models.Part> parts = ViewData["parts"] as IEnumerable<Pmviz_Frontend.Models.Part>;
     string chosenMould = ViewData["mouldSelected"] as string;
+    string chosenWorkstation = ViewData["workstationSelected"] as string;
+
 }
 @{
     ViewData["Title"] = "Tag";
@@ -15,34 +18,60 @@
     </div>
 }
 
+
 <div class="row">
     <div class="col-md-3">
-        <br />
-        <div class="card-box">
-
+        <div class="card-box" style="height:95%">
             <form method="post" id="ticketsForm" action='@Url.Action("Mould","Tag")' kendo-validator="true">
-                <label for="mouldSelected" class="required">Escolha um molde:</label>
+                <h4>Tagging de Peças</h4>
+                <label for="workstationsSelected" class="required">Escolha uma estação:</label>
                 <br />
-                <select name="mouldSelected" class="btn-sm btn-light dropdown-toggle" id="mouldsList" required onchange="handleMoulds(this)">
-                    @if (moulds != null)
+                <select name="workstationsSelected" class="btn-sm btn-light dropdown-toggle" id="workstationsList" required onchange="handleWork(this)">
+                    @if (workstations != null)
                     {
-                        <option value="" disabled selected>Escolha um molde</option>
+                        <option value="-1" disabled selected>Escolha uma estação</option>
 
-                        @foreach (var mould in moulds)
+                        @foreach (var workstation in workstations)
                         {
-                            if (chosenMould == mould.Code)
+                            if (chosenWorkstation == workstation.Id.ToString())
                             {
-                                <option value="@mould.Code" selected>@mould.Code</option>
+                                <option value="@workstation.Id" selected>@workstation.Name</option>
                             }
                             else
                             {
-                                <option value="@mould.Code">@mould.Code</option>
+                                <option value="@workstation.Id">@workstation.Name</option>
                             }
                         }
 
                     }
 
                 </select>
+                <br />
+                <br />
+                <div id="mouldsDiv">
+                    <label for="mouldSelected" class="required">Escolha um molde:</label>
+                    <br />
+                    <select name="mouldSelected" class="btn-sm btn-light dropdown-toggle" id="mouldsList" required onchange="handleMoulds(this)">
+                        @if (moulds != null)
+                        {
+                            <option value="-1" disabled selected>Escolha um molde</option>
+
+                            @foreach (var mould in moulds)
+                            {
+                                if (chosenMould == mould.Code)
+                                {
+                                    <option value="@mould.Code" selected>@mould.Code</option>
+                                }
+                                else
+                                {
+                                    <option value="@mould.Code">@mould.Code</option>
+                                }
+                            }
+
+                        }
+
+                    </select>
+                </div>
                 <button class="btn-sm btn-primary" type="submit" id="send" hidden>Submit</button>
             </form>
             <br />
@@ -89,17 +118,16 @@
             }
         </div>
     </div>
-
-        @if (parts != null)
-        {
-            <div class="col">
+    @if (parts != null)
+    {
+        <div class="col">
+            <div class="card-box" style="height:95%">
 
                 @if (parts.Count() > 0)
                 {
 
                     <div class="table-responsive">
-                        <br />
-                        <h5>Peças</h5>
+                        <h4>Peças do molde: @chosenMould</h4>
                         <table id="scroll-horizontal-datatable" class="table table-dark dt-responsive nowrap w-100">
                             <thead>
                                 <tr>
@@ -146,14 +174,28 @@
                 }
 
             </div>
-
-        }
-    </div>
+        </div>
+    }
+</div>
 
 
 <script type="text/javascript">
-    var processList = document.getElementById("mouldsList");
+    var mouldsDiv = document.getElementById("mouldsDiv");
+
     var btnSubmit = document.getElementById("send");
+
+    if ("@chosenMould" != "-1") {
+        mouldsDiv.style.display = "block"
+
+    } else {
+        mouldsDiv.style.display = "none"
+
+    }
+
+    function handleWork(select) {
+        mouldsDiv.style.display = "block"
+    }
+
 
     function handleMoulds(select) {
         btnSubmit.click();
@@ -163,10 +205,10 @@
         var $row = $(this).closest("tr");    // Find the row
         var $text = $row.find(".id").text(); // Find the text
 
-         window.location = '@Url.Action("Tag","Tag")?id=' + $text
+         window.location = '@Url.Action("Tag","Tag")?id=' + $text +"&workstation="+"@chosenWorkstation"
         var r = confirm("A página vai atualizar quando a peça for taggada. Se quiser cancelar, clique em Cancel. Se não, clique OK.");
         if (!r) {
-            window.location = '@Url.Action("Cancel","Tag")?id=' + $text
+            window.location = '@Url.Action("Cancel","Tag")?id=' + $text +"&workstation="+"@chosenWorkstation"
         }
     });
 </script>

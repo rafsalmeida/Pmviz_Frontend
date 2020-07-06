@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -12,29 +14,14 @@ namespace Pmviz_Frontend.Controllers
 {
     public class GraphController : Controller
     {
-        public async Task<IActionResult> ConformanceGraph()
-        {
-            HttpResponseMessage response;
-            using (var httpClient = new HttpClient())
-            {
-                using (response = await httpClient.GetAsync("http://localhost:8080/api/processes"))
-                {
-                    ViewData["processes"] = response.Content.ReadAsStringAsync().Result;
-                    var status = response.IsSuccessStatusCode;
-                    if (status == false)
-                    {
-                        return RedirectToAction("Index", "Home", new { error = "1" });
-                    }
-                    return View();
-                }
-            }
-        }
-
+        #region FrequencyPerformanceGraph
         public async Task<IActionResult> FrequencyPerformanceGraph()
         {
             HttpResponseMessage response;
             using (var httpClient = new HttpClient())
             {
+                httpClient.DefaultRequestHeaders.Authorization =
+                        new AuthenticationHeaderValue("Bearer", HttpContext.Session.GetString("sessionKey"));
                 using (response = await httpClient.GetAsync("http://localhost:8080/api/processes"))
                 {
                     ViewData["processes"] = response.Content.ReadAsStringAsync().Result;
@@ -48,8 +35,54 @@ namespace Pmviz_Frontend.Controllers
             }
         }
 
-        public async Task<IActionResult> GetFullGraph(string process, string miner, string moulds, string parts, string activities, string resources, string startDate, string endDate, 
-            string threshold, string estimatedEnd, string mouldsFilter, string partsFilter, string activitiesFilter, string resourcesFilter, string startDateFilter, string endDateFilter)
+        public async Task<IActionResult> GetWorkFlow(string process, string miner, string threshold)
+        {
+            HttpResponseMessage response;
+            using (var httpClient = new HttpClient())
+            {
+                httpClient.DefaultRequestHeaders.Authorization =
+                        new AuthenticationHeaderValue("Bearer", HttpContext.Session.GetString("sessionKey"));
+                string url = "http://localhost:8080/api/workflow-network/" + miner + "/processes/" + process;
+                if (miner == "heuristic-miner")
+                {
+                    url += "?threshold=" + threshold.Replace(',', '.');
+                }
+                using (response = await httpClient.GetAsync(url))
+                {
+                    var status = response.IsSuccessStatusCode;
+                    if (status == false)
+                    {
+                        return Json(new { success = false, request = response.Content.ReadAsStringAsync() });
+                    }
+                    return Json(new { success = true, request = JObject.Parse(response.Content.ReadAsStringAsync().Result) });
+                }
+            }
+        }
+        #endregion
+
+        #region ConformanceGraph
+        public async Task<IActionResult> ConformanceGraph()
+        {
+            HttpResponseMessage response;
+            using (var httpClient = new HttpClient())
+            {
+                httpClient.DefaultRequestHeaders.Authorization =
+                        new AuthenticationHeaderValue("Bearer", HttpContext.Session.GetString("sessionKey"));
+                using (response = await httpClient.GetAsync("http://localhost:8080/api/processes"))
+                {
+                    ViewData["processes"] = response.Content.ReadAsStringAsync().Result;
+                    var status = response.IsSuccessStatusCode;
+                    if (status == false)
+                    {
+                        return RedirectToAction("Index", "Home", new { error = "1" });
+                    }
+                    return View();
+                }
+            }
+        }
+
+        public async Task<IActionResult> GetFullGraph(string process, string miner, string moulds, string parts, string activities, string resources, string startDate, string endDate,
+           string threshold, string estimatedEnd, string mouldsFilter, string partsFilter, string activitiesFilter, string resourcesFilter, string startDateFilter, string endDateFilter)
         {
             string json, url;
             json = "{ \"isEstimatedEnd\":" + estimatedEnd;
@@ -91,6 +124,8 @@ namespace Pmviz_Frontend.Controllers
             HttpContent c = new StringContent(json, Encoding.UTF8, "application/json");
             using (var httpClient = new HttpClient())
             {
+                httpClient.DefaultRequestHeaders.Authorization =
+                        new AuthenticationHeaderValue("Bearer", HttpContext.Session.GetString("sessionKey"));
                 using (response = await httpClient.PostAsync(url, c))
                 {
                     var status = response.IsSuccessStatusCode;
@@ -146,7 +181,7 @@ namespace Pmviz_Frontend.Controllers
                         else
                         {
                             return Json(new { success = true, request = new { baseData = obj, caseData = JObject.Parse(response.Content.ReadAsStringAsync().Result) } });
-                        }   
+                        }
                     }
                 }
             }
@@ -184,6 +219,8 @@ namespace Pmviz_Frontend.Controllers
             HttpContent c = new StringContent(json, Encoding.UTF8, "application/json");
             using (var httpClient = new HttpClient())
             {
+                httpClient.DefaultRequestHeaders.Authorization =
+                        new AuthenticationHeaderValue("Bearer", HttpContext.Session.GetString("sessionKey"));
                 using (response = await httpClient.PostAsync("http://localhost:8080/api/conformance/performance/process/" + process, c))
                 {
                     var status = response.IsSuccessStatusCode;
@@ -204,28 +241,13 @@ namespace Pmviz_Frontend.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> GetModel(string[] nodes, string [] activities, string[] moulds, string startDate, string endDate, int process)
-        {
-            string json = "{ \"nodes\":" + JsonConvert.SerializeObject(nodes) + ", \"activities\":" + JsonConvert.SerializeObject(activities) + ", \"moulds\":" + JsonConvert.SerializeObject(moulds);
-            if (startDate != null && endDate != null)
-            {
-                json +=  ", \"startDate\":\"" + startDate + "\", \"endDate\":\"" + endDate + "\"";
-            }
-            json += "}";
-            HttpContent c = new StringContent(json, Encoding.UTF8, "application/json");
-
-            var httpClient = new HttpClient();
-            var asd = await httpClient.PostAsync("http://localhost:8080/api/conformance/process/" + process, c);
-
-            return Json(new{ success = true, request = asd.Content.ReadAsStringAsync() });
-        }
-
-        [HttpPost]
         public async Task<IActionResult> GetInformation(int process)
         {
             HttpResponseMessage response;
             using (var httpClient = new HttpClient())
             {
+                httpClient.DefaultRequestHeaders.Authorization =
+                        new AuthenticationHeaderValue("Bearer", HttpContext.Session.GetString("sessionKey"));
                 using (response = await httpClient.GetAsync("http://localhost:8080/api/conformance/" + process + "/filterInformation"))
                 {
                     var status = response.IsSuccessStatusCode;
@@ -240,48 +262,7 @@ namespace Pmviz_Frontend.Controllers
                 }
             }
         }
-
-        public async Task<IActionResult> GetConformance(int process)
-        {
-            HttpResponseMessage response;
-            using (var httpClient = new HttpClient())
-            {
-                using (response = await httpClient.GetAsync("http://localhost:8080/api/processes/" + process + "/resources"))
-                {
-                    var status = response.IsSuccessStatusCode;
-                    if (status == false)
-                    {
-                        return Json(new { success = false, request = response.Content.ReadAsStringAsync() });
-                    }
-                    else
-                    {
-                        return Json(new { success = true, request = response.Content.ReadAsStringAsync() });
-                    }
-                }
-            }
-        }
-
-        public async Task<IActionResult> GetWorkFlow(string process, string miner, string threshold)
-        {
-            HttpResponseMessage response;
-            using (var httpClient = new HttpClient())
-            {
-                string url = "http://localhost:8080/api/workflow-network/" + miner + "/processes/" + process;
-                if (miner == "heuristic-miner")
-                {
-                    url += "?threshold=" + threshold.Replace(',', '.');
-                }
-                using (response = await httpClient.GetAsync(url))
-                {
-                    var status = response.IsSuccessStatusCode;
-                    if (status == false)
-                    {
-                        return Json(new { success = false, request = response.Content.ReadAsStringAsync() });
-                    }
-                    return Json(new { success = true, request = JObject.Parse(response.Content.ReadAsStringAsync().Result) });
-                }
-            }
-        }
+        #endregion
 
     }
 }
