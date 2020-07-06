@@ -30,7 +30,7 @@ namespace Pmviz_Frontend.Controllers
                         var roles = JsonConvert.DeserializeObject<List<String>>(apiResponse);
                         string roleToDelete ="";
                         foreach(var r in roles){
-                            if(r.Trim() == "Administrator")
+                            if(r.Trim() == "Administrador")
                             {
                                 roleToDelete = r;
                             }
@@ -42,7 +42,7 @@ namespace Pmviz_Frontend.Controllers
                     }
                     else
                     {
-                        ViewBag.Error = "Algo deu errado.";
+                        ViewBag.Error = await response.Content.ReadAsStringAsync();
                         return View();
                     }
                 }
@@ -71,7 +71,7 @@ namespace Pmviz_Frontend.Controllers
                         string roleToDelete = "";
                         foreach (var r in roles)
                         {
-                            if (r.Trim() == "Administrator")
+                            if (r.Trim() == "Administrador")
                             {
                                 roleToDelete = r;
                             }
@@ -82,7 +82,7 @@ namespace Pmviz_Frontend.Controllers
                     }
                     else
                     {
-                        ViewBag.Error = "Algo deu errado.";
+                        ViewBag.Error = await response.Content.ReadAsStringAsync();
                     }
                 }
             }
@@ -147,7 +147,7 @@ namespace Pmviz_Frontend.Controllers
                         string roleToDelete = "";
                         foreach (var r in roles)
                         {
-                            if (r.Trim() == "Administrator")
+                            if (r.Trim() == "Adminstrador")
                             {
                                 roleToDelete = r;
                             }
@@ -160,6 +160,8 @@ namespace Pmviz_Frontend.Controllers
                     else
                     {
                         ViewData["roles"] = new List<string>();
+                        ViewBag.Error = await response.Content.ReadAsStringAsync();
+
                     }
                 }
             }
