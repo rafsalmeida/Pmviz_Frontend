@@ -84,18 +84,18 @@
                                         <div>
                                             <div class="row">
                                                 <div class="col-sm-3">
-                                                    <div class="rectangle green">Fresagem</div>
+                                                    <div class="rectangle green"></div>
                                                 </div>
                                                 <div class="col">
-                                                    <p class="text-dark align-middle" style="position: relative;top: 6px;">Tempo do processo conforme o modelo selecionado</p>
+                                                    <p class="text-dark align-middle" style="position: relative;top: 6px;">Atividade conforme o modelo ideal</p>
                                                 </div>
                                             </div>
                                             <div class="row">
                                                 <div class="col-sm-3">
-                                                    <div class="rectangle red">Fresagem</div>
+                                                    <div class="rectangle red"></div>
                                                 </div>
                                                 <div class="col">
-                                                    <p class="text-dark align-middle" style="position: relative; top: 6px;">Tempo do processo não conforme o modelo selecionado</p>
+                                                    <p class="text-dark align-middle" style="position: relative; top: 6px;">Atividade não conforme o modelo ideal</p>
                                                 </div>
                                             </div><br />
                                             <div class="row">
@@ -104,7 +104,7 @@
                                                     <div class="green-triangle-shape"></div>
                                                 </div>
                                                 <div class="col">
-                                                    <p class="text-dark align-middle" style="left: 25px;position: relative;">Tempo conforme entre as atividades</p>
+                                                    <p class="text-dark align-middle" style="left: 25px;position: relative;">Transição entre atividades conforme o modelo ideal</p>
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -113,9 +113,28 @@
                                                     <div class="red-triangle-shape"></div>
                                                 </div>
                                                 <div class="col">
-                                                    <p class="text-dark align-middle" style="left: 25px;position: relative;">Tempo não conforme entre as atividades</p>
+                                                    <p class="text-dark align-middle" style="left: 25px;position: relative;">Transição entre atividades não conforme o modelo ideal</p>
                                                 </div>
                                             </div>
+                                            <div class="row">
+                                                <div class="col-sm-3">
+                                                    <center><p class="align-middle green">Fresagem</p></center>
+                                                </div>
+                                                <div class="col">
+                                                    <p class="text-dark align-middle">Tempo conforme o modelo selecionado *</p>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-3">
+                                                    <center><p class="align-middle red center">Fresagem</p></center>
+                                                </div>
+                                                <div class="col">
+                                                    <p class="text-dark align-middle">Tempo não conforme o modelo selecionado *</p>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-12">
+                                                <center><small class="text-white">* tempo da atividade e tempo de transição entre atividades</small></center>
+</div>
                                         </div>
                                     </div>
                                 </div>
@@ -1326,6 +1345,7 @@
             });
 
         //Nodes\\
+        console.log(data.baseData.nodes);
         for (let i = 0; i < data.baseData.nodes.length; i++) {
             //determinar cor do nó
             let typeValue = 0;
@@ -1500,7 +1520,7 @@
                 }
             }
         }
-
+        console.log(data.baseData.deviations);
         //change nodes which are outliers to red with green or red text
         for (let i = 0; i < data.baseData.deviations.nodes.length; i++) {
             if (cy.getElementById(data.baseData.deviations.nodes[i].toString()).data('type') === 3) {
