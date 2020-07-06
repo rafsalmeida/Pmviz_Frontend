@@ -58,19 +58,20 @@ namespace Pmviz_Frontend.Controllers
                         HttpContext.Session.SetString("sessionKey", token);
 
                         string role = GetUserDetails().Result;
+                        if(role == null)
+                        {
+                            TempData["error"] = "Tente mais tarde.";
+                            return RedirectToAction("Index", "Login");
+                        }
 
                         return RedirectToAction("Index", "Home");
                     }
                     else
                     {
-                        if(response.StatusCode == HttpStatusCode.Unauthorized)
-                        {
-                            ViewBag.Error = "Credenciais inválidas!";
-                            return View();
-                        }
+                        ViewBag.Error = await response.Content.ReadAsStringAsync();
+                        return View();
                     }
-                    ViewBag.Error = "Algo deu errado.";
-                    return View();
+
 
                 }
             }
@@ -97,7 +98,7 @@ namespace Pmviz_Frontend.Controllers
                 }
                 else
                 {
-                    ViewBag.Error = "Algo deu errado.";
+                    ViewBag.Error = await response.Content.ReadAsStringAsync();
                     return null;
                 }
             }

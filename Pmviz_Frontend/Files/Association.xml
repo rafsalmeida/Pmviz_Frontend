@@ -4,25 +4,25 @@
   </path>
   <!--<path name="Activities of a Log">/log/activities</path>
   <path name="Resources of a Log">/log/resources</path>-->
-  <path name="Estatísticas de atividades de um processo">/log/activity
+  <path name="Estatísticas de Atividades de um Processo">/log/activity
     <button>activityFrequency</button>
   </path>
   <path name="Controlo de Acesso">/authorization
     <button>manageAccess</button>
   </path>  
-  <path name="Ver grafos de desempenho e frequência">/graph/frequencyPerformanceGraph
+  <path name="Ver Grafos de Desempenho e Frequência">/graph/frequencyPerformanceGraph
     <button>frequencyGraph</button>
   </path>
-  <path name="Comparar grafos">/graph/conformanceGraph
+  <path name="Ver Grafos de Conformidade">/graph/conformanceGraph
     <button>compareGraphs</button>
   </path>
   <path name="Tagging">/tag
     <button>tagParts</button>
   </path>
-  <path name="Ver estatísticas pessoals">/statistics
+  <path name="Ver Minhas Estatísticas">/statistics
     <button>myStatistics</button>
   </path>
-  <path name="Estatísticas de recursos de um processo">/log/resource
+  <path name="Estatísticas de Recursos de um Processo">/log/resource
     <button>resourcesStats</button>
   </path>
   <path name="Criar utilizadores">
