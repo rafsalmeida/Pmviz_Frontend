@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Security.Policy;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 
 namespace Pmviz_Frontend.Middleware
@@ -24,13 +26,21 @@ namespace Pmviz_Frontend.Middleware
 
         public Task Invoke(HttpContext httpContext)
         {
-            if(httpContext.Request.Path == "/" || httpContext.Request.Path == "/login" || httpContext.Request.Path == "/register")
+            var hasToken = httpContext.Session.GetString("sessionKey") != null ? true : false;
+            if (httpContext.Request.Path == "/" || httpContext.Request.Path == "/login")
             {
-                return _next(httpContext);
-            } else
+                if (hasToken)
+                {
+                    httpContext.Response.Redirect("/home");
+                    return httpContext.Response.WriteAsync(HttpStatusCode.Unauthorized.ToString());
+                }
+                else
+                {
+                    return _next(httpContext);
+                }
+            }
+            else
             {
-                var hasToken = httpContext.Session.GetString("sessionKey") != null ? true : false;
-
                 if (hasToken)
                 {
                     var obj = JObject.Parse(httpContext.Session.GetString("userDetails"));
@@ -49,6 +59,15 @@ namespace Pmviz_Frontend.Middleware
 
                 }
             }
+            if (hasToken)
+            {
+                httpContext.Response.Redirect("/home");
+            }
+            else
+            {
+                httpContext.Response.Redirect("/login");
+            }
+
             return httpContext.Response.WriteAsync(HttpStatusCode.Unauthorized.ToString());
         }
 
@@ -57,7 +76,7 @@ namespace Pmviz_Frontend.Middleware
             if (!File.Exists($"../Pmviz_Frontend/Files/{role}.xml"))
             {
                 new XDocument(
-                    new XElement("root", new XElement("path",""))
+                    new XElement("root", new XElement("path", ""))
                 )
                 .Save($"../Pmviz_Frontend/Files/{role}.xml");
 
@@ -71,19 +90,19 @@ namespace Pmviz_Frontend.Middleware
             for (int i = 0; i < paths.Count; i++)
             {
                 System.Diagnostics.Debug.WriteLine(paths[i].InnerText);
-                if((httpContext.Request.Path == paths[i].InnerText.Trim() || httpContext.Request.Path.StartsWithSegments(paths[i].InnerText.Trim()) && 
+                if ((httpContext.Request.Path == paths[i].InnerText.Trim() || httpContext.Request.Path.StartsWithSegments(paths[i].InnerText.Trim()) &&
                     paths[i].InnerText != ""))
                 {
                     isAuthorized = false;
                 }
             }
             return isAuthorized;
-        } 
+        }
 
         public void GetDetailsToHide(string role, HttpContext httpContext)
         {
             var authorizationController = new Pmviz_Frontend.Controllers.AuthorizationController();
-            
+
             //GET THE LIST OF DETAILS NOT ALLOWED TO SEE
             var listDetails = authorizationController.GetDetailsNotAllowedToSee(role);
 
