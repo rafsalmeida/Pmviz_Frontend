@@ -237,9 +237,11 @@ namespace Pmviz_Frontend.Controllers
                 return RedirectToAction("Index", "Tag");
             } else
             {
-                string topic = "cancelTagPartWS"+workstation;
+                string topic = "cancelTagPart";
 
-                mClient.Publish(topic, Encoding.UTF8.GetBytes(codePart), MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE, true);
+                string message = codePart + "," + workstation;
+
+                mClient.Publish(topic, Encoding.UTF8.GetBytes(message), MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE, true);
                 //mClient.Disconnect();
 
                 TempData["Cancel"] = "Cancelamento do tagging da peça "+codePart +" .";
@@ -250,9 +252,10 @@ namespace Pmviz_Frontend.Controllers
         }
         public void Publish(MqttClient mClient, string codePart, string workstation)
         {
-            string topic = "tagPartWS"+workstation;
+            string topic = "tagPart";
+            string message = codePart + "," + workstation;
 
-            mClient.Publish(topic, Encoding.UTF8.GetBytes(codePart), MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE, true);
+            mClient.Publish(topic, Encoding.UTF8.GetBytes(message), MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE, true);
 
             return;
 
