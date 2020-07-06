@@ -147,7 +147,7 @@ namespace Pmviz_Frontend.Controllers
                         string roleToDelete = "";
                         foreach (var r in roles)
                         {
-                            if (r.Trim() == "Adminstrador")
+                            if (r.Trim() == "Administrador")
                             {
                                 roleToDelete = r;
                             }
