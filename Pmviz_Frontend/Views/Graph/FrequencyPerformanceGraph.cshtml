@@ -9,8 +9,8 @@
         overflow-x: hidden !important;
     }
 </style>
-<div class="row" style="height: 88.5vh;">
-    <div class="col-md-5" style="height: 100%">
+<div class="row" style="min-height:88.5vh">
+    <div class="col-md-5">
        <div id="divSelectGraph" class="card border-0" style="height: 16%">
            <div class="card-body">
                <h4>Escolha o tipo de grafo</h4>
@@ -162,10 +162,12 @@
             </div>
         </div>
     </div>
-    <div class="col-sm-7 card-box" style="height: 100%">
-        <div id="loaderCy" style="display: none;"></div>
-        <div id="cy">
-            <div id="tip">Escolha um processo com eventos</div>
+    <div class="col-sm-7">
+        <div class="card-box" style="height:100%; max-height:88.5vh; margin-bottom:0px !important">
+            <div id="loaderCy" style="display: none;"></div>
+            <div id="cy">
+                <div id="tip">Escolha um processo com eventos</div>
+            </div>
         </div>
     </div>
 </div>

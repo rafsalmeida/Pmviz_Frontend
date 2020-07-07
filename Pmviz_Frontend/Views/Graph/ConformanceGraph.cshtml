@@ -5,7 +5,6 @@
 <link href="@Url.Content("~/css/Loading.css")" rel="stylesheet" />
 <style>
     body {
-        position: relative !important;
         overflow-x: hidden !important;
     }
     #error {
@@ -23,7 +22,7 @@
 </div>
 <div id="loader" style="display: none;"></div>
 <div id="fullPage">
-    <div class="row" style="height: 88.5vh">
+    <div class="row" style="min-height:88.5vh">
         <div class="col-sm-5">
             <div id="divSelectAlgorithm" class="card border-0 card-conformance">
                 <div class="card-body">
@@ -58,7 +57,7 @@
                     </div>
                 </div>
             </div>
-            <div class="card border-0 card-conformance">
+            <div class="card border-0 card-conformance" style="max-height: 42%;">
                 <div class="card-body">
                     <h4 id="processSelected" class="header-title mb-0">Escolha o processo de referência</h4>
                     <div class="collapse pt-3 show">
@@ -200,7 +199,7 @@
                     </div> 
                 </div>
             </div>
-            <div id="modelCompare" class="card border-0 card-conformance" style="height: 33.55%;">
+            <div id="modelCompare" class="card border-0 card-conformance" style="height: 34%;">
                 <div class="card-body">
                     <h4 class="header-title mb-0">Escolha o modelo a comparar </h4>
                     <div class="collapse pt-3 show">
@@ -260,10 +259,12 @@
                 </div>
             </div>
         </div>
-        <div class="col-sm-7 card-box" style="height: 100%">
-            <div id="loaderCy" style="display: none;"></div>
-            <div id="cy">
-                <div id="tip">Selecione um Processo e um Modelo a comparar</div>
+        <div class="col-sm-7">
+            <div class="card-box" style="height:100%; max-height:88.5vh">
+                <div id="loaderCy" style="display: none;"></div>
+                <div id="cy">
+                    <div id="tip">Selecione um Processo e um Modelo a comparar</div>
+                </div>
             </div>
         </div>
     </div>
