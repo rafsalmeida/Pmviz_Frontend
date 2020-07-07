@@ -31,6 +31,14 @@ namespace Pmviz_Frontend.Middleware
             {
                 if (hasToken)
                 {
+                    var isExpired = IsExpired(httpContext);
+                    if(isExpired)
+                    {
+                        httpContext.Session.Clear();
+                        httpContext.Response.Redirect("/login");
+                        return httpContext.Response.WriteAsync(HttpStatusCode.Unauthorized.ToString());
+                    }
+
                     httpContext.Response.Redirect("/home");
                     return httpContext.Response.WriteAsync(HttpStatusCode.Unauthorized.ToString());
                 }
@@ -46,6 +54,13 @@ namespace Pmviz_Frontend.Middleware
                     var obj = JObject.Parse(httpContext.Session.GetString("userDetails"));
                     var role = obj["role"].ToString();
 
+                    var isExpired = IsExpired(httpContext);
+                    if (isExpired)
+                    {
+                        httpContext.Session.Clear();
+                        httpContext.Response.Redirect("/login");
+                        return httpContext.Response.WriteAsync(HttpStatusCode.Unauthorized.ToString());
+                    }
 
                     // AUTHORIZATION VIA XML
                     var isAuthorized = ReadXML(role, httpContext);
@@ -71,6 +86,19 @@ namespace Pmviz_Frontend.Middleware
             return httpContext.Response.WriteAsync(HttpStatusCode.Unauthorized.ToString());
         }
 
+        public bool IsExpired(HttpContext httpContext)
+        {
+            var obj = JObject.Parse(httpContext.Session.GetString("userDetails"));
+            var expDate = Convert.ToInt32(obj["exp"].ToString());
+            Int32 timestampNow = (Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+            if(timestampNow >= expDate)
+            {
+                return true;
+            }
+
+            return false;
+            
+        }
         public bool ReadXML(string role, HttpContext httpContext)
         {
             if (!File.Exists($"../Pmviz_Frontend/Files/{role}.xml"))
