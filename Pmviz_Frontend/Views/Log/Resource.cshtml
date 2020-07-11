@@ -29,7 +29,7 @@
     <div class="col-md-3 col-xl-3">
         <div class="card-box" style="height: 410px;">
             <a href="/Log/Activity?id=@processId" class="btn btn-secondary btn-sm col-lg-12" style="white-space:normal !important;max-width:400px;margin-bottom:4px; word-wrap:break-word;">
-                <i class="fas fa-chart-bar"></i>Estatísticas das atividades do processo
+                <i class="fas fa-chart-bar"></i> Estatísticas das atividades do processo
             </a>
             <small class="form-text text-muted">Ver a estatística das atividades do processo selecionado</small>
             <h4 class="text-dark my-1">Estatísticas de Recursos</h4>
@@ -709,6 +709,7 @@
     }
     if (type == "meanWork") {
         $(document).ready(function () {
+
             var frequencyChart = document.getElementById("frequencyChart");
             var medianChart = document.getElementById("medianChart");
             var meanChart = document.getElementById("meanChart");
@@ -767,7 +768,7 @@
         btnSubmit.click()
     }
 
-
+   
     function handleMiner(radio) {
         if (radio.value == "mean" || radio.value == "effort") {
             selectWork.style.display = "none";

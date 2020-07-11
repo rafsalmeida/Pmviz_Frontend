@@ -419,6 +419,8 @@ namespace PmvizFrontend.Controllers
                             }
                             else
                             {
+                                ViewData["activity"] = activity;
+
                                 ViewBag.ErrorActivity = await response.Content.ReadAsStringAsync();
 
                                 return View();
@@ -557,6 +559,8 @@ namespace PmvizFrontend.Controllers
                             }
                             else
                             {
+                                ViewData["activity"] = activity;
+
                                 ViewBag.ErrorActivity = await response.Content.ReadAsStringAsync();
 
                                 return View();
